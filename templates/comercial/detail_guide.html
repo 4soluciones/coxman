@@ -1,0 +1,108 @@
+<div class="mr-3 ml-0">
+    <div class="col-sm-12 p-1">
+        <div class="card">
+            <div class="card-body">
+                <table class="table table-bordered table-sm small text-uppercase m-0">
+                    <thead>
+                    <tr class="bg-light">
+                        <th class="align-middle text-center" style="width: 5%;">Cantidad</th>
+                        <th class="align-middle text-center" style="width: 48%;">Descripcion</th>
+                        <th class="align-middle text-center" style="width: 10%;">Unidad de Medida</th>
+                        <th class="align-middle text-center" style="width: 7%;">Peso</th>
+                        <th class="align-middle text-center" style="width: 7%;">Precio Unitario</th>
+                        <th class="align-middle text-center" style="width: 7%;">Importe</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td class="">
+                            <input type="text" class="form-control text-right" id="id-quantity" name="quantity"
+                                   placeholder="">
+                        </td>
+                        <td class="">
+                            <input type="text" class="form-control text-uppercase" id="id-description"
+                                   name="description"
+                                   placeholder="">
+                        </td>
+                        <td class="">
+                             <select id="id_unit" name="unit" class="form-control">
+                                {% for u in unit_set %}
+                                    <option value="{{ u.id }}">{{ u.description }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                        <td class="">
+                            <input type="text" class="form-control text-center" id="id-weight"
+                                   name="weight"
+                                   placeholder="0.0Kg">
+                        </td>
+                        <td class="">
+                            <input type="text" class="form-control text-right" id="id-price-unit" name="price"
+                                   placeholder="">
+                        </td>
+                        <td class="dollar-table2">
+                            <input type="text" class="form-control text-right" id="id-amount" name="amount"
+                                   readonly>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Salir</button>
+                    <button type="button" id="id_add" class="btn btn-primary">Agregar Detalle</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{#<style type="text/css">#}
+{##}
+{#        .dollar2 {#}
+        {#display: inline-block;#}
+{#        }#}
+{##}
+{#        .dollar2 input {#}
+{#            padding-left: 6px;#}
+{#        }#}
+{##}
+{#        .dollar2:before {#}
+{#            position: relative;#}
+{#            content: "S/. ";#}
+{#            left: 4px;#}
+{#            top: 3px;#}
+{#        }#}
+{##}
+{#        .dollar-table2 {#}
+        {#display: inline-block; position: relative;#}
+{#        }#}
+{##}
+{#        .dollar-table2 input {#}
+{#            padding-left: 6px;#}
+{#        }#}
+{##}
+{#        .dollar-table2:before {#}
+{#            position: relative;#}
+{#            content: "S/.";#}
+{#            left: 9px;#}
+{#            top: 15px;#}
+{#        }#}
+{#    </style>#}
+
+
+
+<script type="text/javascript">
+
+    $('#id-price-unit').keyup(function () {
+
+        let quantity = $('#id-quantity').val();
+        let price_unit = $('#id-price-unit').val();
+        let amount = quantity * price_unit
+        $("#id-amount").val(amount.toFixed(2));
+    });
+
+
+
+
+
+</script>

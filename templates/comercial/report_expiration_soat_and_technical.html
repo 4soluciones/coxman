@@ -1,0 +1,75 @@
+{% extends 'home.html' %}
+
+{% block title %}
+    coronasoft.dev | EXPIRACION DE SOAT Y REVISION TECNICA
+{% endblock title %}
+
+{% block body %}
+
+    <div class="container-fluid pt-3">
+
+        <div class="card">
+
+            <div class="card-header">
+                <label class="col-form-label col-form-label-lg">EXPIRACION DE SOAT Y REVISION TECNICA</label>
+            </div>
+
+            <div class="card-body">
+
+                <table class="table table-bordered" id="table2excel">
+                    <thead>
+                    <tr class="text-white text-uppercase">
+                        <td class="bg-dark align-middle text-center col-form-label p-1">#</td>
+                        <td class="bg-dark align-middle text-center col-form-label p-1">PLACA</td>
+                        <td class="bg-dark align-middle text-center col-form-label p-1">MARCA</td>
+                        <td class="bg-dark align-middle text-center col-form-label p-1">MODELOS</td>
+                        <td class="bg-dark align-middle text-center col-form-label p-1">PROPIETARIO</td>
+                        <td class="bg-dark align-middle text-center col-form-label p-1">FECHA DE EXPIRACION DE SOAT</td>
+                        <td class="bg-dark align-middle text-center col-form-label p-1">VIGENCIA DE SOAT</td>
+                        <td class="bg-dark align-middle text-center col-form-label p-1">FECHA DE EXPIRACION DE REVISION TECNICA</td>
+                        <td class="bg-dark align-middle text-center col-form-label p-1">VIGENCIA DE REVISION TECNICA</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for truck_associate in truck_associate_set %}
+                        <tr>
+                            <td class="align-middle text-center col-form-label p-1">{{ truck_associate.id }}</td>
+                            <td class="align-middle text-center col-form-label p-1">{{ truck_associate.truck__license_plate }}</td>
+                            <td class="align-middle text-center col-form-label p-1">{{ truck_associate.truck__truck_model__truck_brand__name }}</td>
+                            <td class="align-middle text-center col-form-label p-1">{{ truck_associate.truck__truck_model__name }}</td>
+                            <td class="align-middle text-center col-form-label p-1">{{ truck_associate.truck__owner__name }}</td>
+                            <td class="align-middle text-center col-form-label p-1">{{ truck_associate.truck__soat_expiration_date|date:"d/m/Y"|default:"-" }}</td>
+                            <td class="align-middle text-center col-form-label p-1">{{ truck_associate.difference_soat_date|default:"-" }}</td>
+                            <td class="align-middle text-center col-form-label p-1">{{ truck_associate.truck__technical_review_expiration_date|date:"d/m/Y"|default:"-" }}</td>
+                            <td class="align-middle text-center col-form-label p-1">{{ truck_associate.difference_technical_date|default:"-" }}</td>
+
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+                <button class="btn btn-lg btn-green text-white mt-3 float-right" id="export">Exportar</button>
+
+
+            </div>
+
+        </div>
+    </div>
+
+
+{% endblock body %}
+
+
+{% block extrajs %}
+    <script type="text/javascript">
+        $('#export').click(function () {
+            $("#table2excel").table2excel({
+                // exclude CSS class
+                exclude: ".noExl",
+                name: "Worksheet Name",
+                filename: "RP_VENCIMIENTO",//do not include extension
+                fileext: ".xls" // file extension
+            });
+        })
+    </script>
+{% endblock extrajs %}

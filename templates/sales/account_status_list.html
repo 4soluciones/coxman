@@ -1,0 +1,108 @@
+{% extends 'home.html' %}
+
+{% block title %}
+    coronasoft.dev | lista de Ordenes
+{% endblock title %}
+
+{% block body %}
+    <div class="row mr-3 ml-0 mt-2">
+        <div class="col-sm-12 p-0">
+            <div class="card">
+                <div class="card-body text-center font-weight-bolder pb-1">
+                    <h2>LISTADO DE ORDENES</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="card-header text-left mt-2 mb-1 p-1">
+            <div class="form-inline mt-0 mb-0 p-0">
+                <label class="mr-2 ml-2">Cliente</label>
+                <select class="form-control" id="id_client">
+                    <option value="0">Seleccione</option>
+                    {% for client in clients %}
+                        <option value="{{ client.id }}">{{ client.names }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="table-responsive" id="table-order"></div>
+    </div>
+
+
+    <div class="modal fade" id="modal-payment" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header text-center">
+                    <h5 class="modal-title" id="exampleModalLabel">Devolver prestamo / Cambiar balon</h5>
+                    <button type="button" class="close ml-0" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="lending">
+                    ...
+                </div>
+                <div class="modal-footer">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {#    MODAL DE PAGOS#}
+    <div class="modal fade" id="modal-expense" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header text-center">
+                    <h5 class="modal-title" id="exampleModalLabel">REGISTRAR GASTO</h5>
+                    <button type="button" class="close ml-0" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="expense">
+                    ...
+                </div>
+                <div class="modal-footer">
+
+                </div>
+            </div>
+        </div>
+    </div>
+{##}
+{#    <div class="text-center">#}
+{#        <div class="spinner-border spin" role="status">#}
+{#            <span class="sr-only">Loading...</span>#}
+{#        </div>#}
+{#    </div>#}
+
+
+{% endblock body %}
+
+{% block extrajs %}
+    <script type="text/javascript">
+
+
+        $('#id_client').change(function () {
+            let _search = $(this).val();
+
+            $('#table-order').empty();
+
+            $.ajax({
+                url: '/sales/get_orders_by_client/',
+                async: true,
+                dataType: 'json',
+                type: 'GET',
+                data: {'client_id': _search},
+                success: function (response) {
+                    $('#table-order').html(response['grid']);
+                },
+            });
+        });
+
+    </script>
+{% endblock extrajs %}
+

@@ -1,0 +1,75 @@
+<div class="card-group">
+    <div class="card col-sm-9 p-0">
+        <div class="card-body">
+            <table class="table table-bordered table-sm">
+                <thead class="table-light text-uppercase small text-center">
+                <tr>
+                    <th scope="col" class="border-right border-top border-bottom-0 border-left">#</th>
+                    <th scope="col" class="border-right border-top border-bottom-0">Producto</th>
+                    <th scope="col" class="border-right border-top border-bottom-0">Cantidad</th>
+                    <th scope="col" class="border-right border-top border-bottom-0">Unidad</th>
+                    <th scope="col" class="border-right border-top border-bottom-0">Precio</th>
+                    <th scope="col" class="border-right border-top border-bottom-0">Total</th>
+                    <th scope="col" class="border-right border-top border-bottom-0">Eliminar</th>
+                </tr>
+                </thead>
+                <tbody id="sales-details">
+
+                </tbody>
+            </table>
+        </div>
+        <!-- card table-->
+        <div class="card">
+            <div class="card-body p-0">
+                <div class="card-group">
+                    <div class="card col-sm-6 p-0 border-0">
+
+                    </div>
+                    <div class="card col-sm-4 p-0 border-0">
+
+                    </div>
+                    <div class="card col-sm-1 p-0 border-0">
+
+                    </div>
+                    <div class="card col-sm-2 p-0 border-0">
+                        <div class="card-body small pt-2 pb-3">
+                            <label for="sum-total" class="float-right">TOTAL : S/</label>
+                            <input type="text" class="form-control form-control-sm sum-total text-right" id="sum-total"
+                                   name="sum-total"
+                                   placeholder="">
+                        </div>
+                    </div>
+                </div><!-- card group-->
+            </div>
+        </div>
+    </div>
+    <div class="card col-sm-3">
+
+        <div class="card mb-2">
+            <div class="card-body text-center display-4" style="display: flex;flex-direction: column;">
+                <div class="card border-0">
+                    <button type="button" id="save-order"
+                            class="btn btn-success btn-sm text-uppercase text-center mt-2">Guardar
+                    </button>
+                </div>
+                <div class="card border-0">
+                    <button type="button" class="btn btn-success btn-sm text-uppercase text-center mt-2">
+                        Nuevo
+                    </button>
+                </div>
+                <div class="card border-0">
+                    <button type="button" class="btn btn-success invoice btn-sm small mt-2">FACTURA</button>
+                </div>
+                <div class="card border-0">
+                    <button type="button" class="btn btn-success receipt btn-sm small mt-2">BOLETA</button>
+                </div>
+
+                <div class="card border-0 align-middle">
+                    <input type="checkbox" id="demo" name="demo" value="0">
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div><!-- card table-->

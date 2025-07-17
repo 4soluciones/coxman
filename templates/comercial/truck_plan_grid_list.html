@@ -1,0 +1,69 @@
+{% load app_filters %}
+
+<div class="row py-3">
+
+    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 offset-lg-3 offset-xl-3 bus-f1">
+        {% for row_dict in dictionary %}
+
+            <div class="row">
+
+                <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+
+                    <div class="btn-group">
+                        <ul class="list-group list-group-horizontal">
+                            {% for col in row_dict|get:"_column_2" %}
+
+                                <li class="btn p-0 {% if forloop.first %}ml-b1{% elif forloop.last %}mr-b4{% endif %}"
+                                    {% if col.programming_seat %}
+                                    key="{{ col.programming_seat|get:"id" }}"
+                                    parent="{{ col.programming_seat|get:"parent_id" }}"
+                                    {% endif %}>
+                                    {% include "comercial/seat_render.html" with seat=col.seat programming_seat=col.programming_seat subsidiary_origin=subsidiary_origin subsidiary_current=subsidiary_current %}
+                                </li>
+
+
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+{#    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 bus bus-f2">#}
+{##}
+{#        {% for row_dict in dictionary %}#}
+{#            <div class="row">#}
+{##}
+{#                <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">#}
+{##}
+{#                    <div class="btn-group ">#}
+{#                        <ul class="list-group list-group-horizontal ">#}
+{##}
+{#                            {% for col in row_dict|get:"_column_4" %}#}
+{##}
+{#                                <li class="btn p-0 {% if forloop.first %}ml-b4{% elif forloop.last %}mr-b4{% endif %}"#}
+{#                                    {% if col.programming_seat %}#}
+{#                                    key="{{ col.programming_seat|get:"id" }}"#}
+{#                                    parent="{{ col.programming_seat|get:"parent_id" }}"#}
+{#                                    {% endif %}>#}
+{#                                    {% include "comercial/seat_render.html" with seat=col.seat programming_seat=col.programming_seat subsidiary_origin=subsidiary_origin subsidiary_current=subsidiary_current %}#}
+{#                                </li>#}
+{##}
+{#                            {% endfor %}#}
+{##}
+{#                        </ul>#}
+{#                    </div>#}
+{##}
+{#                </div>#}
+{##}
+{#            </div>#}
+{##}
+{#        {% endfor %}#}
+{##}
+{#    </div>#}
+
+
+</div>
+

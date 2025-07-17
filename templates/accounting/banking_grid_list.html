@@ -1,0 +1,58 @@
+{% if cash_flow_set %}
+
+    <div class="table-responsive mt-3">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th class="text-uppercase text-center align-middle bg-light text-dark font-weight-bold">Fecha</th>
+                <th class="text-uppercase text-center align-middle bg-light text-dark font-weight-bold">Operacion</th>
+                <th class="text-uppercase text-center align-middle bg-light text-dark font-weight-bold">Descripcion de la
+                    operacion
+                </th>
+                <th class="text-uppercase text-center align-middle bg-light text-dark font-weight-bold">ENTRADA</th>
+                <th class="text-uppercase text-center align-middle bg-light text-dark font-weight-bold">SALIDA</th>
+                <th class="text-uppercase text-center align-middle bg-light text-dark font-weight-bold">Placa</th>
+                <th class="text-uppercase text-center align-middle bg-light text-dark font-weight-bold">Responsable</th>
+                <th class="text-uppercase text-center align-middle bg-light text-dark font-weight-bold">Usuario</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            {% for c in cash_flow_set %}
+                <tr class=" {% if c.type == 'R' %}text-danger  font-weight-light
+                            {% elif c.type == 'D' %}text-info  font-weight-light
+                            {% endif %}">
+
+                    <td class="text-center">{{ c.transaction_date|date:"d/m/Y" }}</td>
+                    <td class="text-center">{{ c.get_type_display|upper }}</td>
+                    <td class="text-center">{{ c.description|upper|default_if_none:"-" }}</td>
+                    <td class="text-right">{% if c.type == 'R' %}{{ c.total|floatformat:2 }}{% endif %}</td>
+                    <td class="text-right">{% if c.type == 'D' %}{{ c.total|floatformat:2 }}{% endif %}</td>
+                    <td class="text-center">{{ c.order.distribution_mobil.truck.license_plate }}</td>
+                    <td class="text-center">{{ c.order.distribution_mobil.pilot.full_name }}</td>
+                    <td class="text-center">{{ c.user.worker_set.last.employee.full_name | upper |default_if_none:"-" }}</td>
+                </tr>
+
+
+
+
+            {% endfor %}
+            </tbody>
+
+            <tfoot>
+            <tr>
+                <td colspan="4" class="font-weight-bold text-right">SALDO ACTUAL</td>
+                <td colspan="1" class="font-weight-bold text-right">{{ current_balance|floatformat:2 }}</td>
+                <td colspan="3"></td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+{% else %}
+    <div class="alert alert-info alert-dismissible fade show mt-3" role="alert">
+        <strong>Atencion!</strong> Tu debes ingresar una fecha primero.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+{% endif %}

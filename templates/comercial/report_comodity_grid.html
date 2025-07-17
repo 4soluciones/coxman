@@ -1,0 +1,232 @@
+{% load app_filters %}
+{% if order_set %}
+    <h4 class="montserrat text-center pb-3 font-weight-bold"> REPORTE DE ENCOMIENDAS </h4>
+
+    <input id="myInput" type="text" placeholder="Buscar registro..." class="form-control form-control-lg my-1">
+
+    <table class="table roboto-condensed-light small table-sm table-striped table-bordered" id="table-comodity">
+        <thead class="thead-dark">
+        <tr class="text-dark text-center text-uppercase">
+            <th class="align-middle">
+                Fecha de emisión
+            </th>
+            <th class="align-middle">
+                Conductor
+            </th>
+            <th class="align-middle">
+                Remitente
+            </th>
+            <th class="align-middle">
+                Destinatarios
+            </th>
+            <th class="align-middle">
+                Serie
+            </th>
+            <th class="align-middle">
+                Nro.
+            </th>
+            <th class="align-middle">
+                Cant.
+            </th>
+            <th class="align-middle">
+                Unidad
+            </th>
+            <th class="align-middle">
+                Importe <br> Pago Contado
+            </th>
+            <th class="align-middle">
+                Importe <br> Pago Destino
+            </th>
+
+            <th class="align-middle">
+                Destino
+            </th>
+            <th class="align-middle">
+                Usuario
+            </th>
+            <th class="align-middle">
+                Acción
+            </th>
+
+        </tr>
+        </thead>
+        <tbody id="">
+        {% for o in order_set %}
+            <tr pk="{{ o.id }}" class="{% if o.status == 'A' %} table-danger {% endif %}">
+                <td class="align-middle text-center">{{ o.traslate_date|date:"d-m-y" }}</td>
+                <td class="align-middle text-center">{{ o.item_set_employee.0.names }}</td>
+                <td class="align-middle text-center">{{ o.item_action_sender.0.client_names|upper }}</td>
+                <td class="align-middle text-center">
+                    {% for r in o.item_action_addressee %}
+                        <strong>DESTINATARIO: </strong> {{ r.client_names|upper }}<br>
+                    {% endfor %}
+                </td>
+                <td class="align-middle text-center">{{ o.serial }}</td>
+                <td class="align-middle text-center">{{ o.correlative_sale }}</td>
+                <td class="align-middle text-center">{{ o.item_detail_order.0.quantity|floatformat:0 }}</td>
+                <td class="align-middle text-center">{{ o.item_detail_order.0.unit_description }}</td>
+                <td class="align-middle text-right way-to-pay" pk="{{ o.id }}" type_pay="C">
+                    {% if o.way_to_pay == 'C' %}
+                        S/ {{ o.total|safe }}
+                         <a type="button"
+                            class="btn-sm btn-outline-warning btn-way-to-pay"
+                            data-toggle="modal"
+                            data-target="#modal-changetypepay" pk="{{ o.id }}" type_pay="{{ o.way_to_pay }}"><i
+                            class="fas fa-edit"></i></a>
+                    {% endif %}
+                </td>
+                <td class="align-middle text-right way-to-pay" pk="{{ o.id }}" type_pay="D">
+                    {% if o.way_to_pay == 'D' %}
+                        S/ {{ o.total|safe }}
+                         <a type="button"
+                            class="btn-sm btn-outline-warning btn-way-to-pay"
+                            data-toggle="modal"
+                            data-target="#modal-changetypepay" pk="{{ o.id }}" type_pay="{{ o.way_to_pay }}"><i
+                            class="fas fa-edit"></i></a>
+                    {% endif %}
+                </td>
+                <td class="align-middle text-center destiny" pk="{{ o.id }}" style="width: 8%">{{ o.item_route_destiny.0.subsidiary }}
+                   {% if o.status != 'A' %}
+                    <a type="button"
+                       class="btn-sm btn-outline-warning btn-destiny"
+                       data-toggle="modal"
+                       data-target="#modal-changedestiny" pk="{{ o.id }}" subsidiary="{{ o.item_route_destiny.0.subsidiary }}"><i
+                            class="fas fa-edit"></i></a>
+                    {% endif %}
+                </td>
+                <td class="align-middle text-center">{{ o.user }}</td>
+                <td class="align-middle text-center" style="width: 8%">
+                    {% if o.type_document == 'F' or o.type_document == 'B' %}
+                        <a class="btn btn-green ml-1 my-1 montserrat"
+                           href="{% url 'comercial:print_bill_order_commodity'  o.id %}"
+                           target="print">
+                            <span class="fa fa-print"></span></a>
+                    {% else %}
+                        <a class="btn btn-blue ml-1 my-1 montserrat"
+                           href="{% url 'comercial:print_ticket_order_commodity' o.id %}"
+                           target="print">
+                            <span class="fa fa-print"></span></a>
+                    {% endif %}
+                    <a class="btn btn-danger ml-1 my-1 btn-cancel" data-bs-toggle="tooltip" pk="{{ o.id }}"
+                       href="#" data-bs-placement="top" title="ANULAR ENCOMIENDA">
+                        <i class="fas fa-ban"></i></a>
+                </td>
+
+            </tr>
+        {% endfor %}
+        </tbody>
+        <tfoot>
+        <tr>
+            <td colspan="7"></td>
+            <td class="align-middle text-center font-weight-bold bg-success"> TOTALES:</td>
+            <td class="align-middle text-right font-weight-bold bg-success"> S/ {{ sum_counted|safe }}</td>
+            <td class="align-middle text-right font-weight-bold bg-success"> S/ {{ sum_destination_payment|safe }}</td>
+        </tr>
+        </tfoot>
+    </table>
+    <div class="text-center mt-3">
+        <a href="{% url 'comercial:print_report_commodity' f1 f2 t w d %}" class="btn btn-blue">
+            <i class="fas fa-file-pdf"></i> Descargar Reporte
+        </a>
+    </div>
+
+
+
+{% else %}
+    <div class="alert alert-info alert-dismissible fade show mt-3" role="alert">
+        <strong>Atencion!</strong> Tu debes registrar una encomienda primero.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+{% endif %}
+<style>
+    .fancy-theme-gray .fancy-grid-body .fancy-drop-cell-first-mask {
+        border-top-color: #626262 !important;
+    }
+
+    .fancy-theme-gray .fancy-grid-body .fancy-drop-cell-mask {
+        border-bottom-color: #626262 !important;
+    }
+
+</style>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        /**
+         $("#myInput").on("keyup", function () {
+        var value = $(this).val().toLowerCase();
+        $("#table-comodity tbody tr").filter(function (e) {
+            console.log(e);
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+    });*/
+
+        $("#myInput").on("keyup", function () {
+            $("#table-comodity tbody tr td").closest("tr").hide()
+            var value = $(this).val().toUpperCase();
+            if (value) {
+                $("#table-comodity tbody tr td:contains('" + value + "')").each(function (index) {
+                    console.log(index)
+                    const parent = $(this).closest("tr")
+                    const rowspan = $(this).attr("rowspan")
+                    console.log(rowspan)
+                    if (rowspan !== undefined) {
+                        var current = parent
+                        for (var i = 0; i < rowspan; i++) {
+                            console.log(current.text())
+                            current.show()
+                            current = current.next()
+                        }
+                    } else {
+                        parent.show()
+                    }
+                })
+            } else {
+                $("#table-comodity tbody tr td").closest("tr").show()
+            }
+        });
+    });
+    $(document).on('click', '.btn-destiny', function () {
+        let _order_id = $(this).attr('pk');
+        let _subsidiary_origin = $(this).attr('subsidiary');
+       $('#lending').empty();
+        $.ajax({
+            url: '/comercial/get_modal_change/',
+            async: true,
+            dataType: 'json',
+            type: 'GET',
+            data: {'_order_id': _order_id,
+                    '_subsidiary_origin': _subsidiary_origin},
+            success: function (response) {
+                $('#change-destiny').html(response.grid);
+            },
+            fail: function (response) {
+                console.log("error");
+            }
+        });
+    });
+
+    $(document).on('click', '.btn-way-to-pay', function () {
+        let _order_id = $(this).attr('pk');
+        let _way_to_pay = $(this).attr('type_pay');
+       $('#lending').empty();
+        $.ajax({
+            url: '/comercial/get_modal_way_pay/',
+            async: true,
+            dataType: 'json',
+            type: 'GET',
+            data: {'_order_id': _order_id,
+                    'way_to_pay': _way_to_pay},
+            success: function (response) {
+                $('#change-way-to-pay').html(response.grid);
+            },
+            fail: function (response) {
+                console.log("error");
+            }
+        });
+    });
+
+</script>
+

@@ -1,0 +1,268 @@
+{% extends 'home.html' %}
+{% block title %}
+    coronasoft.dev | Rutas y/o Trayectorias
+{% endblock title %}
+
+{% block body %}
+
+    <div class="container-fluid">
+        <button type="button" class="btn btn-outline-dark roboto-medium mb-3 mt-3 create-path">
+            <i class="fas fa-bezier-curve"></i> &nbsp;NUEVA RUTA
+        </button>
+
+        <button type="button" class="btn btn-outline-danger roboto-medium mb-3 mt-3 associate-subsidiary">
+            <i class="fas fa-layer-group"></i> &nbsp;ASOCIAR SEDE
+        </button>
+
+
+        <div id="path-grid-list">{% include "comercial/path_list_grid.html" with path_set=path_set %}</div>
+
+    </div>
+
+
+    <div class="modal fade"
+         id="modalPath"
+         tabindex="-1"
+         aria-hidden="true">
+    </div>
+
+
+{% endblock body %}
+
+
+{% block extrajs %}
+
+    <script type="text/javascript">
+
+        $(document).on('click', '.associate-subsidiary', function () {
+
+            $.ajax({
+                url: '/comercial/get_create_associate_subsidiary_form/',
+                dataType: 'json',
+                type: 'GET',
+
+                success: function (response) {
+                    console.log(response);
+                    if (response.success) {
+                        $('#modalPath').html(response.grid);
+                        $('#modalPath').modal('show');
+                    }
+                },
+                fail: function (response) {
+                    console.log(response);
+                }
+            });
+        });
+
+        $(document).on('click', '.delete-associate', function () {
+
+            let search = $(this).attr('pk');
+            $.ajax({
+                url: '/comercial/get_associate_subsidiary/',
+                dataType: 'json',
+                type: 'GET',
+                data: {'pk': search},
+                success: function (response, textStatus, xhr) {
+                    if (xhr.status === 200) {
+                        $('#modalPath').html(response.grid);
+                        $('#modalPath').modal('show');
+                    }
+                },
+                fail: function (response) {
+                    console.log(response);
+                }
+            });
+        });
+
+        $(document).on('click', '.create-path', function () {
+
+            $.ajax({
+                url: '/comercial/get_create_path_form/',
+                dataType: 'json',
+                type: 'GET',
+
+                success: function (response) {
+                    console.log(response);
+                    if (response.success) {
+                        $('#modalPath').html(response.grid);
+                        $('#modalPath').modal('show');
+                    }
+                },
+                fail: function (response) {
+                    console.log(response);
+                }
+            });
+        });
+
+        $(document).on('click', '.edit-path', function () {
+
+            let search = $(this).attr('pk');
+            $.ajax({
+                url: '/comercial/get_path/',
+                dataType: 'json',
+                type: 'GET',
+                data: {'pk': search},
+                success: function (response, textStatus, xhr) {
+                    if (xhr.status === 200) {
+                        $('#modalPath').html(response.grid);
+                        $('#modalPath').modal('show');
+                    }
+                },
+                fail: function (response) {
+                    console.log(response);
+                }
+            });
+        });
+
+        $(document).on('click', '.delete-path', function (event) {
+            event.preventDefault();
+            let search = $(this).attr('pk');
+            let r = confirm("¿Está seguro de que desea eliminar esta ruta?");
+            if (r === true) {
+                $.ajax({
+                    url: '/comercial/delete_path/',
+                    dataType: 'json',
+                    type: 'GET',
+                    data: {'pk': search},
+                    success: function (response, textStatus, xhr) {
+                        if (xhr.status === 200) {
+                            toastr.success(response.message, '¡Bien hecho!');
+                            $('#path-grid-list').html(response.grid);
+                        }
+                    },
+                    error: function (jqXhr, textStatus, xhr) {
+                        toastr.error(jqXhr.responseJSON.error, '¡Ocurrio un error!');
+                    }
+                });
+            }
+        });
+
+        $(document).on('click', '.add-road', function () {
+
+            let search = $(this).attr('pk');
+            $.ajax({
+                url: '/comercial/get_create_road_form/',
+                dataType: 'json',
+                type: 'GET',
+                data: {'pk': search},
+                success: function (response, textStatus, xhr) {
+                    if (xhr.status === 200) {
+                        $('#modalPath').html(response.grid);
+                        $('#modalPath').modal('show');
+                    }
+                },
+                fail: function (response) {
+                    console.log(response);
+                }
+            });
+        });
+
+        $(document).on('click', '.edit-road', function () {
+
+            let search = $(this).attr('pk');
+            $.ajax({
+                url: '/comercial/get_road/',
+                dataType: 'json',
+                type: 'GET',
+                data: {'pk': search},
+                success: function (response, textStatus, xhr) {
+                    if (xhr.status === 200) {
+                        $('#modalPath').html(response.grid);
+                        $('#modalPath').modal('show');
+                    }
+                },
+                fail: function (response) {
+                    console.log(response);
+                }
+            });
+        });
+
+        $(document).on('click', '.delete-road', function (event) {
+            event.preventDefault();
+            let search = $(this).attr('pk');
+            let r = confirm("¿Está seguro de que desea eliminar este tramo?");
+            if (r === true) {
+                $.ajax({
+                    url: '/comercial/delete_road/',
+                    dataType: 'json',
+                    type: 'GET',
+                    data: {'pk': search},
+                    success: function (response, textStatus, xhr) {
+                        if (xhr.status === 200) {
+                            toastr.success(response.message, '¡Bien hecho!');
+                            $('#path-grid-list').html(response.grid);
+                        }
+                    },
+                    error: function (jqXhr, textStatus, xhr) {
+                        toastr.error(jqXhr.responseJSON.error, '¡Ocurrio un error!');
+                    }
+                });
+            }
+        });
+
+        $(document).on('click', '.add-destiny', function () {
+
+            let search = $(this).attr('pk');
+            $.ajax({
+                url: '/comercial/get_create_destiny_form/',
+                dataType: 'json',
+                type: 'GET',
+                data: {'pk': search},
+                success: function (response, textStatus, xhr) {
+                    if (xhr.status === 200) {
+                        $('#modalPath').html(response.grid);
+                        $('#modalPath').modal('show');
+                    }
+                },
+                fail: function (response) {
+                    console.log(response);
+                }
+            });
+        });
+
+        $(document).on('click', '.edit-destiny', function () {
+
+            let search = $(this).attr('pk');
+            $.ajax({
+                url: '/comercial/get_destiny/',
+                dataType: 'json',
+                type: 'GET',
+                data: {'pk': search},
+                success: function (response, textStatus, xhr) {
+                    if (xhr.status === 200) {
+                        $('#modalPath').html(response.grid);
+                        $('#modalPath').modal('show');
+                    }
+                },
+                fail: function (response) {
+                    console.log(response);
+                }
+            });
+        });
+
+        $(document).on('click', '.delete-destiny', function (event) {
+            event.preventDefault();
+            let search = $(this).attr('pk');
+            let r = confirm("¿Está seguro de que desea eliminar este destino?");
+            if (r === true) {
+                $.ajax({
+                    url: '/comercial/delete_destiny/',
+                    dataType: 'json',
+                    type: 'GET',
+                    data: {'pk': search},
+                    success: function (response, textStatus, xhr) {
+                        if (xhr.status === 200) {
+                            toastr.success(response.message, '¡Bien hecho!');
+                            $('#path-grid-list').html(response.grid);
+                        }
+                    },
+                    error: function (jqXhr, textStatus, xhr) {
+                        toastr.error(jqXhr.responseJSON.error, '¡Ocurrio un error!');
+                    }
+                });
+            }
+        });
+
+    </script>
+
+{% endblock extrajs %}

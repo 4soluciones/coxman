@@ -1,0 +1,191 @@
+{% extends 'home.html' %}
+{% block title %}
+    coronasoft.dev | Datos del Tracto
+{% endblock title %}
+
+{% block body %}
+
+    <div class="container-fluid">
+
+        <a class="btn btn-outline-info mb-3 mt-3" href="{% url 'comercial:truck_create' %}">
+            <i class="fas fa-user-plus"></i> &nbsp;NUEVO TRACTO
+        </a>
+
+        {% if trucks %}
+
+            <div class="card">
+
+                <div class="card-header">
+                    <h5 class="card-title">Lista de tractos</h5>
+                    <h6 class="card-subtitle text-muted"></h6>
+                </div>
+
+                <div class="card-body">
+
+                    <div class="table-responsive montserrat">
+                        <table id="truck-data-grid" class="table table-bordered table-striped text-uppercase small" cellspacing="0" width="100%">
+                            <thead>
+                            <tr class="text-center text-white bg-primary">
+                                <th class="th-sm align-middle">#</th>
+                                <th class="th-sm align-middle">Placa</th>
+                                <th class="th-sm align-middle">Marca</th>
+                                <th class="th-sm align-middle">Modelo</th>
+                                <th class="th-sm align-middle">Tipo de Plano</th>
+                                <th class="th-sm align-middle">Asociados</th>
+                                <th class="th-sm align-middle">Tipo de Unidad</th>
+                                <th class="th-sm align-middle">Propietario</th>
+                                <th class="th-sm align-middle"><i class="fas fa-cog fa-spin"></i></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for truck in trucks %}
+                                <tr class="text-center">
+                                    <td class="align-middle">{{ truck.id }}</td>
+                                    <td class="align-middle">{{ truck.license_plate }}</td>
+                                    <td class="align-middle">{{ truck.truck_model.truck_brand.name }}</td>
+                                    <td class="align-middle">{{ truck.truck_model }}</td>
+                                    <td class="align-middle">{{ truck.plan.name }}</td>
+                                    <td class="align-middle">
+                                        {% for associate in truck.truckassociate_set.all %}
+                                            <button class="btn btn-sm btn-block btn-outline-primary">{{ associate.employee.full_name }}</button>
+                                        {% endfor %}
+                                    </td>
+                                    <td class="align-middle">{{ truck.get_drive_type_display }}</td>
+                                    <td class="align-middle">{{ truck.owner }}</td>
+                                    <td class="align-middle">
+                                        <a href="{% url 'comercial:truck_update' truck.id %}" class="btn btn-link"><i class="fas fa-pen fa-sm"></i></a>
+                                        <button type="button" class="btn btn-link pilot-to-associate" pk="{{ truck.id }}"><i class="fas fa-object-ungroup fa-sm"></i></button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                            <tfoot>
+                            <tr class="text-center">
+                                <th>#</th>
+                                <th class="th-sm">Placa</th>
+                                <th class="th-sm">Marca</th>
+                                <th class="th-sm">Modelo</th>
+                                <th class="th-sm">Tipo de Plano</th>
+                                <th class="th-sm">Asociados</th>
+                                <th class="th-sm">Tipo de Unidad</th>
+                                <th class="th-sm">Propietario</th>
+                                <th class="th-sm"><i class="fas fa-cog fa-spin"></i></th>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <h1>No existen tractos registrados</h1>
+        {% endif %}
+    </div>
+
+
+    <div class="modal" id="modal_pilot_associate" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Conductor asociado</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <form id="new-pilot-associate-form">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        {% include "comercial/truck_associate_to_pilot_form.html" with employee_set=employee_set %}
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Salir</button>
+                        <button type="button" id="btn-save-associate" class="btn btn-primary">Guardar Cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock body %}
+
+{% block extrajs %}
+    <script type="text/javascript">
+        $('#truck-data-grid').dataTable({"language": language});
+
+
+
+        $(document).on('click', '.pilot-to-associate', function () {
+
+            $('#tc_license_plate').empty();
+
+            let search = $(this).attr('pk');
+
+            $.ajax({
+                url: '/comercial/get_truck/',
+                dataType: 'json',
+                type: 'GET',
+                data: {'pk': search},
+                success: function (response) {
+                    if (response.success) {
+
+                        let _truck = JSON.parse(response['truck_serialized']);
+
+                        if (response['truck_serialized'] !== '[]') {
+                            $('#tc_license_plate').val(_truck[0]['fields']['license_plate']);
+                            $('#tc_truck_id').val(_truck[0]['pk']);
+                        }
+
+                        $('#modal_pilot_associate').modal('show');
+                    }
+                },
+                fail: function (response) {
+                    console.log(response);
+                }
+            });
+        });
+
+
+        $("#btn-save-associate").click(function (event) {
+
+            let _license_plate = $('#tc_license_plate').val();
+            let _truck_id = $('#tc_truck_id').val();
+            let _associates = $('#id_associate').val();
+            event.preventDefault();
+            console.log(_truck_id);
+            console.log(_associates);
+            $("#btn-save-associate").attr("disabled");
+
+            $.ajax({
+
+                url: '/comercial/new_pilot_associate/',
+                type: 'GET',
+                async: true,
+                dataType: 'json', // for response
+                data: {'truck_id': _truck_id, 'license_plate': _license_plate, 'associates': JSON.stringify(_associates), },
+                contentType: 'application/json;charset=UTF-8',
+                headers: {"X-CSRFToken": '{{ csrf_token }}'},
+                success: function (response, textStatus, xhr) {
+
+                    if (response.success) {
+                        toastr.success(response.message, '¡Bien hecho!');
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1000);
+                    }
+
+                },
+                error: function (jqXhr, textStatus, xhr) {
+                    console.log(jqXhr);
+                    toastr.error(jqXhr.responseJSON.error, '¡Ocurrio un error!');
+                }
+            });//end ajax
+            $("#btn-save-associate").removeAttr("disabled");
+            $('#modal_pilot_associate').modal('hide');
+        }); //end submit
+
+        $('#id_associate').select2();
+
+    </script>
+{% endblock extrajs %}

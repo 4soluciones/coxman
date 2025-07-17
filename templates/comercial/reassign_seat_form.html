@@ -1,0 +1,109 @@
+<form id="reassign-seat-form" method="post">
+{% csrf_token %}
+    <div class="form-group">
+        <label for="id-new-programming">Nueva programacion</label>
+        <select class="form-control" id="id-new-programming" name="new-programming" required>
+            <option disabled selected value="">Seleccione...</option>
+            {% for other in other_programming_set %}
+                <option value="{{ other.id }}">{{ other.truck.license_plate }} | {{ other.get_pilot.full_name }} | {{ other.departure_date|date:"SHORT_DATE_FORMAT" }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="id-current-programming-seat">Asiento actual</label>
+        <select class="form-control text-danger font-weight-bold" id="id-current-programming-seat" name="current-programming-seat" readonly="">
+            {% for ps in programming_seat_set %}
+                {% if ps.id == programming_seat_obj.id %}
+                    <option value="{{ ps.id }}" selected>{{ ps.plan_detail.name }}</option>
+                {% endif %}
+            {% endfor %}
+
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="id-new-programming-seat">Asiento nuevo</label>
+        <select class="form-control text-success font-weight-bold" id="id-new-programming-seat" name="new-programming-seat" required>
+            <option disabled selected value="">Seleccione...</option>
+        </select>
+    </div>
+
+    <hr class="mb-4">
+
+    <button type="submit" class="btn btn-primary float-right ml-1">Guardar cambio</button>
+    <button type="button" id="btn-reassign" class="btn btn-secondary float-right" data-dismiss="modal">Cerrar</button>
+</form>
+
+<script type="text/javascript">
+    $(document).on('change', '#id-new-programming', function () {
+        let _search = $(this).val();
+        let _status = '1'; /** free status **/
+        $.ajax({
+            url: '/comercial/get_programming_seat_of_programming/',
+            dataType: 'json',
+            type: 'GET',
+            data: {'pk': _search, 'recover_with_status': _status},
+            success: function (response) {
+                if (response.success) {
+
+                    let _programming_seat_set = response['programming_seat_serialized'];
+
+                    $('#id-new-programming-seat').empty();
+                    _programming_seat_set.forEach(
+                        element =>
+                            $('#id-new-programming-seat').append(
+                                '<option ' +
+                                'value="' + element[0] + '" ' +
+                                'status="' + element[2] + '">' + element[1] +
+                                '</option>'
+                            )
+                    )
+                }
+            },
+            fail: function (response) {
+                console.log(response);
+            }
+        });
+    });
+
+    $('#reassign-seat-form').submit(function (event) {
+            event.preventDefault();
+
+            let _data = new FormData($('#reassign-seat-form').get(0));
+            /***let _current = $('#id-current-programming-seat').val();
+            let _new = $('#id-new-programming-seat').val();*/
+            $("#btn-reassign").attr("disabled", "true");
+
+            $.ajax({
+                url: '/comercial/save_seat_to_reassign/',
+                type: "POST",
+                data: _data,
+                cache: false,
+                processData: false,
+                contentType: false,
+                success: function (response, textStatus, xhr) {
+                    if (xhr.status === 200) {
+                        toastr.info(response['message'], '¡Bien hecho!');
+                        let _old_seats = response['old_seats'];
+                        let _new_seats = response['new_seats'];
+                        let _old_arr = JSON.parse(_old_seats);
+                        let _new_arr = JSON.parse(_new_seats);
+                        $('#render-form').html(response['form']);
+                        sendChanges('1', _old_arr);
+                        sendChanges('4', _new_arr);
+                    }
+                },
+                error: function (jqXhr, textStatus, xhr) {
+                    if (jqXhr.status === 500) {
+                        toastr.error(jqXhr.responseJSON.error, '¡Inconcebible!');
+                    }
+                }
+            });
+            $("#btn-reassign").removeAttr("disabled", "false");
+            $('#modal-reassign').modal('hide');
+
+        });
+
+
+</script>
+

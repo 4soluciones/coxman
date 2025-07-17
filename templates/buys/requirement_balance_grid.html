@@ -1,0 +1,24 @@
+<table class="table align-content-center table-bordered tbl-current-stock-requirement">
+    <thead class="">
+        <tr class="bg-primary text-white">
+            <td class="text-center ">N</td>
+            <td class="text-center">NUMERO FACTURA</td>
+            <td class="text-center">FECHA APROBACION</td>
+            <td class="text-center">CANTIDAD SOLICITADA</td>
+            <td class="text-center">CANTIDAD RETIRADA</td>
+            <td class="text-center">CANTIDAD RESTANTE</td>
+        </tr>
+    </thead>
+    <tbody>
+    {% for r in requirements %}
+        <tr class="table-primary">
+              <td class="text-center">{{ r.id }}</td>
+              <td class="text-center">{{ r.invoice }}</td>
+              <td class="text-center">{{ r.approval_date|date:'d-M-Y' }}</td>
+              <td class="quantity-request text-right">{{ r.requirements_buys.first.quantity|default:"0.00" }}</td>
+              <td class="quantity-sent text-right">{{ r.programminginvoice_set.first.calculate_total_quantity|default:"0.00" }}</td>
+              <td class="quantity-remaining text-right"></td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

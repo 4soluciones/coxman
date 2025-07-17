@@ -1,0 +1,143 @@
+{% extends 'home.html' %}
+
+{% block title %}
+    coronasoft.dev | Postergaciones
+{% endblock title %}
+
+{% block body %}
+    <div class="container-fluid my-3">
+
+        <div class="row montserrat">
+            <div class="col-sm-2">
+                <form id="search-form" method="POST">
+                    {% csrf_token %}
+
+                    <div class="card small">
+                        <div class="card-body">
+                            <h5 class="mb-3">Consulta de cancelaciones / postergaciones</h5>
+
+                            <div class="form-group">
+                                <label for="staticEmail">Fecha Inicial</label>
+
+                                <input type="date" class="form-control" id="id-start-date" name="start-date"
+                                       value="{{ formatdate }}">
+
+                            </div>
+
+                            <div class="form-group">
+                                <label for="staticEmail">Fecha final</label>
+
+                                <input type="date" class="form-control my-1 mr-sm-2" id="id-end-date" name="end-date"
+                                       value="{{ formatdate }}">
+
+                            </div>
+
+                            <hr class="mb-4">
+
+                            <button type="submit" class="btn btn-pink float-right my-1">
+                                <i class="fas fa-search-dollar" id="btn-search"></i> Buscar
+                            </button>
+
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="col-sm-10 pl-0">
+
+                <div class="card h-100">
+                    <div class="card-body table-responsive" id="postponement-grid-list"></div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade montserrat" id="modal-reschedule" tabindex="-1" aria-labelledby="rescheduleModal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="rescheduleModal">Reagendar</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body"></div>
+            </div>
+        </div>
+    </div>
+
+{% endblock body %}
+
+{% block extrajs %}
+    <script type="text/javascript">
+
+
+        function refreshTable() {
+            $('#postponement-data-grid').DataTable({
+                "order": [[1, "asc"]],
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
+                }
+            }).draw();
+        }
+
+
+        $('#search-form').submit(function (event) {
+            event.preventDefault();
+
+            let _data = new FormData($('#search-form').get(0));
+
+            $("#btn-search").attr("disabled", "true");
+            $('#postponement-grid-list').empty();
+            $.ajax({
+                url: '/comercial/get_postponements/',
+                type: "POST",
+                data: _data,
+                cache: false,
+                processData: false,
+                contentType: false,
+                success: function (response, textStatus, xhr) {
+                    if (xhr.status === 200) {
+                        $('#postponement-grid-list').html(response.grid);
+                        refreshTable();
+                        toastr.info(response['message'], '¡Bien hecho!');
+                    }
+                },
+                error: function (jqXhr, textStatus, xhr) {
+                    if (jqXhr.status === 500) {
+                        toastr.error(jqXhr.responseJSON.error, '¡Inconcebible!');
+                    }
+                }
+            });
+            $("#btn-search").removeAttr("disabled", "false");
+            $('#search-form').modal('hide');
+
+        });
+
+        $(document).on('click', 'a.reschedule-order', function () {
+
+            let _pk = $(this).attr('pk');
+
+            $.ajax({
+                url: '/comercial/get_reschedule_form/',
+                async: true,
+                dataType: 'json',
+                type: 'GET',
+                data: {'pk': _pk},
+                success: function (response, textStatus, xhr) {
+                    if (xhr.status === 200) {
+                        $('#modal-reschedule .modal-body').html(response['form']);
+                        $('#id-query-start-date').val($('#id-start-date').val());
+                        $('#id-query-end-date').val($('#id-end-date').val());
+
+                    }
+                }
+            });
+        });
+
+
+    </script>
+{% endblock extrajs %}

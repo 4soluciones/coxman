@@ -1,0 +1,17 @@
+<div class="form-group">
+    <label for="tc_license_plate">Nombres</label>
+    <input type="text" class="form-control" name="tc_license_plate" id="tc_license_plate">
+</div>
+
+<input type="hidden" id="tc_truck_id" name="tc_truck_id" value="0">
+
+<div class="form-group">
+    <label for="id_associate">Asociar conductor</label>
+    <select id="id_associate" name="associates[]" class="form-control" multiple="multiple">
+        <option value="0">SELECCIONAR</option>
+        {% for employee_obj in employee_set %}
+            <option value="{{ employee_obj.id }}">{{ employee_obj.full_name }}</option>
+        {% endfor %}
+    </select>
+
+</div>

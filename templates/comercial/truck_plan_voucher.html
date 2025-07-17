@@ -1,0 +1,44 @@
+
+<a class="btn btn-primary m-1" data-toggle="collapse" href="#multiCollapseExample1" role="button"
+   aria-expanded="true"
+   aria-controls="multiCollapseExample1"> Visualizar Boletos</a>
+
+
+
+
+
+<div class="table-responsive collapse show" id="multiCollapseExample1">
+    <table class="table table-sm montserrat small bg-light" id="vouchers">
+        {% for v in voucher_set %}
+            <tr style="background: #999999;color: #ffffff;">
+                <td colspan="3" class="text-center">{{ v.subsidiary.name }}</td>
+                <td colspan="5" class="text-center">{{ v.subsidiary.serial_two }}</td>
+            </tr>
+            <tr style="background: #0f75bc;color: #ffffff;">
+                <td class="text-center">Fecha</td>
+                <td class="text-center">Nº Comprobante</td>
+                <td class="text-center">Cliente</td>
+                <td class="text-center">Destino</td>
+                <td class="text-center">Precio</td>
+                <td class="text-center bg-success">Pagado</td>
+                <td class="text-center bg-warning">Vuelto</td>
+                <td class="text-center">Asiento</td>
+            </tr>
+            {% for r in v.vouchers %}
+
+                <tr style="background: #cccccc;color: #666666;">
+                    <td>{{ r.date|date:"d/m/Y" }}</td>
+                    <td>{{ r.voucher_serial }}-{{ r.voucher_number }}</td>
+                    <td>{{ r.passenger }}</td>
+                    <td>{{ r.destiny }}</td>
+                    <td>{{ r.price|safe }}</td>
+                    <td class="bg-success">{{ r.paid|safe }}</td>
+                    <td class="bg-warning {% if r.turned > 0 %}font-weight-bold{% endif %}">{{ r.turned|safe }}</td>
+                    <td class="text-center">{{ r.seat }}</td>
+                </tr>
+
+
+            {% endfor %}
+        {% endfor %}
+    </table>
+</div>

@@ -1,0 +1,145 @@
+<table class="table table-bordered table-sm table-striped table-info montserrat small">
+    <thead>
+    <tr class="text-dark text-center">
+        <th class="align-middle">
+            Serie
+        </th>
+        <th class="align-middle">
+            Nro.
+        </th>
+        <th class="align-middle">
+            #
+        </th>
+        <th class="align-middle">
+            Fecha
+        </th>
+        <th class="align-middle">
+            Cant.
+        </th>
+        <th class="align-middle">
+            Unidad
+        </th>
+        <th class="align-middle">
+            Peso
+        </th>
+        <th class="align-middle">
+            Importe
+        </th>
+        <th class="align-middle">
+            Comprobante
+        </th>
+        <th class="align-middle">
+            Destino
+        </th>
+
+        <th class="align-middle">
+            ID
+        </th>
+        {% if type == 'S' or type == 'C' %}
+            <th class="align-middle">
+                Serie-guía
+            </th>
+            <th class="align-middle">
+                Número-guía
+            </th>
+            <th class="align-middle">
+                Generar-guía
+            </th>
+        {% endif %}
+    </tr>
+    </thead>
+    <tbody id="order-programming-data">
+    {% for op in programming_orders_set %}
+        {% for d in op.order.orderdetail_set.all %}
+            {% if forloop.first %}
+                <tr pk="{{ op.order.id }}">
+                    <td class="align-middle  text-center font-weight-bold"
+                        rowspan="{{ op.order.orderdetail_set.count }}">{{ op.order.serial }}</td>
+                    <td class="align-middle  text-center font-weight-bold"
+                        rowspan="{{ op.order.orderdetail_set.count }}">{{ op.order.correlative_sale }}</td>
+
+                    <td class="align-middle text-center  font-weight-bold"
+                        rowspan="{{ op.order.orderdetail_set.count }}">
+                        {% if op.guide_code %}
+                            <input class="order-programming" type="checkbox" id="demo" name="demo"
+                                   value="{{ op.order.id }}" disabled style="background: #b4dae0">
+                        {% else %}
+                            <input class="order-programming" type="checkbox" id="demo" name="demo"
+                                   value="{{ op.order.id }}">
+                        {% endif %}
+                    </td>
+                    <td class="align-middle  text-center font-weight-bold"
+                        rowspan="{{ op.order.orderdetail_set.count }}">{{ op.order.traslate_date|date:"d-m-y" }}</td>
+                    <td class="align-middle  text-center font-weight-bold">{{ d.quantity|floatformat:0 }}</td>
+                    <td class="align-middle  font-weight-bold text-center">{{ d.unit.description }}</td>
+                    <td class="align-middle  text-center font-weight-bold">{{ d.weight|floatformat:0 }} Kg</td>
+                    <td class="align-middle  text-right font-weight-bold">
+                        S/. {{ d.amount }}</td>
+                    <td class="align-middle  text-center font-weight-bold"
+                        rowspan="{{ op.order.orderdetail_set.count }}">{{ op.order.orderbill.get_type_display|upper|default:"GUIA DE ENCOMIENDA" }}</td>
+                    <td class="align-middle  text-center font-weight-bold"
+                        rowspan="{{ op.order.orderdetail_set.count }}">{{ op.order.orderroute_set.last.subsidiary }}</td>
+
+
+                    <td class="align-middle text-center font-weight-bold"
+                        rowspan="{{ op.order.orderdetail_set.count }}">{{ op.order.id }}</td>
+                    {% if type == 'S' or type == 'C' %}
+
+                        <td class="align-middle  font-weight-bold"
+                            rowspan="{{ op.order.orderdetail_set.count }}" style="width: 6%">
+                            {% if op.guide_code %}
+                                <input class="order-programming border-light" type="text"
+                                       value="{{ op.guide_serial }}" style="width: 100%; background: #b4dae0" readonly>
+                            {% else %}
+                                <input class="order-programming id_serie_guide" type="text"
+                                       value="" style="width: 100%">
+                            {% endif %}
+                        </td>
+                        <td class="align-middle  font-weight-bold"
+                            rowspan="{{ op.order.orderdetail_set.count }}" style="width: 4%">
+                            {% if op.guide_code %}
+                                <input class="order-programming border-light" type="text"
+                                       value="{{ op.guide_code }}" style="width: 100%; background: #b4dae0" readonly>
+                            {% else %}
+                                <input class="order-programming id_nro_guide" type="text"
+                                       value="" style="width: 100%">
+                            {% endif %}
+                        </td>
+                        <td class="align-middle  font-weight-bold text-center"
+                            rowspan="{{ op.order.orderdetail_set.count }}" style="width: 5%">
+                            <button type="button" class="btn btn-blue mr-1 btn-generate-guide">
+                                <i class="fas fa-print"></i>
+                            </button>
+                        </td>
+
+                    {% endif %}
+                </tr>
+            {% else %}
+                <tr>
+                    <td class="align-middle  text-center font-weight-bold">{{ d.quantity|floatformat:0 }}</td>
+                    <td class="align-middle  text-center font-weight-bold">{{ d.unit.description }}</td>
+                    <td class="align-middle  text-center font-weight-bold">{{ d.weight|floatformat:0 }} Kg</td>
+                    <td class="align-middle  text-right font-weight-bold">
+                        S/. {{ d.amount }}</td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+
+    {% endfor %}
+    </tbody>
+</table>
+
+
+<script type="text/javascript">
+
+    $('.btn-selectall-programmings').click(function () {
+        $('input[type="checkbox"][class="order-programming"]').prop("checked", true);
+    });
+    /*$(document).on('click', '.btn-undoselect', function () {
+        $('input[type="checkbox"][class="order-programming"]').attr("checked", false);
+    });*/
+
+
+</script>
+
+

@@ -1,0 +1,528 @@
+{% extends 'home.html' %}
+
+{% block title %}
+    coronasoft.dev | Lista de Guías
+{% endblock title %}
+
+{% block body %}
+
+    <div class="container-fluid">
+
+        <div class="card montserrat" style="background: #E3F2FD;">
+            <div class="card-body pb-0 ">
+                <form id="search-form" method="POST">
+                    {% csrf_token %}
+                    <div class="form-group row">
+
+                        <label for="id_date_initial" class="col-sm-1 col-form-label">Fecha inicial</label>
+
+                        <div class="col-sm-3">
+                            <input type="date"
+                                   class="form-control"
+                                   name="start-date"
+                                   id="id_date_initial"
+                                   value="{{ date_now }}" required>
+
+                        </div>
+                        <label for="id_date_final" class="col-sm-1 col-form-label">Fecha final</label>
+                        <div class="col-sm-3">
+                            <input type="date"
+                                   class="form-control"
+                                   name="end-date"
+                                   id="id_date_final"
+                                   value="{{ date_now }}" required>
+                        </div>
+                        <div class="col-sm-2">
+                            <button type="submit" id="id_btn_show" class="btn btn-outline-primary">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card montserrat small">
+            <div class="card-body pb-0 pt-1">
+                {#                <div class="dropdown" id='data-grid-programming'>#}
+                {#                    <button class="btn btn-outline-primary text-black-50 btn-block dropdown-toggle"#}
+                {#                            id="programmingLabel"#}
+                {#                            programming="0"#}
+                {#                            type="button" data-toggle="dropdown" aria-haspopup="true"#}
+                {#                            aria-expanded="false">#}
+                {#                        Seleccione una programación#}
+                {#                    </button>#}
+                <div class="form-group row">
+                    <label for="document_type_sender" class="col-sm-1 col-form-label">Programación:</label>
+                    <div class="col-sm-9">
+                        <select id="id_search_programming" name="search_programming"
+                                class="form-control form-control-sm">
+                            <option selected value="0">Seleccione Programación..</option>
+                            {% for p in programming_set %}
+                                <option value="{{ p.id }}">{{ p.truck.license_plate }} | {{ p.get_pilot.full_name }}
+                                    | {{ p.truck.owner.name }} | {{ p.path.get_last_point.short_name }}
+                                    | {{ p.get_status_display|upper }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="table-responsive dropdown-menu m-0 p-0" aria-labelledby="programmingLabel"
+                     style="width: 100%;">
+
+                    <table class="table table-hover table-bordered table-sm small m-0">
+                        <thead>
+                        <tr class="table-primary">
+                            <th class="align-middle text-center" style="width: 10%;">TRACTO</th>
+                            <th class="align-middle text-center" style="width: 30%;">PILOTO</th>
+                            <th class="align-middle text-center" style="width: 30%;">RUTA</th>
+                            <th class="align-middle text-center" style="width: 10%;">FECHA DE SALIDA
+                            <th class="align-middle text-center" style="width: 10%;">TIPO
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody class="table-light">
+                        {% for programming in programmings %}
+                            <tr style="cursor: pointer;" pk="{{ programming.id }}">
+                                <td>{{ programming.truck.license_plate }}</td>
+                                <td>{{ programming.setemployee_set.first.employee.full_name }}
+                                    {{ programming.setemployee_set.first.employee.paternal_last_name }}
+                                </td>
+                                <td>{{ programming.path.get_first_point.short_name }} -
+                                    {{ programming.path.get_last_point.short_name }}
+                                </td>
+                                <td class="text-center">{{ programming.departure_date|date:'Y-m-d' }}</td>
+                                <td class="text-center type"
+                                    type="{{ programming.truck.drive_type }}">{{ programming.truck.get_drive_type_display }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {#                </div>#}
+
+                <hr class="mb-1">
+
+                <div class="form-group row">
+                    <label for="id_serie_manifest" class="col-sm-1 col-form-label">Serie:</label>
+                    <div class="col-sm-1">
+                        <input type="text" class="form-control" name="serie-manifest" id="id_serial_manifest"
+                               value="" readonly>
+                    </div>
+
+                    <label for="id_plate" class="col-sm-1 col-form-label">Placa:</label>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control" name="plate" id="id_plate" readonly>
+                    </div>
+{#                    <label for="id_turn" class="col-sm-1 col-form-label">Turno:</label>#}
+{#                    <div class="col-sm-offset-2 col-sm-2">#}
+{#                        <input type="text" class="form-control" name="turn" id="id_turn" readonly>#}
+{#                    </div>#}
+                    <label for="id_license" class="col-sm-1 col-form-label">Nro. Licencia:</label>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control" name="license" id="id_license" readonly>
+                    </div>
+
+{#                    <label for="id_plate" class="col-sm-1 col-form-label">Placa:</label>#}
+{#                    <div class="col-sm-2">#}
+{#                        <input type="text" class="form-control" name="plate" id="id_plate" readonly>#}
+{#                    </div>#}
+
+                    <label for="id_drive_type" class="col-sm-1 col-form-label">Tipo:</label>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control" name="drive_type" id="id_drive_type" readonly>
+                    </div>
+
+                </div>
+
+                <div class="form-group row">
+                    <label for="id_driver" class="col-sm-1 col-form-label">Conductor:</label>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control" name="driver" id="id_driver" readonly>
+                    </div>
+{#                    <label for="id_license" class="col-sm-1 col-form-label">Nro. Lic.:</label>#}
+{#                    <div class="col-sm-2">#}
+{#                        <input type="text" class="form-control" name="license" id="id_license" readonly>#}
+{#                    </div>#}
+
+                    <label for="id_origin" class="col-sm-1 col-form-label">Origen:</label>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control" name="origin" id="id_origin" readonly>
+                    </div>
+                    <label for="id_destiny" class="col-sm-1 col-form-label">Destino:</label>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control" name="destiny" id="id_destiny" readonly>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="card-group mt-3">
+            <div class="card" style="flex-grow: 1">
+                <div class="card-body mt-1">
+
+
+                    <h4 class="mb-3 text-uppercase">Encomiendas pendientes</h4>
+
+                    <button type="button" class="btn btn-green mr-1 btn-selectall">
+                        <i class="fas fa-check-circle" id="btn-selectall"></i> Seleccionar todo
+                    </button>
+                    <button type="button" class="btn btn-primary mr-1 btn-undoselect">
+                        <i class="fas fa-undo-alt" id="btn-undoselect"></i> Deseleccionar todo
+                    </button>
+                    <button type="button" class="btn btn-danger mr-1 btn-asign"
+                            onclick="buttonPushed()">
+                        <i class="fas fa-check-double" id="btn-asign"></i> Asignar Encomiendas
+                        Seleccionadas
+                    </button>
+
+                    <div class="table-responsive pt-1" id="manifest-grid-list"></div>
+
+                </div>
+            </div>
+            <div class="card" style="flex-grow: 1">
+                <div class="card-body mt-1">
+
+
+                    <h4 class="mb-3 text-uppercase">Encomiendas asignadas a un manifiesto</h4>
+
+                    <button type="button"
+                            class="btn btn-outline-danger mr-1 btn-selectall-programmings">
+                        <i class="fas fa-check-circle"></i> Seleccionar
+                        todo
+                    </button>
+                    <button type="button" class="btn btn-outline-danger mr-1" onclick="buttonUndoPushed()">
+                        <i class="fas fa-backspace"></i> Deshacer encomiendas
+                    </button>
+                    <button type="button" class="btn btn-outline-success mr-1" onclick="printbutton()"
+                            id="btn-asign-manifest">
+                        <i class="fas fa-file-alt"></i> Generar Manifiesto
+                    </button>
+
+                    <div class="table-responsive pt-1" id="manifest-programming-grid"></div>
+
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+
+
+{% endblock body %}
+
+
+{% block extrajs %}
+
+    <script type="text/javascript">
+
+        $('#id_search_programming').select2({
+            theme: 'bootstrap4',
+        });
+
+        function hasRowDetails() {
+            let _response = false;
+            if ($("#order-programming-data tr").length > 0) {
+                _response = true;
+            }
+            return _response;
+        }
+
+
+        function printbutton(programming_id) {
+
+            if (($('#id_plate').val() === '')) {
+                toastr.warning('¡Favor de seleccionar una Programacion primero!');
+                return false;
+            }
+            if ($('#id_drive_type').val() === 'FURGON') {
+                if (guideInput() == false) {
+                    toastr.warning('¡Favor de llenar todas las series y números de Guías de remisión!', 'Error de LLenado!');
+                    return false;
+                }
+            }
+
+            if (hasRowDetails() == false) {
+                toastr.warning('¡Favor de asignar encomiendas al Manifiesto!', 'Error de LLenado!');
+                return false;
+            }
+
+
+            let orders = $("#order-programming-data tr").map(function () {
+                return $(this).attr("pk");
+            }).get(); // you have use get() here
+            {#console.log(orders_programming)#}
+            $.ajax({
+                url: '/comercial/generate_manifest/',
+                async: true,
+                dataType: 'json',
+                type: 'GET',
+                data: {'programming': programming_id, 'orders': orders.toString()},
+                success: function (response) {
+                    {#console.log(response);#}
+                    $('#manifest-programming-grid').html(response.grid);
+                    window.location.href = "/comercial/print_manifest_comidity/" + response.manifest + "/";
+                    {#let url = '/comercial/print_manifest_comidity/' + response.manifest;#}
+                    {#let w = window.open(url)#}
+                },
+                fail: function (response) {
+                    console.log("error");
+                }
+            });
+            {#let programming_id = $('#data-grid-programming tbody tr').attr("pk");#}
+            {#w.window.#}
+        }
+
+
+        $('#search-form').submit(function (event) {
+            event.preventDefault();
+
+            let _data = new FormData($('#search-form').get(0));
+            {#$("#id_btn_show").attr("disabled", "true");#}
+            $.ajax({
+                url: '/comercial/manifest_comodity_list/',
+                type: "POST",
+                data: _data,
+                cache: false,
+                processData: false,
+                contentType: false,
+                success: function (response, textStatus, xhr) {
+                    if (xhr.status === 200) {
+                        $('#manifest-grid-list').html(response.grid);
+                        toastr.info(response['message'], '¡Bien hecho!');
+                    }
+                },
+                error: function (jqXhr, textStatus, xhr) {
+                    if (jqXhr.status === 500) {
+                        toastr.error(jqXhr.responseJSON.error, '¡Inconcebible!');
+                        {#$('#account-grid-list').html('<div class="alert alert-info alert-dismissible fade show mt-3" role="alert">\n' +#}
+                        {#    '        <strong>Atencion!</strong> Tu debes ingresar una fecha primero.\n' +#}
+                        {#    '        <button type="button" class="close" data-dismiss="alert" aria-label="Close">\n' +#}
+                        {#    '            <span aria-hidden="true">×</span>\n' +#}
+                        {#    '        </button>\n' +#}
+                        {#    '    </div>');#}
+                    }
+                }
+            });
+        });
+
+        $(document).on('change', '#id_search_programming', function () {
+            let _programming_id = $(this).val();
+            {#console.log(_programming_id);#}
+            let _type_programming = $(this).find('td.type').attr("type");
+            {#console.log('tipo',_type_programming);#}
+            $('#btn-asign-manifest').attr('onclick', 'printbutton(' + _programming_id + ')');
+
+            $('#programmingLabel').attr('programming', _programming_id).addClass('btn-primary').removeClass('btn-secondary');
+            $.ajax({
+                url: '/comercial/get_programming_manifest/',
+                async: true,
+                dataType: 'json',
+                type: 'GET',
+                data: {'programming': _programming_id, 'type_programming': _type_programming},
+                success: function (response) {
+                    {#console.log(response);#}
+                    $('#id_plate').addClass('text-dark text-center font-weight-bold').val(response.license_plate);
+                    {#$('#id_turn').addClass('text-dark text-center font-weight-bold').val(response.turn);#}
+                    $('#id_driver').addClass('text-dark text-center font-weight-bold').val(response.pilot);
+                    $('#id_origin').addClass('text-dark text-center font-weight-bold').val(response.origin);
+                    $('#id_destiny').addClass('text-dark text-center font-weight-bold').val(response.destiny);
+                    $('#id_license').addClass('text-dark text-center font-weight-bold').val(response.license);
+                    $('#id_drive_type').addClass('text-dark text-center font-weight-bold').val(response.driver_type);
+                    $('#id_serial_manifest').addClass('text-dark text-center font-weight-bold').val(response.serial_manifest);
+                    $('#manifest-programming-grid').html(response.grid);
+                },
+                fail: function (response) {
+                    console.log("error");
+                }
+            });
+        });
+
+        Array.prototype.remove = function () {
+            let what, a = arguments, L = a.length, ax;
+            while (L && this.length) {
+                what = a[--L];
+                while ((ax = this.indexOf(what)) !== -1) {
+                    this.splice(ax, 1);
+                }
+            }
+            return this;
+        };
+
+
+        function checkGrid() {
+            let fchek = false;
+            $('#manifest-grid-list-body tr td input[type="checkbox"]').each(function () {
+                if ($(this).prop('checked')) {
+                    fchek = true;
+                }
+            });
+            return fchek;
+        }
+
+        function checkGridmanifest() {
+            let fchek = false;
+            $('#order-programming-data tr td input[type="checkbox"]').each(function () {
+                if ($(this).prop('checked')) {
+                    fchek = true;
+                }
+            });
+            return fchek;
+        }
+
+        function guideInput() {
+
+            let _response = true;
+            $('#order-programming-data tr td input[type="text"]').each(function () {
+                if ($(this).val() === '') {
+                    _response = false;
+                }
+            });
+            return _response;
+        }
+
+        function buttonPushed() {
+
+            let star_date = $('#id_date_initial').val();
+            let end_date = $('#id_date_final').val();
+            let programming_id = $('#id_search_programming').val();
+            let _type_programming = $('#data-grid-programming tbody tr[pk="' + programming_id + '"]').find('td.type').attr("type");
+            console.log('tipo', _type_programming);
+            let orders = $("input.order:checked").map(function () {
+                return $(this).val();
+            }).get(); // you have use get() here
+
+            if (checkGrid() === false) {
+                toastr.warning('¡Favor de seleccionar al menos una encomienda antes de asignar!', 'Error de LLenado!');
+                return false;
+            }
+
+            if (($('#id_plate').val() === '')) {
+                toastr.warning('¡Favor de seleccionar una Programacion primero!');
+                return false;
+            }
+
+            let array = orders.toString().split(",");
+            if (array.length === 0) {
+                toastr.warning('¡Favor de seleccionar una Encomienda al menos!');
+                return false;
+            }
+
+            $.ajax({
+                url: '/comercial/add_order_to_order_programming/',
+                async: true,
+                dataType: 'json',
+                type: 'GET',
+                data: {
+                    'orders': orders.toString(),
+                    'programming_id': programming_id,
+                    'start-date': star_date,
+                    'end-date': end_date,
+                    '_type_programming': _type_programming
+                },
+                success: function (response, textStatus, xhr) {
+                    if (xhr.status === 200) {
+                        $('#manifest-programming-grid').html(response.grid);
+                        $('#manifest-grid-list').html(response.grid2);
+                        {#$('#id_drive_type').val(response.programming_id);#}
+                        toastr.info(response['message'], '¡Bien hecho!');
+                    }
+                },
+                error: function (jqXhr, textStatus, xhr) {
+                    if (jqXhr.status === 500) {
+                        toastr.error(jqXhr.responseJSON.error, '¡Inconcebible!');
+                    }
+                }
+            });
+        }
+
+        function buttonUndoPushed() {
+            let star_date = $('#id_date_initial').val();
+            let end_date = $('#id_date_final').val();
+            let programming_id = $('#id_search_programming').val();
+            {#let programming_id = $('#programmingLabel').attr('programming');#}
+            let order_programmings = $("input.order-programming:checked").map(function () {
+                return $(this).val();
+            }).get(); // you have use get() here
+            {#console.log(order_programmings)#}
+
+            if (checkGridmanifest() === false) {
+                toastr.warning('¡Favor de seleccionar al menos una encomienda antes de asignar!', 'Error de LLenado!');
+                return false;
+            }
+
+            $.ajax({
+                url: '/comercial/remove_order_to_order_programming/',
+                async: true,
+                dataType: 'json',
+                type: 'GET',
+                data: {
+                    'orders': order_programmings.toString(),
+                    'programming_id': programming_id,
+                    'start-date': star_date,
+                    'end-date': end_date
+                },
+                success: function (response, textStatus, xhr) {
+                    if (xhr.status === 200) {
+                        $('#manifest-programming-grid').html(response.grid);
+                        $('#manifest-grid-list').html(response.grid2);
+                        toastr.info(response['message'], '¡Bien hecho!');
+                    }
+                },
+                error: function (jqXhr, textStatus, xhr) {
+                    if (jqXhr.status === 500) {
+                        toastr.error(jqXhr.responseJSON.error, '¡Inconcebible!');
+                    }
+                }
+            });
+        }
+
+        $(document).on('click', '.btn-generate-guide', function () {
+
+            let tr = $(this).parent("td").parent("tr");
+            let order_id = tr.attr("pk");
+            let serie_guide = tr.find('td input.id_serie_guide').val();
+            let nro_guide = tr.find('td input.id_nro_guide').val();
+
+            if (serie_guide === '') {
+                toastr.warning('¡Favor de ingresar una serie a la Guía!');
+                return false;
+            }
+            if (nro_guide === '') {
+                toastr.warning('¡Favor de ingresar un número a la Guía!');
+                return false;
+            }
+
+            $.ajax({
+                url: '/comercial/generate_guide/',
+                async: true,
+                dataType: 'json',
+                type: 'GET',
+                data: {
+                    'serie_guide': serie_guide,
+                    'nro_guide': nro_guide,
+                    'order_id': order_id,
+                },
+                success: function (response, textStatus, xhr) {
+                    if (xhr.status === 200) {
+                        {#connsole.log('generado')#}
+                        toastr.info(response['message'], '¡Bien hecho!');
+                        $('#manifest-programming-grid').html(response.grid);
+                        window.location.href = "/comercial/print_guide_comidity/" + response.order_programming_id + "/";
+                    }
+                },
+                error: function (jqXhr, textStatus, xhr) {
+                    if (jqXhr.status === 500) {
+                        toastr.error(jqXhr.responseJSON.error, '¡Inconcebible!');
+                    }
+                }
+            });
+        });
+
+
+    </script>
+
+
+{% endblock extrajs %}

@@ -1,0 +1,48 @@
+{% extends 'home.html' %}
+
+{% block title %}
+    coronasoft.dev | Lista de requerimientos
+{% endblock title %}
+
+{% block body %}
+
+    <!-- Content -->
+    <div class="container-fluid">
+        <div class="card-header text-left mt-2 mb-1 p-1">
+            <div class="form-inline mt-0 mb-0 p-0 pt-1  text-center">
+                <h5>SALDOS DE REQUERIMIENTOS GLP - PLUSPETROL</h5>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="card col-sm-12">
+            <div class="card-body" id="render-form">
+                {% include "buys/requirement_balance_grid.html" %}
+            </div>
+        </div>
+    </div>
+{% endblock body %}
+
+{% block extrajs %}
+    <script type="text/javascript">
+        function Difference(Valor1, Valor2) {
+            let S = parseFloat(Valor1 - Valor2);
+            return S;
+        };
+
+        $('.tbl-current-stock-requirement tbody tr').each(function () {
+            let _request = parseFloat($(this).find('td.quantity-request').text());
+            console.log(_request.toString());
+            let _sent = parseFloat($(this).find('td.quantity-sent').text());
+            console.log(_request.toString());
+            let _remaining = Difference(_request, _sent).toFixed(2);
+            console.log(_request.toString());
+            $(this).find('td.quantity-remaining').text(_remaining.toString());
+        });
+        $('.tbl-current-stock-requirement tbody tr td').each(function () {
+            let _str = $(this).text();
+            _str = _str.replace(',', '.');
+            $(this).text(_str);
+        });
+    </script>
+{% endblock extrajs %}

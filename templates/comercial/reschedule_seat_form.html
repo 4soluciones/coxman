@@ -1,0 +1,161 @@
+<form id="reschedule-seat-form" method="post">
+{% csrf_token %}
+<input type="hidden" id="id-postponement" name="postponement" value="{{ postponement_obj.id }}">
+<input type="hidden" id="id-query-start-date" name="query-start-date">
+<input type="hidden" id="id-query-end-date" name="query-end-date">
+
+    <div class="form-group">
+        <label for="id-new-programming">Nueva programacion</label>
+        <select class="form-control" id="id-new-programming" name="new-programming" required>
+            <option disabled selected value="">Seleccione...</option>
+            {% for other in other_programming_set %}
+                <option value="{{ other.id }}">{{ other.truck.license_plate }} | {{ other.departure_date }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="id-new-programming-seat">Asiento nuevo</label>
+        <select class="form-control text-success font-weight-bold" id="id-new-programming-seat" name="new-programming-seat" required>
+            <option disabled selected value="">Seleccione...</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="id_destiny">Destino</label>
+        <select id="id_destiny" name="destiny" class="form-control" required>
+            <option disabled selected value="">Seleccione...</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="id_cost">Costo</label>
+        <input type="text"
+               class="form-control"
+               id="id_cost"
+               name="cost"
+               value="{{ order_obj.total|floatformat:2 }}"
+               required="">
+    </div>
+
+    <input type="checkbox" id="demo" name="demo" value="1">
+
+    <hr class="mb-4">
+
+    <button type="submit" class="btn btn-pink float-right ml-1">Guardar cambios</button>
+    <button type="button" id="btn-reassign" class="btn btn-secondary float-right" data-dismiss="modal">Cerrar</button>
+</form>
+<div class="card">
+<div class="card-body" style="
+        display: none;
+        position: absolute;
+        top: -26em;
+        left: 0px;
+        background: rgb(233, 236, 239);
+        opacity: 0.8;
+        width: 212%;
+        height: 23em;
+        padding-top: 7em;
+        right: 0px;" id="loading-666">
+    </div>
+</div>
+<script type="text/javascript">
+    loader = '<div class="container">' +
+            '<div class="row">' +
+            '<div class="col-md-12">' +
+            '<div class="loader">' +
+            '<p class="text-dark">Cargando...</p>' +
+            '<div class="loader-inner"></div>' +
+            '<div class="loader-inner"></div>' +
+            '<div class="loader-inner"></div>' +
+            '</div>' +
+            '</div>' +
+            '</div>' +
+            '</div>';
+
+    $(document).on('change', '#id-new-programming', function () {
+        let _search = $(this).val();
+        let _status = '1'; /** free status **/
+        $.ajax({
+            url: '/comercial/get_programming_seat_of_programming/',
+            dataType: 'json',
+            type: 'GET',
+            data: {'pk': _search, 'recover_with_status': _status},
+            success: function (response) {
+                if (response.success) {
+
+                    let _programming_seat_set = response['programming_seat_serialized'];
+                    let _destiny_set = JSON.parse(response['destinies_serialized']);
+                    $('#id-new-programming-seat').empty();
+                    $('#id_destiny').empty();
+                    _programming_seat_set.forEach(
+                        element =>
+                            $('#id-new-programming-seat').append(
+                                '<option ' +
+                                'value="' + element[0] + '" ' +
+                                'status="' + element[2] + '">' + element[1] +
+                                '</option>'
+                            )
+                    );
+
+                    let index = 0;
+                    while (index < _destiny_set.length) {
+                        $('#id_destiny').append(
+                            '<option ' +
+                            'value="' + _destiny_set[index]['pk'] + '">' + _destiny_set[index]['fields']['name'] +
+                            '</option>'
+                        );
+                        index += 1;
+                    }
+                }
+            },
+            fail: function (response) {
+                console.log(response);
+            }
+        });
+    });
+
+    $('#reschedule-seat-form').submit(function (event) {
+            event.preventDefault();
+            let _data = new FormData($('#reschedule-seat-form').get(0));
+            $("#btn-reassign").attr("disabled", "true");
+            $('#loading-666').html(loader).show();
+            $.ajax({
+                url: '/comercial/save_seat_rescheduled/',
+                type: "POST",
+                data: _data,
+                cache: false,
+                processData: false,
+                contentType: false,
+                success: function (response, textStatus, xhr) {
+                    if (xhr.status === 200) {
+                        toastr.success(response.message + response.msg_sunat, '¡Bien hecho!');
+                        if (response.sunat_pdf) {
+                            window.location.href = "/comercial/print_ticket_order_passenger/" + response.order_id + "/";
+                        }
+                        $('#postponement-grid-list').html(response.grid);
+                        refreshTable();
+                        $('#loading-666').hide();
+                        $('#modal-reschedule').modal('hide');
+                    }
+                },
+                error: function (jqXhr, textStatus, xhr) {
+                    if (jqXhr.status === 500) {
+                        toastr.error(jqXhr.responseJSON.error, '¡Error de Consulta!');
+                    } else {
+                        if (textStatus === 'timeout') {
+                            toastr.error('Failed from timeout', '¡Error de Consulta!');
+                        } else {
+                            console.log(" STATUS: " + xhr + " " + textStatus);
+                        }
+                    }
+                    $('#loading-666').hide();
+                }
+            });
+            $("#btn-reassign").removeAttr("disabled", "false");
+
+        });
+
+
+</script>
+
