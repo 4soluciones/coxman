@@ -7,7 +7,7 @@ from ..hrm.views import get_subsidiary_by_user
 GRAPHQL_URL = "https://ng.tuf4ctur4.net.pe/graphql"
 
 tokens = {
-    "20612403083": "gAAAAABnz4qQqO6tFEdApoRBVvPf92SHklsJ3n3Xw7R4GAYE8xD_3hN2YO5qVL6ldY6JaGhHGGktWznPc5zfZRdauZJQqy_hwA==",
+    "20612403083": "gAAAAABoeUnbvlFDG3JPddIKSh_QW3ucWdV_nOAoiWUy2mLen3DBxQNxZwnC-iIfZVA1pucRVViggSLTHL3Hzj0iYcLoCu4Tcw==",
 
 }
 
