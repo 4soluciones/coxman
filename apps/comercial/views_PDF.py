@@ -126,11 +126,11 @@ def print_ticket_order_commodity(request, pk=None):  # Ticket/Guia de encomienda
     phone_camana = subsidiary_camana.phone
 
     if order_obj.company.id == 1:
-        tbh_business_name_address = 'TRANSPORTES DALIT S.R.L.\n RUC: 20608606930 '
+        tbh_business_name_address = 'TRANSPORTES COXMAN S.A.C.\n RUC: 20608606930 '
     elif order_obj.company.id == 2:
-        tbh_business_name_address = 'TRANSPORTES DALIT S.R.L.\n RUC: 20608606930 '
+        tbh_business_name_address = 'TRANSPORTES COXMAN S.A.C.\n RUC: 20608606930 '
     elif order_obj.company.id == 3:
-        tbh_business_name_address = 'TRANSPORTES DALIT S.R.L.\n RUC: 20608606930 '
+        tbh_business_name_address = 'TRANSPORTES COXMAN S.A.C.\n RUC: 20608606930 '
 
     line = '-----------------------------------------------------'
     name_document = 'GUÍA DE ENCOMIENDA'
@@ -475,11 +475,11 @@ def print_ticket_order_passenger(request, pk=None):  # Boleto de viaje boleta / 
     client_address = ""
 
     if order_obj.company.id == 1:
-        tbh_business_name_address = 'TRANSPORTES DALIT S.R.L.\n RUC: 20608606930 '
+        tbh_business_name_address = 'TRANSPORTES COXMAN S.A.C.\n RUC: 20608606930 '
     elif order_obj.company.id == 2:
-        tbh_business_name_address = 'TRANSPORTES DALIT S.R.L.\n RUC: 20608606930 '
+        tbh_business_name_address = 'TRANSPORTES COXMAN S.A.C.\n RUC: 20608606930 '
     elif order_obj.company.id == 3:
-        tbh_business_name_address = 'TRANSPORTES DALIT S.R.L.\n RUC: 20608606930 '
+        tbh_business_name_address = 'TRANSPORTES COXMAN S.A.C.\n RUC: 20608606930 '
 
     # tbh_business_name_address = 'TURISMO MENDIVIL S.R.L\n CALLE JAVIER P. DE CUELLAR B-3 INT 105\n TERM. TERRESTRE S/N INT. E1-E / \nURB. ARTURO IBAÑEZ HUNTER AREQUIPA\n RUC: 20442736759'
 
@@ -813,7 +813,7 @@ def print_bill_order_commodity(request, pk=None):  # Boleta / Factura Encomienda
     # order_action_addressee_obj = OrderAction.objects.get(order=order_obj, type='D')
     recipients = OrderAction.objects.filter(order=order_obj, type='D')
 
-    tbh_business_name_address = 'TRANSPORTES DALIT S.R.L.\n RUC: 20608606930'
+    tbh_business_name_address = 'TRANSPORTES COXMAN S.A.C.\n RUC: 20608606930'
 
     subsidiary_aqp = Subsidiary.objects.filter(name='SEDE AREQUIPA').first()
     phone_aqp = subsidiary_aqp.phone
@@ -1587,11 +1587,11 @@ def print_manifest_comidity(request, pk=None):  # Manifiesto de Encomiendas
     tbh_business_name_address = ''
 
     if manifest_obj.company.id == 1:
-        tbh_business_name_address = 'TRANSPORTES DALIT S.R.L.\n RUC: 20608606930'
+        tbh_business_name_address = 'TRANSPORTES COXMAN S.A.C.\n RUC: 20608606930'
     elif manifest_obj.company.id == 2:
-        tbh_business_name_address = 'TRANSPORTES DALIT S.R.L.\n RUC: 20608606930'
+        tbh_business_name_address = 'TRANSPORTES COXMAN S.A.C.\n RUC: 20608606930'
     elif manifest_obj.company.id == 3:
-        tbh_business_name_address = 'TRANSPORTES DALIT S.R.L.\n RUC: 20608606930'
+        tbh_business_name_address = 'TRANSPORTES COXMAN S.A.C.\n RUC: 20608606930'
 
     # tbh_business_name_address = 'TURISMO MENDIVIL S.R.L <br/> CALLE JAVIER P. DE CUELLAR B-3 INT 105 TERM. TERRESTRE S/N INT. E1-E / URB. ARTURO IBAÑEZ HUNTER AREQUIPA <br/> RUC: 20442736759'
     ph = Paragraph(tbh_business_name_address.replace("\n", "<br />"), styles["Justify-Dotcirful-table"])
@@ -2024,11 +2024,11 @@ def print_ticket_old(request, pk=None):  # TICKET PASSENGER OLD
         client_address = entity_set.first().client.clientaddress_set.first().address
 
     if order_obj.company.id == 1:
-        tbh_business_name_address = 'TRANSPORTES DALIT S.R.L. \n RUC: 20608606930'
+        tbh_business_name_address = 'TRANSPORTES COXMAN S.A.C. \n RUC: 20608606930'
     elif order_obj.company.id == 2:
-        tbh_business_name_address = 'TRANSPORTES DALIT S.R.L. \n RUC: 20608606930'
+        tbh_business_name_address = 'TRANSPORTES COXMAN S.A.C. \n RUC: 20608606930'
     elif order_obj.company.id == 3:
-        tbh_business_name_address = 'TRANSPORTES DALIT S.R.L. \n RUC: 20608606930'
+        tbh_business_name_address = 'TRANSPORTES COXMAN S.A.C. \n RUC: 20608606930'
 
     date = order_obj.programming_seat.programming.departure_date
     _format_time = utc_to_local(order_obj.create_at).strftime("%H:%M %p")
