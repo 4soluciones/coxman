@@ -235,17 +235,42 @@
         const programmingID = {{ programming_obj.id }};
         const subsidiaryID = {{ subsidiary_current.id }};
 
-        const productRef = firebase.database().ref('products');
-        const printerRef = firebase.database().ref('printers');
-        const ticketRef = firebase.database().ref(`tickets/Dalit/${subsidiaryID}/${programmingID}`);
+        //const productRef = firebase.database().ref('products');
+        //const printerRef = firebase.database().ref('printers');
+        //const ticketRef = firebase.database().ref(`tickets/Dalit/${subsidiaryID}/${programmingID}`);
+        const programmingRef = firebase.database().ref(`coxman/${subsidiaryID}/programmings/${programmingID}`);
 
-        productRef.on("value", function (snapshot) {
+        /*productRef.on("value", function (snapshot) {
 
             snapshot.forEach(function (childSnapshot) {
                 var data = childSnapshot.val();
                 console.log(data.Uid)
 
             });
+        });*/
+        programmingRef.child('seats').on('child_added', (snapshot) => {
+
+            if (snapshot.val().status === '2') {
+                //console.log('user was added !!', snapshot.val());
+                getRenderedSeat(snapshot.val().pk, snapshot.val().status)
+            }
+
+        });
+
+        programmingRef.child('seats').on('child_removed', (snapshot) => {
+            if (snapshot.val().status === '1') {
+                //console.log('user was removed !!', snapshot.val());
+                getRenderedSeat(snapshot.val().pk, snapshot.val().status)
+            }
+        });
+
+
+        programmingRef.child('seats').on('child_changed', (snapshot) => {
+
+            if (snapshot.val().status === '4' || snapshot.val().status === '6') {
+                //console.log('user was changed !!', snapshot.val());
+                getRenderedSeat(snapshot.val().pk, snapshot.val().status)
+            }
         });
 
 
@@ -268,7 +293,7 @@
 
         function renderForm($id) {
             let _val = sessionStorage.getItem('type_bill');
-            console.log('type_bill: ' + _val)
+            //console.log('type_bill: ' + _val)
             $.ajax({
                 url: '/comercial/fill_form_programming_seat/',
                 async: true,
@@ -277,14 +302,24 @@
                 data: {'programming_seat': $id, 'type': _val},
                 success: function (response, textStatus, xhr) {
                     if (xhr.status === 200) {
+
                         let _src = $('li.btn[key="' + $id + '"]').find('img').attr('src');
+
                         if (_src === '/static/assets/avatar/seat_green.svg') {
                             processingSale('2', $id);
+                            // console.log('processingSale... ')
+                            programmingRef.child('seats').child($id).set({
+                                pk: $id,
+                                status: '2'
+                            });
+                            //$('#render-form').html(response['form']);
+
                         } else {
                             if (_src === '/static/assets/avatar/seat_yellow.svg') {
                                 //releaseSeat('1', $id);
-                            } else {
+                            } else if (_src === '/static/assets/avatar/seat_red.svg' || _src === '/static/assets/avatar/seat_gray.svg' || _src === '/static/assets/avatar/seat_blue.svg') {
                                 $('#render-form').html(response['form']);
+                                changeDocument();
                             }
 
                         }
@@ -294,7 +329,7 @@
             });
         }
 
-        function getRenderedSeat($pk, $op) {
+        /*function getRenderedSeat($pk, $op) {
 
             let _seat = $('li.btn[key="' + $pk + '"]');
 
@@ -322,9 +357,42 @@
                     }
                 }
             });
+        }*/
+
+        function getRenderedSeat($pk, $op) {
+
+            let _seat = $('li.btn[key="' + $pk + '"]');
+
+            $.ajax({
+                url: '/comercial/get_rendered_seat/',
+                async: true,
+                dataType: 'json',
+                type: 'GET',
+                data: {'pk': $pk, 'status': $op},
+                success: function (response, textStatus, xhr) {
+                    if (xhr.status === 200) {
+                        // getBill();
+                        _seat.html(response['grid']);
+                        let _programming = response['programming'];
+                        let _score = $('#render-score');
+                        let _voucher = $('#render-voucher');
+                        let _current_programming = parseInt(_score.attr('pk'));
+                        if (_current_programming === _programming) {
+                            _score.html(response['score']);
+                            _voucher.html(response['vouchers']);
+                        }
+                    }
+                }
+            });
         }
 
-        $(document).on('click', 'a.reserve-seat-with-name', function () {
+        $(document).on('click', 'a.release-seat', function () {
+            let _op = $(this).attr('op');
+            let _pk = $(this).attr('pk');
+            releaseSeat(_op, _pk);
+        });
+
+        /*$(document).on('click', 'a.reserve-seat-with-name', function () {
             let _op = $(this).attr('op');
             let _pk = $(this).attr('pk');
             let _person = prompt("por favor, escriba un nombre");
@@ -348,7 +416,7 @@
                 });
             }
 
-        });
+        });*/
 
         $(document).on('click', 'a.cancellation-of-sale', function () {
             let _op = $(this).attr('op');
@@ -369,14 +437,14 @@
                             let _seats = response['seats'];
                             let arr = JSON.parse(_seats);
                             console.log("go_cancellation_of_sale... " + arr);
-                            sendChanges('1', arr);
+                            //sendChanges('1', arr);
                         }
                     }
                 });
             }
         });
 
-        $(document).on('click', 'a.postponement-of-sale', function () {
+        /*$(document).on('click', 'a.postponement-of-sale', function () {
             let _op = $(this).attr('op');
             let _pk = $(this).attr('pk');
             let _reason = prompt("por favor, escriba un motivo");
@@ -400,7 +468,7 @@
                     }
                 });
             }
-        });
+        });*/
 
         $(document).on('click', 'a.reserve-seat-without-name', function () {
             let _op = $(this).attr('op');
@@ -421,20 +489,20 @@
                         let _seats = response['seats'];
                         let arr = JSON.parse(_seats);
                         console.log("go_reserve_seat_without_name... " + arr);
-                        sendChanges('5', arr);
+                        //sendChanges('5', arr);
                         getBill();
                     }
                 }
             });
         }
 
-        $(document).on('click', 'a.release-seat', function () {
+        /*$(document).on('click', 'a.release-seat', function () {
             let _op = $(this).attr('op');
             let _pk = $(this).attr('pk');
             releaseSeat(_op, _pk);
-        });
+        });*/
 
-        function releaseSeat(_op, _pk) {
+        /*function releaseSeat(_op, _pk) {
             let _val = sessionStorage.getItem('type_bill');
             $.ajax({
                 url: '/comercial/go_release_seat/',
@@ -448,14 +516,37 @@
                         let _seats = response['seats'];
                         let arr = JSON.parse(_seats);
                         console.log("go_release_seat... " + arr);
-                        sendChanges('1', arr);
+                        //sendChanges('1', arr);
                         getBill();
+                    }
+                }
+            });
+        }*/
+        function releaseSeat(_op, _pk) {
+            let _val = sessionStorage.getItem('type_bill');
+            $.ajax({
+                url: '/transport/go_release_seat/',
+                async: true,
+                dataType: 'json',
+                type: 'GET',
+                data: {'pk': _pk, 'status': _op, 'type': _val},
+                success: function (response, textStatus, xhr) {
+                    if (xhr.status === 200) {
+                        $('#render-form').html(response['form']);
+
+                        programmingRef.child('seats').child(_pk).child('status').set('1')
+                            .then(() => {
+                                getRenderedSeat(_pk, '1');
+                                programmingRef.child('seats').child(_pk).remove();
+                            });
+                        getBill();
+
                     }
                 }
             });
         }
 
-        $(document).on('click', 'a.release-seat-with-destination-limit', function () {
+        /*$(document).on('click', 'a.release-seat-with-destination-limit', function () {
             let _op = $(this).attr('op');
             let _pk = $(this).attr('pk');
             let _val = sessionStorage.getItem('type_bill');
@@ -477,7 +568,7 @@
                 }
             });
 
-        });
+        });*/
 
         $(document).on('click', 'a.processing-of-sale', function () {
             let _op = $(this).attr('op');
@@ -486,8 +577,44 @@
             processingSale(_op, _pk);
 
         });
-
         function processingSale(_op, _pk) {
+            let _val = sessionStorage.getItem('type_bill');
+            $.ajax({
+                url: '/transport/go_processing_of_sale/',
+                async: true,
+                dataType: 'json',
+                type: 'GET',
+                data: {'pk': _pk, 'status': _op, 'type': _val},
+                success: function (response, textStatus, xhr) {
+                    if (xhr.status === 200) {
+
+                        $('#render-form').html(response['form']);
+                        let _type_document = response['type_document'];
+
+                        $("#id_type_bill option").filter(function () {
+                            return $(this).val() === _type_document;
+                        }).attr('selected', true);
+
+                        if (_type_document === 'F') {
+                            $(".invoice_document").removeClass('d-none');
+                        }
+
+                        // let _seats = response['seats'];
+                        // let arr = JSON.parse(_seats);
+                        // console.log("go_processing_of_sale... " + arr);
+                        // sendChanges('2', arr);
+                        getRenderedSeat(_pk, '2');
+
+                        // $('#id_type_bill').trigger('change');
+                        $('#id_nro_document').focus();
+                        //changeDocument();
+                    }
+                }
+            });
+
+        }
+
+        /*function processingSale(_op, _pk) {
             let _val = sessionStorage.getItem('type_bill');
             $.ajax({
                 url: '/comercial/go_processing_of_sale/',
@@ -523,9 +650,9 @@
                 }
             });
 
-        }
+        }*/
 
-        $(document).on('click', 'a.selling-with-destination-limit', function () {
+        /*$(document).on('click', 'a.selling-with-destination-limit', function () {
             let _op = $(this).attr('op');
             let _pk = $(this).attr('pk');
             let _val = sessionStorage.getItem('type_bill');
@@ -546,7 +673,7 @@
                     }
                 }
             });
-        });
+        });*/
 
         $(document).on('click', 'a.reassign-seat', function () {
             let _op = $(this).attr('op');
@@ -566,18 +693,18 @@
             });
         });
 
-        function sendChanges(_op, _arr) {
+        /*function sendChanges(_op, _arr) {
             let msg = {}
             for (let i = 0; i < _arr.length; i++) {
                 msg = {
                     'status': _op,
                     'seat': _arr[i]
                 }
-                socket.send(JSON.stringify(msg));
+                //socket.send(JSON.stringify(msg));
                 firebase.database().ref(`tickets/Dalit/${subsidiaryID}/${programmingID}`).set(msg);
 
             }
-        }
+        }*/
 
         function getNroDocument(){
             let _document_number = $('#id_nro_document').val();
@@ -829,9 +956,9 @@
 
         });
 
-        function sendFirebase(codeText, userSubsidiary, userOffice, userPrinter) {
+        /*function sendFirebase(codeText, userSubsidiary, userOffice, userPrinter) {
             firebase.database().ref(`printers/Dalit/${userSubsidiary}/${userOffice}/${userPrinter}/passenger`).set(codeText);
-        }
+        }*/
 
         function generateTxtFile(text){
             var textFile = null;
@@ -852,13 +979,13 @@
 
         }; 
 
-        if (window.location.protocol === 'https:') {
+        /*if (window.location.protocol === 'https:') {
             wsProtocol = 'wss://'
         } else {
             wsProtocol = 'ws://'
-        }
+        }*/
 
-        let socket = new WebSocket(wsProtocol + window.location.host + '/ws/polData/');
+        /*let socket = new WebSocket(wsProtocol + window.location.host + '/ws/polData/');
 
         socket.onopen = function (e) {
             console.log('Connection established');
@@ -870,7 +997,7 @@
         socket.onmessage = function (e) {
             let recData = JSON.parse(e.data);
             getRenderedSeat(recData.seat, recData.status);
-        };
+        };*/
 
 
         function excelVouchers() {
@@ -1212,14 +1339,14 @@
                 getSerialAndCorrelative(_val);
                 toogleBill(_val);
             }
-            console.log('in getBill ... ' + _val);
+            //console.log('in getBill ... ' + _val);
         }
 
         function changeDocument() {
 
             let _val = $('#id_type_bill').val();
 
-            console.log('changeDocument: ' + _val);
+            //console.log('changeDocument: ' + _val);
             sessionStorage.setItem('type_bill', _val);
             getSerialAndCorrelative(_val);
             toogleBill(_val);
@@ -1227,7 +1354,7 @@
         }
 
         function toogleBill($document_type){
-            console.log('toogleBill....' +$document_type);
+            //console.log('toogleBill....' +$document_type);
             $('#id_correlative, #id_serial, #id_type_bill').removeClass('control-ticket').removeClass('control-invoice').removeClass('control-voucher');
 
             if ($document_type === 'T'){
@@ -1335,12 +1462,12 @@
 
 
         });*/
-$(document).on("contextmenu", ".number-id", function(e){
+/*$(document).on("contextmenu", ".number-id", function(e){
    alert('Context Menu event has fired!');
    return false;
-});
+});*/
 
-ticketRef.on("value", function (snapshot) {
+/*ticketRef.on("value", function (snapshot) {
 
     if(snapshot.exists()){
         console.log('snapshot');
@@ -1348,7 +1475,7 @@ console.log(snapshot.val());
 let snap = snapshot.val();
 console.log(snap.seat);
 console.log(snap.status);
-    }
+    }*/
 
 
     /*snapshot.forEach(function (childSnapshot) {
@@ -1362,7 +1489,6 @@ console.log(snap.status);
         }
         ;
     });*/
-});
 
     </script>
 {% endblock extrajs %}
