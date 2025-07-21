@@ -612,8 +612,11 @@ def print_ticket_order_passenger(request, pk=None):  # Boleto de viaje boleta / 
     total = 0
     igv_total = 0
 
+    # P0 = Paragraph(
+    #     'SERVICIO DE TRANSPORTE - DESTINO ' + order_obj.destiny.name + '<br/> ASIENTO ' + order_obj.programming_seat.plan_detail.name + '.',
+    #     styles["Justify"])
     P0 = Paragraph(
-        'SERVICIO DE TRANSPORTE - DESTINO ' + order_obj.destiny.name + '<br/> ASIENTO ' + order_obj.programming_seat.plan_detail.name + '.',
+        'SERVICIO DE TRANSPORTE RUTA ' + order_obj.programming_seat.programming.get_origin().short_name + ' - ' + order_obj.destiny.name + '<br/> ASIENTO ' + order_obj.programming_seat.plan_detail.name + '.',
         styles["Justify"])
     P_TRUCK = Paragraph('PLACA: ' + order_obj.programming_seat.programming.truck.license_plate, styles["Justify_Bold"])
 
