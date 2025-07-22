@@ -937,14 +937,33 @@
                     if (xhr.status === 200) {
 
                         toastr.success(response.message, '¡Bien hecho!');
+                        flagEnter = false
+                        if (response.type_document === 'T') {
+                            window.location.href = "/comercial/print_ticket_old/" + response.order_id + "/";
+                        } else {
+                            if (response.type_document === 'B' || response.type_document === 'F') {
+                                window.location.href = "/comercial/print_ticket_order_passenger/" + response.order_id + "/";
+                            }
+                        }
 
                         $('#render-form').html(response['form']);
-                        let _seats = response['seats'];
-                        let arr = JSON.parse(_seats);
-                        let codeText = 'CE[' + response.serial + '-' + response.correlative + ']' + '|' + response.order_id + '|' + response.type_document;
 
-                        sendFirebase(codeText, response.userSubsidiary, response.userOffice, response.userPrinter)
-                        sendChanges('4', arr);
+
+                        if (response['userOffice'] === 'V2') {
+                            programmingRef.child('seats').child(_pk).child('status').set('7');
+                            getRenderedSeat(_pk, '7');
+                        } else if (response['userOffice'] === 'V3') {
+                            programmingRef.child('seats').child(_pk).child('status').set('6');
+                            getRenderedSeat(_pk, '6');
+                        } else {
+                            programmingRef.child('seats').child(_pk).child('status').set('4');
+                            getRenderedSeat(_pk, '4');
+                            let codeText = 'CE[' + response.serial + '-' + response.correlative + ']' + '|' + response.order_id + '|' + response.type_document;
+                            {#firebase.database().ref(`arrow/${response.userSubsidiary}/printers/${response.userOffice}/${response.userPrinter}/passenger`).set(codeText);#}
+                            firebase.database().ref(`coxman/${subsidiaryID}/passenger/thermal`).set(codeText);
+                        }
+                        getBill();
+
                         $('#loading-666').hide();
 
                     }
