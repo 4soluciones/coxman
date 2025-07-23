@@ -24,7 +24,7 @@
                     <label for="id_type_bill" class="montserrat small">Comprobante</label>
                     <select id="id_type_bill"
                             name="type_bill"
-                            onchange="changeDocument();"
+                            onchange="changeDocument()"
                             class="form-control form-control-sm">
 
                         <option value="B" {% if order_obj.orderbill.type == '2' %}selected{% endif %}>BOLETA
@@ -42,7 +42,7 @@
                     <label for="id_serial" class="montserrat small">Serie</label>
                     <input type="text" class="form-control form-control-sm" id="id_serial"
                            placeholder=""
-                           value="{{ serial }}"
+                           value="{% if order_obj %}{{ order_obj.serial }}{% else %}{{ serial }}{% endif %}"
                            readonly>
                 </div>
 
@@ -229,6 +229,24 @@
 
                     <div class="col-sm-12 col-md-6 col-lg-6 p-1">
 
+                        <label for="id_origin" class="montserrat small">Origen</label>
+                        <select id="id_origin"
+                                name="origin"
+                                {% if order_obj %}disabled{% endif %}
+                                {% if seat is None %}disabled{% endif %}
+                                class="form-control form-control-sm" required>
+                            <option value="">Seleccione</option>
+                            {% for origin in origins %}
+                                <option value="{{ origin.id }}"
+                                        {% if order_obj.origin.id == origin.id %}selected{% endif %}
+                                        {% if origin.name == subsidiary_obj.name %}selected{% endif %}>{{ origin.name }}</option>
+                            {% endfor %}
+                        </select>
+
+                    </div>
+
+                    <div class="col-sm-12 col-md-6 col-lg-6 p-1">
+
                         <label for="id_destiny" class="montserrat small">Destino</label>
                         <select id="id_destiny"
                                 name="destiny"
@@ -241,11 +259,12 @@
                             {% endfor %}
                         </select>
 
-
                     </div>
 
+                </div>
+                <div class="row">
                     <div class="col-sm-12 col-md-4 col-lg-6 p-1">
-                        <label for="id_cost" class="montserrat small font-weight-bold">Costo</label>
+                        <label for="id_cost" class="montserrat small">Costo</label>
                         <input type="text"
                                class="form-control form-control-sm"
                                id="id_cost"
@@ -254,8 +273,8 @@
                                value="{{ order_obj.total|floatformat:2 }}"
                                required="">
                     </div>
-
                 </div>
+
                 <div class="row d-none" id="row-paid">
                     <div class="col p-1">
                         <label for="id_paid" class="montserrat small text-black-50">Monto Pagado (Opcional)</label>

@@ -395,6 +395,7 @@ class Order(models.Model):
     type_guide = models.CharField('Tipo de encomienda', max_length=1, choices=GUIDE_TYPE_CHOICES, default='O', )
     arrival_time = models.TimeField('Hora de llegada', null=True, blank=True)
     address_delivery = models.CharField('Direccion de Reparto', max_length=250, null=True, blank=True)
+    origin = models.ForeignKey('comercial.Origin', on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return str(self.pk)

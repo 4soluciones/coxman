@@ -5,6 +5,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from .forms import *
 from apps.sales.models import Order, OrderDetail, OrderBill, OrderAction
+from .models import Origin
 from apps.sales.views import Client, ClientType, ClientAddress
 from apps.sales.views_SUNAT import send_bill_passenger, send_receipt_passenger
 from apps.hrm.models import Subsidiary, DocumentType, Nationality, SubsidiaryCompany, Worker, UserSubsidiary
@@ -1204,6 +1205,9 @@ def get_form_programming_seat(programming_seat_obj=None, subsidiary_obj=None, co
             for destiny in road.destiny_set.all():
                 destinies.append(destiny)
 
+    # Obtener todos los orígenes disponibles
+    origins = Origin.objects.all()
+
     context = ({
         'seat': programming_seat_obj,
         'serial': _serial,
@@ -1212,6 +1216,8 @@ def get_form_programming_seat(programming_seat_obj=None, subsidiary_obj=None, co
         'order_obj': order_obj,
         'correlative': _correlative,
         'destinies': destinies,
+        'origins': origins,
+        'subsidiary_obj': subsidiary_obj,
         'programming_seat_obj': programming_seat_obj,
         'passenger_obj': passenger_obj,
         'passenger_type_obj': passenger_type_obj,
@@ -1622,6 +1628,7 @@ def create_order_passenger(request):
 
         serial = str(data_orders["Serial"])
         destiny = int(data_orders["Destiny"])
+        origin = int(data_orders["Origin"]) if "Origin" in data_orders else None
         programming_seat_id = int(data_orders["Programming_seat_id"])
         amount = str(data_orders["Amount"])
 
@@ -1637,6 +1644,9 @@ def create_order_passenger(request):
         show_original_name = bool(int(data_orders["ShowOriginalName"]))
 
         destiny_obj = Destiny.objects.get(id=destiny)
+        origin_obj = None
+        if origin:
+            origin_obj = Origin.objects.get(id=origin)
 
         programming_seat_obj = sell_seat(
             programming_seat_id=programming_seat_id,
@@ -1668,6 +1678,7 @@ def create_order_passenger(request):
             status='C',
             programming_seat=programming_seat_obj,
             destiny=destiny_obj,
+            origin=origin_obj,
             total=amount,
             paid=paid,
             turned=turned,

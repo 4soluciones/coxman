@@ -891,6 +891,14 @@ class Destiny(models.Model):
         verbose_name_plural = 'Destinos'
 
 
+class Origin(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField('Nombre', max_length=45, null=True, blank=True)
+
+    def __str__(self):
+        return str(self.id)
+
+
 class Associate(models.Model):
     subsidiary = models.OneToOneField('hrm.Subsidiary', verbose_name='Sede Central', on_delete=models.CASCADE,
                                       primary_key=True)

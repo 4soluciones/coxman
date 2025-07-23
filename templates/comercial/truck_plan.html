@@ -20,31 +20,30 @@
                target="print">
                 <span class="fa fa-print"></span> Descarga Manifiesto</a>
 
-{#            <button class="btn btn-blue my-1"#}
-{#                    data-toggle="modal"#}
-{#                    data-target="#modal-gallery"#}
-{#                    type="button">Ver Galería#}
-{#                <span class="badge badge-pill badge-light">{{ programming_obj.truck.truckgallery_set.count }}</span>#}
-{#            </button>#}
+            {#            <button class="btn btn-blue my-1"#}
+            {#                    data-toggle="modal"#}
+            {#                    data-target="#modal-gallery"#}
+            {#                    type="button">Ver Galería#}
+            {#                <span class="badge badge-pill badge-light">{{ programming_obj.truck.truckgallery_set.count }}</span>#}
+            {#            </button>#}
 
-{#            <a class="btn btn-green my-1"#}
-{#               href="{% url 'comercial:print_mock_up_passengers' programming_obj.id %}"#}
-{#               target="print">#}
-{#                <span class="fa fa-print"></span> Ver Croquis</a>#}
+            {#            <a class="btn btn-green my-1"#}
+            {#               href="{% url 'comercial:print_mock_up_passengers' programming_obj.id %}"#}
+            {#               target="print">#}
+            {#                <span class="fa fa-print"></span> Ver Croquis</a>#}
 
-{#            <button type="button" class="btn btn-dark my-1" data-toggle="modal"#}
-{#                    id="btn-cash-programming"#}
-{#                    data-target="#modal-disbursement">#}
-{#                <i class="fas fa-closed-captioning"></i> Ingresos / Salidas#}
-{#            </button>#}
+            {#            <button type="button" class="btn btn-dark my-1" data-toggle="modal"#}
+            {#                    id="btn-cash-programming"#}
+            {#                    data-target="#modal-disbursement">#}
+            {#                <i class="fas fa-closed-captioning"></i> Ingresos / Salidas#}
+            {#            </button>#}
             <a class="btn btn-light">
                 {{ programming_obj.get_pilot.full_name|upper }} ({{ programming_obj.truck }})</a>
 
-                
-{#                <a download="info.txt" id="downloadFile" style="display: none">Download</a>#}
+
+            {#                <a download="info.txt" id="downloadFile" style="display: none">Download</a>#}
 
         </div>
-
 
 
     </div>
@@ -74,67 +73,67 @@
                     </div>
                     <div class="col-sm-12 col-md-12 col-lg-5 col-xl-5 py-3">
                         <div class="row">
-{#                            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 py-3 legend montserrat"#}
-{#                                 style="background: #f5f5f5;">#}
-{#                                <h4 class="montserrat small font-weight-bold">Leyenda</h4>#}
-{##}
-{#                                <div class="toast-header">#}
-{#                                    <img src="{% static 'assets/avatar/seat_yellow.svg' %}" width="20" height="20"#}
-{#                                         class="rounded mr-2"#}
-{#                                         alt="...">#}
-{#                                    <small class="mr-auto"> - Vendiendo (Ocupado)</small>#}
-{#                                </div>#}
-{##}
-{#                                <div class="toast-header">#}
-{#                                    <img src="{% static 'assets/avatar/seat_red.svg' %}" width="20" height="20"#}
-{#                                         class="rounded mr-2"#}
-{#                                         alt="...">#}
-{#                                    <small class="mr-auto"> - Vendido y registrado</small>#}
-{#                                </div>#}
-{##}
-{#                                <div class="toast-header">#}
-{#                                    <img src="{% static 'assets/avatar/seat_green.svg' %}" width="20" height="20"#}
-{#                                         class="rounded mr-2" alt="...">#}
-{#                                    <small class="mr-auto"> - Disponible</small>#}
-{#                                </div>#}
-{#                                <div class="toast-header">#}
-{#                                    <img src="{% static 'assets/avatar/seat_sky.svg' %}" width="20" height="20"#}
-{#                                         class="rounded mr-2"#}
-{#                                         alt="...">#}
-{#                                    <small class="mr-auto"> - Reservado sin nombre</small>#}
-{#                                </div>#}
-{##}
-                                {#                                <div class="toast-header">#}
-                                {#                                    <img src="{% static 'assets/avatar/seat_blue.svg' %}" width="20" height="20"#}
-                                {#                                         class="rounded mr-2" alt="...">#}
-                                {#                                    <small class="mr-auto"> - Reservado con nombre</small>#}
-                                {#                                </div>#}
-{##}
-                                {#                                <div class="toast-header">#}
-                                {#                                    <img src="{% static 'assets/avatar/seat_gray.svg' %}" width="20" height="20"#}
-                                {#                                         class="rounded mr-2" alt="...">#}
-                                {#                                    <small class="mr-auto"> - Vendido por otra sede</small>#}
-                                {#                                </div>#}
-                                {##}
-                                {#                                <div class="toast-header">#}
-                                {#                                    <img src="{% static 'assets/avatar/seat_light_purple.svg' %}" width="20" height="20"#}
-                                {#                                         class="rounded mr-2" alt="...">#}
-                                {#                                    <small class="mr-auto"> - Asientos proximos a liberarse</small>#}
-                                {#                                </div>#}
-                                {##}
-                                {#                                <div class="toast-header">#}
-                                {#                                    <img src="{% static 'assets/avatar/seat_olive.svg' %}" width="20" height="20"#}
-                                {#                                         class="rounded mr-2" alt="...">#}
-                                {#                                    <small class="mr-auto"> - Venta con limite de destino</small>#}
-                                {#                                </div>#}
-                                {##}
-                                {#                                <div class="toast-header">#}
-                                {#                                    <img src="{% static 'assets/avatar/seat_ocher.svg' %}" width="20" height="20"#}
-                                {#                                         class="rounded mr-2" alt="...">#}
-                                {#                                    <small class="mr-auto"> - Vendiendo con limite de destino</small>#}
-                                {#                                </div>#}
-{##}
-{#                            </div>#}
+                            {#                            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 py-3 legend montserrat"#}
+                            {#                                 style="background: #f5f5f5;">#}
+                            {#                                <h4 class="montserrat small font-weight-bold">Leyenda</h4>#}
+                            {##}
+                            {#                                <div class="toast-header">#}
+                            {#                                    <img src="{% static 'assets/avatar/seat_yellow.svg' %}" width="20" height="20"#}
+                            {#                                         class="rounded mr-2"#}
+                            {#                                         alt="...">#}
+                            {#                                    <small class="mr-auto"> - Vendiendo (Ocupado)</small>#}
+                            {#                                </div>#}
+                            {##}
+                            {#                                <div class="toast-header">#}
+                            {#                                    <img src="{% static 'assets/avatar/seat_red.svg' %}" width="20" height="20"#}
+                            {#                                         class="rounded mr-2"#}
+                            {#                                         alt="...">#}
+                            {#                                    <small class="mr-auto"> - Vendido y registrado</small>#}
+                            {#                                </div>#}
+                            {##}
+                            {#                                <div class="toast-header">#}
+                            {#                                    <img src="{% static 'assets/avatar/seat_green.svg' %}" width="20" height="20"#}
+                            {#                                         class="rounded mr-2" alt="...">#}
+                            {#                                    <small class="mr-auto"> - Disponible</small>#}
+                            {#                                </div>#}
+                            {#                                <div class="toast-header">#}
+                            {#                                    <img src="{% static 'assets/avatar/seat_sky.svg' %}" width="20" height="20"#}
+                            {#                                         class="rounded mr-2"#}
+                            {#                                         alt="...">#}
+                            {#                                    <small class="mr-auto"> - Reservado sin nombre</small>#}
+                            {#                                </div>#}
+                            {##}
+                            {#                                <div class="toast-header">#}
+                            {#                                    <img src="{% static 'assets/avatar/seat_blue.svg' %}" width="20" height="20"#}
+                            {#                                         class="rounded mr-2" alt="...">#}
+                            {#                                    <small class="mr-auto"> - Reservado con nombre</small>#}
+                            {#                                </div>#}
+                            {##}
+                            {#                                <div class="toast-header">#}
+                            {#                                    <img src="{% static 'assets/avatar/seat_gray.svg' %}" width="20" height="20"#}
+                            {#                                         class="rounded mr-2" alt="...">#}
+                            {#                                    <small class="mr-auto"> - Vendido por otra sede</small>#}
+                            {#                                </div>#}
+                            {##}
+                            {#                                <div class="toast-header">#}
+                            {#                                    <img src="{% static 'assets/avatar/seat_light_purple.svg' %}" width="20" height="20"#}
+                            {#                                         class="rounded mr-2" alt="...">#}
+                            {#                                    <small class="mr-auto"> - Asientos proximos a liberarse</small>#}
+                            {#                                </div>#}
+                            {##}
+                            {#                                <div class="toast-header">#}
+                            {#                                    <img src="{% static 'assets/avatar/seat_olive.svg' %}" width="20" height="20"#}
+                            {#                                         class="rounded mr-2" alt="...">#}
+                            {#                                    <small class="mr-auto"> - Venta con limite de destino</small>#}
+                            {#                                </div>#}
+                            {##}
+                            {#                                <div class="toast-header">#}
+                            {#                                    <img src="{% static 'assets/avatar/seat_ocher.svg' %}" width="20" height="20"#}
+                            {#                                         class="rounded mr-2" alt="...">#}
+                            {#                                    <small class="mr-auto"> - Vendiendo con limite de destino</small>#}
+                            {#                                </div>#}
+                            {##}
+                            {#                            </div>#}
                             <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 py-3" id="render-score"
                                  pk="{{ programming_obj.id }}">
                                 {% include "comercial/truck_plan_score.html" with programming_obj=programming_obj %}
@@ -317,9 +316,12 @@
                         } else {
                             if (_src === '/static/assets/avatar/seat_yellow.svg') {
                                 //releaseSeat('1', $id);
-                            } else if (_src === '/static/assets/avatar/seat_red.svg' || _src === '/static/assets/avatar/seat_gray.svg' || _src === '/static/assets/avatar/seat_blue.svg') {
                                 $('#render-form').html(response['form']);
                                 changeDocument();
+                                selectOriginBySubsidiaryName();
+                            } else if (_src === '/static/assets/avatar/seat_red.svg' || _src === '/static/assets/avatar/seat_gray.svg' || _src === '/static/assets/avatar/seat_blue.svg') {
+                                $('#render-form').html(response['form']);
+                                selectOriginBySubsidiaryName();
                             }
 
                         }
@@ -425,7 +427,7 @@
             if (_reason != null) {
 
                 $.ajax({
-                    url: '/comercial/go_cancellation_of_sale/',
+                    url: '/transport/go_cancellation_of_sale/',
                     async: true,
                     dataType: 'json',
                     type: 'GET',
@@ -433,11 +435,16 @@
                     success: function (response, textStatus, xhr) {
                         if (xhr.status === 200) {
                             $('#render-form').html(response['form']);
+
                             toastr.success(response['message'], '¡Bien hecho!');
-                            let _seats = response['seats'];
-                            let arr = JSON.parse(_seats);
-                            console.log("go_cancellation_of_sale... " + arr);
-                            //sendChanges('1', arr);
+
+                            programmingRef.child('seats').child(_pk).child('status').set('1')
+                                .then(() => {
+                                    getRenderedSeat(_pk, '1');
+                                    programmingRef.child('seats').child(_pk).remove();
+                                });
+                            getBill();
+
                         }
                     }
                 });
@@ -478,7 +485,7 @@
 
         function reserveSeatWithoutName(_op, _pk) {
             $.ajax({
-                url: '/comercial/go_reserve_seat_without_name/',
+                url: '/transport/go_reserve_seat_without_name/',
                 async: true,
                 dataType: 'json',
                 type: 'GET',
@@ -486,11 +493,14 @@
                 success: function (response, textStatus, xhr) {
                     if (xhr.status === 200) {
                         toastr.success(response['message'], '¡Bien hecho!');
-                        let _seats = response['seats'];
-                        let arr = JSON.parse(_seats);
-                        console.log("go_reserve_seat_without_name... " + arr);
-                        //sendChanges('5', arr);
+                        // let _seats = response['seats'];
+                        // let arr = JSON.parse(_seats);
+                        // console.log("go_reserve_seat_without_name... " + arr);
+                        // sendChanges('5', arr);
                         getBill();
+
+                        programmingRef.child('seats').child(_pk).child('status').set('5');
+                        getRenderedSeat(_pk, '5');
                     }
                 }
             });
@@ -573,10 +583,10 @@
         $(document).on('click', 'a.processing-of-sale', function () {
             let _op = $(this).attr('op');
             let _pk = $(this).attr('pk');
-
             processingSale(_op, _pk);
 
         });
+
         function processingSale(_op, _pk) {
             let _val = sessionStorage.getItem('type_bill');
             $.ajax({
@@ -599,12 +609,15 @@
                             $(".invoice_document").removeClass('d-none');
                         }
 
+                        // Seleccionar automáticamente el origen
+                        selectOriginBySubsidiaryName();
+
                         // let _seats = response['seats'];
                         // let arr = JSON.parse(_seats);
                         // console.log("go_processing_of_sale... " + arr);
                         // sendChanges('2', arr);
                         getRenderedSeat(_pk, '2');
-
+                        toggleBill(_type_document);
                         // $('#id_type_bill').trigger('change');
                         $('#id_nro_document').focus();
                         //changeDocument();
@@ -706,51 +719,51 @@
             }
         }*/
 
-        function getNroDocument(){
+        function getNroDocument() {
             let _document_number = $('#id_nro_document').val();
 
-                if ((sessionStorage.getItem('document') === '01') && (_document_number.length !== 8)) {
-                    toastr.warning('¡Favor de completar los caracteres requeridos: Son 8 caracteres para DNI', 'Error de Datos');
-                    return false;
-                }
+            if ((sessionStorage.getItem('document') === '01') && (_document_number.length !== 8)) {
+                toastr.warning('¡Favor de completar los caracteres requeridos: Son 8 caracteres para DNI', 'Error de Datos');
+                return false;
+            }
 
-                $('#loading-666').html(loader).show();
+            $('#loading-666').html(loader).show();
 
-                $.ajax({
-                    url: '/comercial/get_name_business/',
-                    timeout: 5000, //3 second timeout
-                    async: true,
-                    dataType: 'json', // for response
-                    type: 'GET',
-                    data: {
-                        'nro_document': $('#id_nro_document').val(),
-                        'type': $('#id_document_type').val(),
-                    },
-                    contentType: 'application/json;charset=UTF-8',
-                    headers: {"X-CSRFToken": '{{ csrf_token }}'},
-                    success: function (response, textStatus, xhr) {
-                        if (xhr.status === 200) {
-                            toastr.success(response.message, '¡Bien hecho!');
-                            $("#id_client_name").val(response.result);
-                            $("#id_nationality").val(response.nationality);
-                            $('#loading-666').hide();
-                        }
-                    },
-                    error: function (jqXhr, textStatus, xhr) { // provide a bit more info about the error to the console
-                        if (jqXhr.status === 500) {
-                            toastr.error(jqXhr.responseJSON.error, '¡Error de consulta!');
-                        } else {
-                            if (textStatus === 'timeout') {
-                                {#console.log(textStatus)#}
-                                {#console.log(jqXhr.responseJSON.error)#}
-                                toastr.error('Error de Tiempo de Espera', '¡Error de consulta!');
-                            } else {
-                                console.log(" STATUS: " + xhr + " " + textStatus);
-                            }
-                        }
+            $.ajax({
+                url: '/comercial/get_name_business/',
+                timeout: 5000, //3 second timeout
+                async: true,
+                dataType: 'json', // for response
+                type: 'GET',
+                data: {
+                    'nro_document': $('#id_nro_document').val(),
+                    'type': $('#id_document_type').val(),
+                },
+                contentType: 'application/json;charset=UTF-8',
+                headers: {"X-CSRFToken": '{{ csrf_token }}'},
+                success: function (response, textStatus, xhr) {
+                    if (xhr.status === 200) {
+                        toastr.success(response.message, '¡Bien hecho!');
+                        $("#id_client_name").val(response.result);
+                        $("#id_nationality").val(response.nationality);
                         $('#loading-666').hide();
                     }
-                });
+                },
+                error: function (jqXhr, textStatus, xhr) { // provide a bit more info about the error to the console
+                    if (jqXhr.status === 500) {
+                        toastr.error(jqXhr.responseJSON.error, '¡Error de consulta!');
+                    } else {
+                        if (textStatus === 'timeout') {
+                            {#console.log(textStatus)#}
+                            {#console.log(jqXhr.responseJSON.error)#}
+                            toastr.error('Error de Tiempo de Espera', '¡Error de consulta!');
+                        } else {
+                            console.log(" STATUS: " + xhr + " " + textStatus);
+                        }
+                    }
+                    $('#loading-666').hide();
+                }
+            });
         }
 
         $(document).on('click', '#btn_search_nro_document', function (e) {
@@ -891,6 +904,11 @@
                 $('#id_cost').focus()
                 return false;
             }
+            if ($('#id_origin').val() === '') {
+                toastr.warning('¡Favor de seleccionar el origen!', 'Error de Llenado!');
+                $('#id_origin').focus()
+                return false;
+            }
             if ($('#id_destiny').val() === '01') {
                 toastr.warning('¡Favor de seleccionar el destino!', 'Error de Llenado!');
                 $('#id_destiny').focus()
@@ -906,6 +924,7 @@
                 "Type_Client2": $('#id_document_type_2').val(),
                 "Client_Nro_document_2": $('#id_nro_document_2').val(),
                 "Seat": $('#id_seat').val(),
+                "Origin": $('#id_origin').val(),
                 "Destiny": $('#id_destiny').val(),
                 "Programming_seat_id": $('#id_programming_seat_id').val(),
                 "Type_bill": $('#id_type_bill').val(),
@@ -919,11 +938,11 @@
                 "Demo": ($('#demo').is(':checked')) ? 1 : 0,
                 "ShowOriginalName": ($('#showOriginalNameSwitch').is(':checked')) ? 1 : 0,
             };
-            
+
             $('#loading-666').html(loader).show();
 
 
-           $.ajax({
+            $.ajax({
                 url: '/comercial/create_order_passenger/',
                 async: true,
                 dataType: 'json', // for response
@@ -979,24 +998,24 @@
             firebase.database().ref(`printers/Dalit/${userSubsidiary}/${userOffice}/${userPrinter}/passenger`).set(codeText);
         }*/
 
-        function generateTxtFile(text){
+        function generateTxtFile(text) {
             var textFile = null;
-            var data = new Blob([text], {type: 'text/plain'}); 
+            var data = new Blob([text], {type: 'text/plain'});
             if (textFile !== null) {
-            window.URL.revokeObjectURL(textFile);  
-            }  
-            textFile = window.URL.createObjectURL(data);  
-            return textFile; 
+                window.URL.revokeObjectURL(textFile);
+            }
+            textFile = window.URL.createObjectURL(data);
+            return textFile;
         }
 
-        function dummyText($dummyText) {  
- 
+        function dummyText($dummyText) {
+
             $('#downloadFile').attr('href', generateTxtFile($dummyText));
             $('#downloadFile').attr('download', $dummyText + '.txt')
             $('#downloadFile').show();
             $('#downloadFile')[0].click();
 
-        }; 
+        };
 
         /*if (window.location.protocol === 'https:') {
             wsProtocol = 'wss://'
@@ -1099,10 +1118,9 @@
 
             event.preventDefault(); // Recommended to stop the link from doing anything else
 
-            if(_type_document==='B' || _type_document==='F'){
+            if (_type_document === 'B' || _type_document === 'F') {
                 window.location.href = "/comercial/print_ticket_order_passenger/" + _order + "/";
-            }
-            else{
+            } else {
                 window.location.href = "/comercial/print_ticket_old/" + _order + "/";
             }
 
@@ -1203,7 +1221,7 @@
 
             if (company_id === '1') {
 
-                if($type_document === 'B' || $type_document === 'F' || $type_document === 'T'){
+                if ($type_document === 'B' || $type_document === 'F' || $type_document === 'T') {
                     document.dispatchEvent(new CustomEvent('funcIntraLaunch',
                         {
                             'detail': {
@@ -1213,8 +1231,7 @@
                         }
                     ));
                     /******/
-                }
-                else{
+                } else {
                     document.dispatchEvent(new CustomEvent('funcIntraLaunch',
                         {
                             'detail': {
@@ -1226,11 +1243,10 @@
                 }
 
 
-
             } else {
                 if (company_id === '2') {
 
-                    if($type_document === 'B' || $type_document === 'F' || $type_document === 'T'){
+                    if ($type_document === 'B' || $type_document === 'F' || $type_document === 'T') {
                         document.dispatchEvent(new CustomEvent('funcIntraLaunch',
                             {
                                 'detail': {
@@ -1239,8 +1255,7 @@
                                 }
                             }
                         ));
-                    }
-                    else{
+                    } else {
                         document.dispatchEvent(new CustomEvent('funcIntraLaunch',
                             {
                                 'detail': {
@@ -1255,11 +1270,10 @@
                 } else {
 
 
-                    
                     if (company_id === '3') {
 
 
-                        if($type_document === 'B' || $type_document === 'F' || $type_document === 'T'){
+                        if ($type_document === 'B' || $type_document === 'F' || $type_document === 'T') {
                             document.dispatchEvent(new CustomEvent('funcIntraLaunch',
                                 {
                                     'detail': {
@@ -1268,8 +1282,7 @@
                                     }
                                 }
                             ));
-                        }
-                        else{
+                        } else {
 
                             document.dispatchEvent(new CustomEvent('funcIntraLaunch',
                                 {
@@ -1344,46 +1357,62 @@
         }
 
 
-        function getBill(){
+        function getBill() {
             let _val = sessionStorage.getItem('type_bill')
-            if(!_val){
-                sessionStorage.setItem('type_bill', 'T')
-                changeDocument();
 
-            }
-            else{
+            if (_val == null) {
+                changeDocument();
+            } else {
                 $("#id_type_bill option").filter(function () {
                     return $(this).val() === _val;
                 }).attr('selected', true);
                 getSerialAndCorrelative(_val);
-                toogleBill(_val);
+                toggleBill(_val);
             }
-            //console.log('in getBill ... ' + _val);
+        }
+        function toggleBill($document_type) {
+
+            $('#id_correlative, #id_serial, #id_type_bill').removeClass('control-ticket').removeClass('control-invoice').removeClass('control-voucher');
+
+            if ($document_type === 'T') {
+
+                $(".invoice_document").addClass('d-none');
+                $('#id_correlative').prop('readonly', false);
+                $('#id_correlative, #id_serial, #id_type_bill').addClass('control-ticket');
+
+            } else if ($document_type === 'F') {
+                $(".invoice_document").removeClass('d-none');
+                $('#id_correlative').prop('readonly', true);
+                $('#id_correlative, #id_serial, #id_type_bill').addClass('control-invoice');
+
+            } else if ($document_type === 'B') {
+                $(".invoice_document").addClass('d-none');
+                $('#id_correlative').prop('readonly', true);
+                $('#id_correlative, #id_serial, #id_type_bill').addClass('control-voucher');
+            }
         }
 
         function changeDocument() {
 
             let _val = $('#id_type_bill').val();
-
             //console.log('changeDocument: ' + _val);
             sessionStorage.setItem('type_bill', _val);
             getSerialAndCorrelative(_val);
             toogleBill(_val);
-          
+
         }
 
-        function toogleBill($document_type){
+        function toogleBill($document_type) {
             //console.log('toogleBill....' +$document_type);
             $('#id_correlative, #id_serial, #id_type_bill').removeClass('control-ticket').removeClass('control-invoice').removeClass('control-voucher');
 
-            if ($document_type === 'T'){
-                
+            if ($document_type === 'T') {
+
                 $(".invoice_document").removeClass('d-none');
                 $('#id_correlative').prop('readonly', false);
                 $('#id_correlative, #id_serial, #id_type_bill').addClass('control-ticket');
 
-            }
-            else if ($document_type === 'F') {
+            } else if ($document_type === 'F') {
                 $(".invoice_document").removeClass('d-none');
                 $('#id_correlative').prop('readonly', true);
                 $('#id_correlative, #id_serial, #id_type_bill').addClass('control-invoice');
@@ -1396,7 +1425,7 @@
         }
 
 
-        function getSerialAndCorrelative($document_type){
+        function getSerialAndCorrelative($document_type) {
             let programming_id = $('#render-score').attr('pk');
             {#console.log("programming", programming_id)#}
             $.ajax({
@@ -1420,23 +1449,23 @@
             });
         }
 
-        $(document).on('keyup', '#id_cost', function () {
+        /*$(document).on('keyup', '#id_cost', function () {
             let val = $(this).val();
 
-            if(val.length > 0){
+            if (val.length > 0) {
                 $('#row-paid').removeClass('d-none');
                 $('#id_paid').val(val);
+            } else {
+                $('#row-paid').addClass('d-none');
             }
-            else{$('#row-paid').addClass('d-none');}
-        });
+        });*/
 
         $(document).on('keyup', '#id_paid', function () {
             let val = $(this).val();
             if (isNaN(val) || val === '') {
                 $(this).val('');
                 $('#id_turned').val('');
-            }
-            else{
+            } else {
                 let paid = parseFloat($(this).val());
                 let total = parseFloat($('#id_cost').val());
                 let turned = paid - total;
@@ -1458,7 +1487,29 @@
                 return Math.round(value * n) / n;
         }
 
+        $('#id_cash').trigger('change');
 
+        getBill();
+
+        // Función para seleccionar automáticamente el origen basado en el nombre de la sede
+        function selectOriginBySubsidiaryName() {
+            const subsidiaryName = '{{ subsidiary_current.name }}';
+            const originSelect = $('#id_origin');
+            
+            if (originSelect.length > 0) {
+                originSelect.find('option').each(function() {
+                    if ($(this).text().trim() === subsidiaryName.trim()) {
+                        $(this).prop('selected', true);
+                        return false; // break the loop
+                    }
+                });
+            }
+        }
+
+        // Ejecutar la función cuando se carga el formulario
+        $(document).ready(function() {
+            selectOriginBySubsidiaryName();
+        });
 
         /*$(document).on('mousedown', '.number-id', function (event) {
 
@@ -1481,33 +1532,33 @@
 
 
         });*/
-/*$(document).on("contextmenu", ".number-id", function(e){
-   alert('Context Menu event has fired!');
-   return false;
-});*/
+        /*$(document).on("contextmenu", ".number-id", function(e){
+           alert('Context Menu event has fired!');
+           return false;
+        });*/
 
-/*ticketRef.on("value", function (snapshot) {
+        /*ticketRef.on("value", function (snapshot) {
 
-    if(snapshot.exists()){
-        console.log('snapshot');
-console.log(snapshot.val());
-let snap = snapshot.val();
-console.log(snap.seat);
-console.log(snap.status);
-    }*/
+            if(snapshot.exists()){
+                console.log('snapshot');
+        console.log(snapshot.val());
+        let snap = snapshot.val();
+        console.log(snap.seat);
+        console.log(snap.status);
+            }*/
 
 
-    /*snapshot.forEach(function (childSnapshot) {
-        var data = childSnapshot.val();
-        console.log('data');
-        console.log(data);
-    });*/
-    /*snapshot.forEach(doc => {
-        if (doc.get('seat') != null) {
-            console.log(doc.id, '=>', doc.data());
-        }
-        ;
-    });*/
+        /*snapshot.forEach(function (childSnapshot) {
+            var data = childSnapshot.val();
+            console.log('data');
+            console.log(data);
+        });*/
+        /*snapshot.forEach(doc => {
+            if (doc.get('seat') != null) {
+                console.log(doc.id, '=>', doc.data());
+            }
+            ;
+        });*/
 
     </script>
 {% endblock extrajs %}

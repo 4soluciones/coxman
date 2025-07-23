@@ -310,15 +310,19 @@ def send_bill_ticket_fact(request, order_id):  # FACTURA DE BOLETO DE VIAJE 4 FA
     subsidiary_origin_obj = get_subsidiary_by_user(user_obj)
     company_rotation_obj = user_obj.companyuser.company_rotation
 
-    subsidiary_company_origin_obj = SubsidiaryCompany.objects.filter(subsidiary=subsidiary_origin_obj,
-                                                                     company=company_rotation_obj).last()
-    _short_name_origin = subsidiary_company_origin_obj.short_name
+    # Validar si el origen es distinto a la sede
+    if order_obj.origin and order_obj.origin.name != subsidiary_origin_obj.name:
+        _short_name_origin = order_obj.origin.name.replace("SEDE ", "")
+    else:
+        subsidiary_company_origin_obj = SubsidiaryCompany.objects.filter(subsidiary=subsidiary_origin_obj,
+                                                                         company=company_rotation_obj).last()
+        _short_name_origin = subsidiary_company_origin_obj.short_name
 
     subsidiary_destiny_obj = order_obj.programming_seat.programming.path.get_last_point()
     subsidiary_company_destiny_obj = SubsidiaryCompany.objects.filter(subsidiary=subsidiary_destiny_obj,
                                                                       company=company_rotation_obj).last()
 
-    _short_name_destiny = subsidiary_company_destiny_obj.short_name
+    _short_name_destiny = order_obj.destiny.name
 
     _observation = f"PASAJERO: {client_passenger_obj.names}"
     _observation_graph = f'"{_observation}"'
@@ -524,15 +528,19 @@ def send_receipt_passenger_fact(request, order_id):  # BOLETA DE VENTA PASAJE DE
     subsidiary_origin_obj = get_subsidiary_by_user(user_obj)
     company_rotation_obj = user_obj.companyuser.company_rotation
 
-    subsidiary_company_origin_obj = SubsidiaryCompany.objects.filter(subsidiary=subsidiary_origin_obj,
-                                                                     company=company_rotation_obj).last()
-    _short_name_origin = subsidiary_company_origin_obj.short_name
+    # Validar si el origen es distinto a la sede
+    if order_obj.origin and order_obj.origin.name != subsidiary_origin_obj.name:
+        _short_name_origin = order_obj.origin.name.replace("SEDE ", "")
+    else:
+        subsidiary_company_origin_obj = SubsidiaryCompany.objects.filter(subsidiary=subsidiary_origin_obj,
+                                                                         company=company_rotation_obj).last()
+        _short_name_origin = subsidiary_company_origin_obj.short_name
 
     subsidiary_destiny_obj = order_obj.programming_seat.programming.path.get_last_point()
     subsidiary_company_destiny_obj = SubsidiaryCompany.objects.filter(subsidiary=subsidiary_destiny_obj,
                                                                       company=company_rotation_obj).last()
 
-    _short_name_destiny = subsidiary_company_destiny_obj.short_name
+    _short_name_destiny = order_obj.destiny.name
 
     _observation = f"PASAJERO: {client_passenger_obj.names}"
     _observation_graph = f'"{_observation}"'
