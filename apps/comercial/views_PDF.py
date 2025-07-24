@@ -734,9 +734,9 @@ def print_ticket_order_passenger(request, pk=None):  # Boleto de viaje boleta / 
     _dictionary.append(Paragraph(
         "Representación impresa de la " + str(
             tbn_document) + ", para ver el documento visita ", styles["Square_left"]))
-    _dictionary.append(Paragraph("https://4soluciones.pse.pe/20455935173 ", styles["Square_bold_left"]))
+    _dictionary.append(Paragraph("https://tuf4ct.com/cpe ", styles["Square_bold_left"]))
     _dictionary.append(Paragraph("Emitido mediante un PROVEEDOR Autorizado por la SUNAT", styles["Square_left"]), )
-    _dictionary.append(Paragraph("mediante Resolución de Intendencia No. 034-005- 0005315", styles["Square_left"]))
+    # _dictionary.append(Paragraph("mediante Resolución de Intendencia No. 034-005- 0005315", styles["Square_left"]))
     _dictionary.append(Paragraph(line, styles["Center2"]))
     _dictionary.append(
         Paragraph("***CONSERVAR SU COMPROBANTE ANTE CUALQUIER EVENTUALIDAD***".replace('***', '"'), styles["Center2"]))
