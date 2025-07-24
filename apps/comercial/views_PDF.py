@@ -592,8 +592,8 @@ def print_ticket_order_passenger(request, pk=None):  # Boleto de viaje boleta / 
         # [('AGENCIA DE EMBARQUE:', '', order_obj.subsidiary.name, '')] +
         # [('ORIG:', _short_name_origin, '', '')] +
 
-        [('ASIENTO:', order_obj.programming_seat.plan_detail.name, 'HORA:', str(_format_time))] +
-        [('ATENDIDO POR: ', '', order_obj.user.username.upper() + " " + order_obj.subsidiary.name)],
+        [('ASIENTO:', order_obj.programming_seat.plan_detail.name, 'HORA:', str(_format_time))],
+        # [('ATENDIDO POR: ', '', order_obj.user.username.upper() + " " + order_obj.subsidiary.name)],
         colWidths=colwiths_table)
     ana_c2.setStyle(TableStyle(style_table))
 
@@ -620,7 +620,7 @@ def print_ticket_order_passenger(request, pk=None):  # Boleto de viaje boleta / 
     else:
         origin_name = order_obj.subsidiary.short_name
     
-    route = f"SER TRANSPORTE RUTA RUTA: {origin_name} - {order_obj.destiny.name}  <br/> ASIENTO {order_obj.programming_seat.plan_detail.name}."
+    route = f"SERVICIO DE TRANSPORTE<br/>ORIGEN: {origin_name}<br/>DESTINO: {order_obj.destiny.name}<br/>ASIENTO: {order_obj.programming_seat.plan_detail.name}"
     # P0 = Paragraph(
     #     'SERVICIO DE TRANSPORTE RUTA ' + order_obj.programming_seat.programming.get_origin().short_name + ' - ' + order_obj.destiny.name + '<br/> ASIENTO ' + order_obj.programming_seat.plan_detail.name + '.',
     #     styles["Justify"])
@@ -2121,7 +2121,7 @@ def print_ticket_old(request, pk=None):  # TICKET PASSENGER OLD
     else:
         origin_name = order_obj.subsidiary.short_name
     
-    route = f"SER TRANSPORTE RUTA RUTA: {origin_name} - {order_obj.destiny.name}  <br/> ASIENTO {order_obj.programming_seat.plan_detail.name}."
+    route = f"SERVICIO DE TRANSPORTE<br/>ORIGEN: {origin_name}<br/>DESTINO: {order_obj.destiny.name}<br/>ASIENTO: {order_obj.programming_seat.plan_detail.name}"
     # P0 = Paragraph(
     #     'SERVICIO DE TRANSPORTE RUTA ' + order_obj.programming_seat.programming.get_origin().short_name + ' - ' + order_obj.destiny.name + '<br/> ASIENTO ' + order_obj.programming_seat.plan_detail.name + '.',
     #     styles["Justify"])
