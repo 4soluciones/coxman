@@ -721,6 +721,7 @@
 
         function getNroDocument() {
             let _document_number = $('#id_nro_document').val();
+            console.log(_document_number)
 
             if ((sessionStorage.getItem('document') === '01') && (_document_number.length !== 8)) {
                 toastr.warning('¡Favor de completar los caracteres requeridos: Son 8 caracteres para DNI', 'Error de Datos');
@@ -757,6 +758,54 @@
                             {#console.log(textStatus)#}
                             {#console.log(jqXhr.responseJSON.error)#}
                             toastr.error('Error de Tiempo de Espera', '¡Error de consulta!');
+                        } else {
+                            console.log(" STATUS: " + xhr + " " + textStatus);
+                        }
+                    }
+                    $('#loading-666').hide();
+                }
+            });
+        }
+
+        $(document).on('click', '#btn-search-ruc', function (e) {
+            searchRuc();
+        });
+
+        function searchRuc() {
+            let _document_number = $('#id_nro_document_2').val();
+
+            if ((sessionStorage.getItem('document') === '06') && (_document_number.length !== 11)) {
+                toastr.warning('¡Favor de completar los caracteres requeridos: Son 11 caracteres para RUC', 'Error de Datos');
+                return false;
+            }
+
+            $('#loading-666').html(loader).show();
+
+            $.ajax({
+                url: '/comercial/get_name_business/',
+                async: true,
+                dataType: 'json', // for response
+                type: 'GET',
+                data: {
+                    'nro_document': $('#id_nro_document_2').val(),
+                    'type': $('#id_document_type_2').val()
+                },
+                contentType: 'application/json;charset=UTF-8',
+                headers: {"X-CSRFToken": '{{ csrf_token }}'},
+                success: function (response, textStatus, xhr) {
+                    if (xhr.status === 200) {
+                        toastr.success(response.message, '¡Bien hecho!');
+                        $("#id_client_name_2").val(response.result);
+                        $("#id_client_address_2").val(response.address);
+                        $('#loading-666').hide();
+                    }
+                },
+                error: function (jqXhr, textStatus, xhr) { // provide a bit more info about the error to the console
+                    if (jqXhr.status === 500) {
+                        toastr.error(jqXhr.responseJSON.error, '¡Error de Consulta!');
+                    } else {
+                        if (textStatus === 'timeout') {
+                            toastr.error('Failed from timeout', '¡Error de Consulta!');
                         } else {
                             console.log(" STATUS: " + xhr + " " + textStatus);
                         }
@@ -915,6 +964,8 @@
                 return false;
             }
             let _pk = $('#id_programming_seat_id').val();
+            let cost = $('#id_cost').val().trim();
+            cost = cost.replace(/\./g, '').replace(',', '.');
             let data = {
                 "Client": $('#id_client').val(),
                 "Serial": $('#id_serial').val(),
@@ -928,7 +979,7 @@
                 "Destiny": $('#id_destiny').val(),
                 "Programming_seat_id": $('#id_programming_seat_id').val(),
                 "Type_bill": $('#id_type_bill').val(),
-                "Amount": $('#id_cost').val(),
+                "Amount": cost,
                 "Paid": $('#id_paid').val(),
                 "Turned": $('#id_turned').val(),
                 "Correlative": $('#id_correlative').val(),

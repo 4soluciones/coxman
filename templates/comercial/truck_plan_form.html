@@ -84,8 +84,6 @@
 
                     <div class="col-sm-12 col-md-6 col-lg-3 p-1">
                         <label for="id_nro_document" class="montserrat small">Numero</label>
-
-
                         <div class="input-group input-group-sm mb-3">
                             <input type="text"
                                    class="form-control"
@@ -186,13 +184,20 @@
 
                     <div class="col-sm-12 col-md-6 col-lg-3 p-1 invoice_document d-none">
                         <label for="id_nro_document_2" class="montserrat small">Numero</label>
-                        <input type="text"
-                               class="form-control form-control-sm"
-                               id="id_nro_document_2"
-                               name="nro_document_2"
-                               value="{% if entity_type_obj.document_type.id == '06' %}{{ entity_type_obj.document_number }}{% endif %}"
-                               {% if seat is None %}disabled{% endif %}
-                               maxlength="11">
+                        <div class="input-group input-group-sm mb-3">
+                            <input type="text"
+                                   class="form-control form-control-sm"
+                                   id="id_nro_document_2"
+                                   name="nro_document_2"
+                                   value="{% if entity_type_obj.document_type.id == '06' %}{{ entity_type_obj.document_number }}{% endif %}"
+                                   {% if seat is None %}disabled{% endif %}
+                                   maxlength="11">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="button" id="btn-search-ruc"><i
+                                        class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="col-sm-12 col-md-12 col-lg-7 p-1 invoice_document d-none">
@@ -201,8 +206,7 @@
                                class="form-control form-control-sm text-uppercase"
                                id="id_client_name_2"
                                name="client_name_2"
-                               value="
-                                       {% if entity_type_obj.document_type.id == '06' %}{{ entity_obj.names }}{% endif %}"
+                               value="{% if entity_type_obj.document_type.id == '06' %}{{ entity_obj.names }}{% endif %}"
                                {% if seat is None %}disabled{% endif %}
                                readonly>
 
@@ -214,8 +218,7 @@
                                class="form-control form-control-sm text-uppercase"
                                id="id_client_address_2"
                                name="client_address_2"
-                               value="
-                                       {% if entity_type_obj.document_type.id == '06' %}{{ entity_address_obj.address }}{% endif %}"
+                               value="{% if entity_type_obj.document_type.id == '06' %}{{ entity_address_obj.address }}{% endif %}"
                                {% if seat is None %}disabled{% endif %}
                                readonly>
                     </div>
