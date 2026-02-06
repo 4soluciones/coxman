@@ -1,0 +1,1597 @@
+{% extends 'home.html' %}
+{% block title %}
+    coronasoft.dev | Encomiendas
+{% endblock title %}
+
+{% block body %}
+
+    <div class="container-fluid montserrat small">
+
+        <form id="new-guide-form" action="{% url 'comercial:new_guide' %}" method="POST" autocomplete="off">
+
+
+            <div class="card-group mt-0">
+                <div class="modal-body table-responsive" id="modal-detail">
+                    <div class="row">
+                        <div class="col-sm-3 col-md-3 col-lg-3 border pl-0 pr-0">
+                            <div class="card-body pb-0">
+
+                                <h4 class="mb-3">Emision de encomiendas</h4>
+
+
+                                <div class="form-group row">
+                                    <label for="id_serie" class="col-sm-4 col-form-label pr-0">Serie / Nro de
+                                        Guía:</label>
+
+                                    <div class="col-sm-3 pl-0">
+                                        <input type="text" class="form-control text-center p-0" id="id_serie"
+                                               name="serie" readonly
+                                               value="{{ serie }}">
+
+                                    </div>
+                                    <div class="col-sm-5 pl-0">
+                                        <input type="text" class="form-control text-center" id="id_correlative"
+                                               name="correlative" readonly
+                                               value="{{ correlative }}">
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group row">
+
+                                    <label for="id_user" class="col-sm-4 col-form-label pr-0">Usuario:</label>
+
+                                    <div class="col-sm-8 pl-0">
+                                        <select id="id_user" name="user" class="form-control">
+                                            <option value="0">Seleccione..</option>
+                                            {% for us in user_subsidiary_set %}
+                                                <option {% if user.id == us.user.id %}selected{% endif %}
+                                                        value="{{ us.user.id }}">{{ us.user.username|upper }}</option>
+{#                                                <option value="{{ us.user.id }}">{{ us.user.username|upper }}</option>#}
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group row">
+                                    <label for="id_traslate_date" class="col-sm-4 col-form-label">Fecha de Emisión:</label>
+                                    <div class="col-sm-8 pl-0">
+                                        <input type="date" class="form-control" id="id_traslate_date" name="departure_date"
+                                               value="{{ date }}">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label for="id_arrival_time" class="col-sm-4 col-form-label">Hora de
+                                        Llegada:</label>
+                                    <div class="col-sm-8 pl-0">
+                                        <input type="time" class="form-control" id="id_arrival_time"
+                                               name="arrival_time" value="{{ time }}">
+                                    </div>
+
+                                </div>
+
+                                <div class="form-group row">
+                                    <label for="id_way_to_pay" class="col-sm-4 col-form-label">Forma de Pago:</label>
+                                    <div class="col-sm-8 pl-0">
+                                        <select id="id_way_to_pay" name="way_to_pay" class="form-control">
+                                            {% for item in choices_type_payments %}
+                                                <option value="{{ item.0 }}">{{ item.1 }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row mb-0">
+                                    <label for="id_type_bill" class="col-sm-4 col-form-label">Tipo de Documento a
+                                        Emitir:</label>
+                                    <div class="col-sm-8 pl-0">
+                                        <select id="id_type_bill" name="type_bill" class="form-control">
+                                            <option value="T">TICKET ENCOMIENDA</option>
+                                            <option value="B">BOLETA</option>
+                                            <option value="F">FACTURA</option>
+
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-9 col-md-9 col-lg-9 border pl-0 pr-0">
+                            <div class="card-body">
+                                <div class="form-group row">
+                                    <label for="id_subsidiary_origin" class="col-sm-1 col-form-label pr-0">Punto de
+                                        Partida:</label>
+                                    <div class="col-sm-3">
+                                        <select id="id_subsidiary_origin" name="subsidiary_origin" class="form-control"
+                                                disabled
+                                                style="font-size: .9375rem;">
+                                            <option selected value="0">Seleccione...</option>
+                                            {% for s in subsidiaries %}
+                                                <option {% if user.worker_set.last.establishment_set.last.subsidiary.id == s.id %}selected{% endif %}
+                                                        value="{{ s.id }}">{{ s.short_name }}</option>
+                                            {% endfor %}
+{#                                                                                        {% if user.worker_set.last.establishment_set.last.subsidiary.id == 1 %}#}
+{#                                                                                            <option selected value="1">AREQUIPA</option>#}
+{#                                                                                        {% endif %}#}
+{#                                                                                        {% if user.worker_set.last.establishment_set.last.subsidiary.id == 3 %}#}
+{#                                                                                            <option selected value="3">CAMANA</option>#}
+{#                                                                                        {% endif %}#}
+{#                                                                                        {% if user.worker_set.last.establishment_set.last.subsidiary.id == 2 %}#}
+{#                                                                                            <option selected value="2">PEDREGAL</option>#}
+{#                                                                                        {% endif %}#}
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <input type="text"
+                                               class="form-control text-uppercase"
+                                               id="id_address_subsidiary" name="address_subsidiary" disabled
+                                               >
+                                    </div>
+
+                                </div>
+
+                                <div class="form-group row">
+                                    <label for="id_subsidiary_destiny" class="col-sm-1 col-form-label pr-0">Punto de
+                                        Llegada:</label>
+                                    <div class="col-sm-3">
+
+                                        <select id="id_subsidiary_destiny" name="subsidiary_destiny"
+                                                class="form-control"
+                                                style="font-size: .9375rem;">
+                                                <option value="0">SELECCIONE</option>
+                                            {% for s in subsidiaries %}
+                                                {% if user.worker_set.last.establishment_set.last.subsidiary.id != s.id %}
+
+                                                    {% if user.worker_set.last.establishment_set.last.subsidiary.id == 3 %}
+                                                        <option selected value="1">AREQUIPA</option>
+
+                                                    {% endif %}
+                                                    {% if user.worker_set.last.establishment_set.last.subsidiary.id == 1 %}
+                                                        <option selected value="3">CAMANA</option>
+
+                                                    {% endif %}
+{#                                                      <option value="{{ s.id }}">{{ s.short_name }}</option>#}
+                                                {% endif %}
+                                            {% endfor %}
+
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <input type="text"
+                                               class="form-control text-uppercase"
+                                               id="id_address_destiny"
+                                               name="address_destiny"
+                                               placeholder="Escribir o seleccionar Destino">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label for="id_type_guide" class="col-sm-1 col-form-label pr-0">Tipo de
+                                        encomienda:</label>
+                                    <div class="col-sm-2">
+                                        <select id="id_type_guide" name="type_guide" class="form-control">
+                                            {% for item in choices_type_guide %}
+                                                <option value="{{ item.0 }}">{{ item.1 }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-9">
+                                        <input type="text"
+                                               class="form-control text-uppercase"
+                                               id="id_address_delivery" name="address_delivery"
+                                               readonly>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label for="document_type_sender" class="col-sm-1 col-form-label pr-0"
+                                           style="font-size: .759rem;">Remitente /
+                                        Razon
+                                        Social:</label>
+                                    <div class="col-sm-2">
+                                        <select id="document_type_sender" name="document_type_sender"
+                                                class="form-control"
+                                                style="font-size: .9375rem;">
+                                            {% for type in document_types %}
+                                                {% if type.id == '01' %}
+                                                    <option value="{{ type.id }}">DNI</option>
+                                                {% elif type.id == '06' %}
+                                                    <option value="{{ type.id }}">RUC</option>
+                                                {% elif type.id == '04' %}
+                                                    <option value="{{ type.id }}">C. EXTRANJERÍA</option>
+                                                {% elif type.id == '07' %}
+                                                    <option value="{{ type.id }}">PASAPORTE</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <input type="text" class="form-control text-uppercase"
+                                               id="id-nro-document-sender"
+                                               name="nro-document-sender"
+                                               placeholder="">
+                                    </div>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control text-uppercase" id="id_sender"
+                                               name="sender"
+                                               placeholder="">
+                                    </div>
+
+                                </div>
+
+                                <div class="form-group row address" style="display: none" style="font-size: .759rem;">
+                                    <label for="id_address_sender"
+                                           class="col-sm-1 col-form-label pr-0">Dirección:</label>
+                                    <div class="col-sm-11">
+                                        <input type="text" class="form-control text-uppercase"
+                                               id="id_address_sender"
+                                               name="adress-sender"
+                                               placeholder="">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row add-addressee main">
+                                    <label for="" class="col-sm-1 col-form-label pr-0"
+                                           style="font-size: .759rem;">Datos Destinatario:</label>
+                                    <div class="col-sm-2">
+                                        <select id="document_type_addressee" name="document_type_addressee"
+                                                class="form-control document-type-addressee"
+                                                style="font-size: .9375rem;">
+                                            {% for type in document_types %}
+                                                {% if type.id == '01' %}
+                                                    <option value="{{ type.id }}">DNI</option>
+                                                {% elif type.id == '06' %}
+                                                    <option value="{{ type.id }}">RUC</option>
+                                                {% elif type.id == '04' %}
+                                                    <option value="{{ type.id }}">C. EXTRANJERÍA</option>
+                                                {% elif type.id == '07' %}
+                                                    <option value="{{ type.id }}">PASAPORTE</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <input type="text" class="form-control text-uppercase nro-document-addressee"
+                                               id="id-nro-document-addressee"
+                                               name="nro-document-addressee"
+                                               placeholder="">
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <input type="text" class="form-control text-uppercase name-addressee"
+                                               id="id_addressee"
+                                               name="addressee"
+                                               placeholder="">
+                                    </div>
+                                    <div class="col-sm-2 pl-0 pr-0">
+                                        {#                                <input type="text" class="form-control phone"#}
+                                        {#                                       id="id_phone"#}
+                                        {#                                       name="phone"#}
+                                        {#                                       placeholder="TELF. CONTACTO">#}
+                                        <div class="input-group mb-3">
+                                            <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                            <input type="text" class="form-control phone-addressee" maxlength="9"
+                                                   aria-label="">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-1">
+                                        <button type="button" class="btn btn-outline-success btn-block"
+                                                id="id-add-new-addressee">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                    </div>
+
+                                </div>
+
+{#                                <div class="form-group row mb-0">#}
+{#                                    <label for="" class="col-sm-1 col-form-label">Caja:</label>#}
+{#                                    <div class="col-sm-2">#}
+{#                                        <select id="id_cash" name="id_cash_efectivo"#}
+{#                                                class="form-control text-uppercase"#}
+{#                                                aria-selected="Text input with radio button">#}
+{#                                            {% for c in cash_set %}#}
+{#                                                <option value="{{ c.id }}">{{ c.name }}</option>#}
+{#                                            {% endfor %}#}
+{##}
+                                            {#                                    {% if user.worker_set.last.establishment_set.last.subsidiary.id != 3 %}#}
+                                            {#                                        <option value="2">CAJA ENCOMIENDAS AQP</option>#}
+                                            {#                                    {% endif %}%#}
+                                            {#                                    {% if user.worker_set.last.establishment_set.last.subsidiary.id != 1 %}#}
+                                            {#                                        <option value="5">CAJ. ENCOMIENDAS MOLL.</option>#}
+                                            {#                                    {% endif %}%#}
+                                            {#{% for c in choices_account %}#}
+                                            {#<option value="{{ c.id }}">{{ c.name }}</option>#}
+                                            {#{% endfor %}#}
+{#                                        </select>#}
+{#                                    </div>#}
+{##}
+{#                                    <div class="col-sm-2">#}
+{#                                        <input type="text" class="form-control" id="id_cash_date"#}
+{#                                               name="cash_date" value="" readonly>#}
+{#                                        <input type="checkbox" id="demo" name="demo" value="0" hidden>#}
+{#                                    </div>#}
+{##}
+{#                                    <div class="col-sm-3">#}
+{#                                        <input type="text" class="form-control" id="id_cash_status" style="width: 100%;"#}
+{#                                               name="status-cash" value="" readonly>#}
+{#                                    </div>#}
+{##}
+{##}
+                                    <div class="col-sm-4 pl-0 ">
+                                        <div class="input-group mb-3">
+                                            <span class="input-group-text">CÓDIGO:</span>
+                                            <input type="text" class="form-control text-center" id="id_code"
+                                                   maxlength="4"
+                                                   aria-label="" placeholder="****">
+                                        </div>
+                                    </div>
+{##}
+                                    {#                            <div class="col-sm-3">#}
+                                    {#                                <input type="text" class="form-control" id="id_cash_status" style="width: 100%;"#}
+                                    {#                                       name="status-cash" value="" readonly>#}
+                                    {#                            </div>#}
+{##}
+                                    {#                            <div class="col-sm-4">#}
+                                    {#                                <button type="button"#}
+                                    {#                                        class="btn btn-outline-dark btn-add-detail text-uppercase btn-block"#}
+                                    {#                                        data-toggle="modal" disabled#}
+                                    {#                                        data-target="#modal-add-detail">Agregar Detalles#}
+                                    {#                                </button>#}
+                                    {#                            </div>#}
+{##}
+{#                                </div>#}
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="card-group">
+
+                <div class="card" style="flex-grow: 4">
+                    <div class="card-body table-responsive">
+
+                        <table class="table table-borderless text-uppercase m-0">
+                            <tbody id="header_detail">
+                            <tr class="bg-gray">
+                                <td class="" width="10%">
+                                    <label class="">Cantidad</label>
+                                    <input type="number" class="form-control text-right" id="id-quantity"
+                                           name="quantity" min="1" step="1" value="1"
+                                           placeholder="">
+                                </td>
+                                <td class="" width="40%">
+                                    <label class="">Descripcion</label>
+                                    <input type="text" class="form-control text-uppercase" id="id-description"
+                                           name="description"
+                                           placeholder="">
+                                </td>
+                                <td class="" width="10%">
+                                    <label class="">Unidad</label>
+                                    <select id="id_unit" name="unit" class="form-control">
+                                        {% for u in unit_set %}
+                                            <option value="{{ u.id }}">{{ u.description }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                                {#                                <td class="" width="10%">#}
+                                {#                                    <label class="">Peso</label>#}
+                                {##}
+                                {#                                    <input type="number" class="form-control text-center" id="id-weight"#}
+                                {#                                           name="weight" value="0" min="0"#}
+                                {#                                           placeholder="0.0Kg">#}
+                                {#                                </td>#}
+                                <td class="" width="10%">
+                                    <label class="">Precio Unit.</label>
+
+                                    <input type="number" class="form-control text-right" id="id-price-unit"
+                                           name="price" value="0" min="0"
+                                           placeholder="">
+                                </td>
+                                <td class="dollar-table2" width="10%">
+                                    <label class="">Importe</label>
+                                    <input type="number" class="form-control text-right" id="id-amount"
+                                           name="amount" value="0" min="0"
+                                    >
+                                </td>
+                                <td class="" width="10%">
+                                    <label class="">Accion</label>
+                                    <button type="button" id="id_add" class="btn btn-block btn-pink">Agregar Detalle
+                                    </button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                        <table class="table table-bordered text-uppercase m-0">
+                            <thead>
+                            <tr class="bg-light">
+                                <th class="align-middle text-center" style="display: none">#</th>
+                                <th class="align-middle text-center" style="width: 10%;">Cantidad</th>
+                                <th class="align-middle text-center" style="width: 40%;">Descripcion</th>
+                                <th class="align-middle text-center" style="width: 10%;">Unidad</th>
+                                {#                                <th class="align-middle text-center" style="width: 10%;">Peso</th>#}
+                                <th class="align-middle text-center" style="width: 10%;">Precio Unitario</th>
+                                <th class="align-middle text-center" style="width: 10%;">Importe</th>
+                                <th class="align-middle text-center" style="width: 10%;">Acción</th>
+                            </tr>
+                            </thead>
+                            <tbody id="id_table_detail">
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <td colspan="4" class="border-0"></td>
+                                <td class="font-weight-bold">Subtotal:</td>
+                                <td class="sub_total text-right dollar" colspan="1"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="4" class="border-0"></td>
+                                <td class="font-weight-bold">IGV (18%):</td>
+                                <td class="igv text-right dollar" colspan="1"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="4" class="border-0"></td>
+                                <td class="font-weight-bold">Total:</td>
+                                <td class="total text-right dollar" colspan="1"></td>
+                            </tr>
+                            </tfoot>
+                        </table>
+
+                        <hr class="mb-4">
+
+                        <button type="submit" id="id-btn-save" class="btn btn-primary btn-block text-uppercase">
+                            Guardar
+
+                        </button>
+
+
+                        <div class="card" style="flex-grow: 1">
+                            <div class="card-body">
+                                <div class="form-group row">
+                                    <label for="document_type_sender"
+                                           class="col-sm-1 col-form-label">Programación:</label>
+                                    <div class="col-sm-3">
+                                        <select id="id_search_programming" name="search_programming"
+                                                class="form-control">
+                                            <option selected value="0">Seleccione Programación..</option>
+                                            {% for p in programming_set %}
+                                                <option value="{{ p.id }}">{{ p.truck.license_plate }}
+                                                    | {{ p.get_pilot.full_name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+
+
+                                    <label for="id_plate" class="col-form-label col-sm-1">Placa:</label>
+                                    <input type="text" class="form-control col-sm-1" name="plate" id="id_plate"
+                                           readonly>
+
+                                    <label for="id_driver" class="col-form-label col-sm-1 pr-0">Conductor:</label>
+                                    <input type="text" class="form-control col-sm-2 pr-0 pl-0" name="driver"
+                                           id="id_driver" readonly>
+
+                                    <label for="id_destiny" class="col-form-label col-sm-1">Destino:</label>
+                                    <input type="text" class="form-control col-sm-1" name="destiny" id="id_destiny"
+                                           readonly>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+                {#                <div class="card" style="flex-grow: 1">#}
+                {#                    <div class="card-body">#}
+                {##}
+                {##}
+                {#                        <label for="document_type_sender" class="col-form-label">Programación:</label>#}
+                {##}
+                {#                        <select id="id_search_programming" name="search_programming" class="form-control">#}
+                {#                            <option selected value="0">Seleccione Programación..</option>#}
+                {#                            {% for p in programming_set %}#}
+                {#                                <option value="{{ p.id }}">{{ p.truck.license_plate }}#}
+                {#                                    | {{ p.get_pilot.full_name }}</option>#}
+                {#                            {% endfor %}#}
+                {#                        </select>#}
+                {##}
+                {#                        <label for="id_plate" class="col-form-label">Placa:</label>#}
+                {#                        <input type="text" class="form-control" name="plate" id="id_plate" readonly>#}
+                {##}
+                {#                        <label for="id_driver" class="col-form-label">Conductor:</label>#}
+                {#                        <input type="text" class="form-control" name="driver" id="id_driver" readonly>#}
+                {##}
+                {#                        <label for="id_origin" class="col-form-label">Origen - Destino:</label>#}
+                {#                        <input type="text" class="form-control" name="origin" id="id_origin" readonly>#}
+                {##}
+                {#<label for="id_destiny" class="col-form-label">Destino:</label>#}
+                {#<input type="text" class="form-control" name="destiny" id="id_destiny" readonly>#}
+                {##}
+                {#                        <h4 class="mb-3 text-uppercase">Encomiendas pendientes</h4>#}
+                {##}
+                {#                        <button type="button" class="btn btn-green mr-1 btn-selectall">#}
+                {#                            <i class="fas fa-check-circle" id="btn-selectall"></i> Seleccionar todo#}
+                {#                        </button>#}
+                {#                        <button type="button" class="btn btn-primary mr-1 btn-undoselect">#}
+                {#                            <i class="fas fa-undo-alt" id="btn-undoselect"></i> Deseleccionar todo#}
+                {#                        </button>#}
+                {#                        <button type="button" class="btn btn-danger mr-1 btn-asign"#}
+                {#                                onclick="buttonPushed()">#}
+                {#                            <i class="fas fa-check-double" id="btn-asign"></i> Asignar Encomiendas#}
+                {#                            Seleccionadas#}
+                {#                        </button>#}
+                {##}
+                {#                        <button type="button" class="btn btn-outline-success mr-1" onclick="printbutton()"#}
+                {#                                id="btn-asign-manifest">#}
+                {#                            <i class="fas fa-file-alt"></i> Generar Manifiesto#}
+                {#                        </button>#}
+                {##}
+                {#                        <div class="table-responsive pt-1" id="manifest-grid-list"></div>#}
+                {##}
+                {#                    </div>#}
+                {#                </div>#}
+
+            </div>
+
+
+            <div class="mr-3 ml-0" style="
+        display: none;
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        background: #e9ecef;
+        opacity: 0.5;
+        width: 100%;
+        height: 46em;
+        padding-top: 21em;" id="loading-666">
+            </div>
+
+        </form>
+    </div>
+    <div class="card-group">
+
+        <div class="card mt-3 ml-3" style="flex-grow: 3">
+            <div class="card-body mt-1 table-responsive">
+
+                <h4 class="mb-3 text-uppercase">Encomiendas pendientes</h4>
+
+                <button type="button" class="btn btn-green mr-1 btn-selectall">
+                    <i class="fas fa-check-circle" id="btn-selectall"></i>
+                </button>
+                <button type="button" class="btn btn-danger mr-1 btn-undoselect">
+                    <i class="fas fa-window-close" id="btn-undoselect"></i>
+                </button>
+                {#                <button type="button" class="btn btn-primary mr-1 btn-asign"#}
+                {#                        onclick="buttonPushed()">#}
+                {#                    <i class="fas fa-sign-in-alt" id="btn-asign"></i> Asignar Encomiendas#}
+                {#                </button>#}
+                <div class="table-responsive pt-1" id="guide_programming_unassign_list">
+                    {% include 'comercial/guide_programming_unassign_list.html' %}
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-3" style="flex-grow: 1">
+            <div class="card-body mt-1 pr-3 table-responsive">
+                <button type="button" class="btn btn-block btn-primary btn-asign"
+                        onclick="buttonPushedGuide()">
+                    <i class="fas fa-arrow-alt-circle-right" id="btn-asign"></i> Asignar
+                </button>
+
+                <button type="button" class="btn btn-block btn-danger mt-3" onclick="buttonUndoPushedGuide()">
+                    <i class="fas fa-arrow-circle-left"></i> Liberar
+                </button>
+            </div>
+        </div>
+
+        <div class="card mt-3 mr-3" style="flex-grow: 3">
+            <div class="card-body mt-1 table-responsive">
+
+                <h4 class="mb-3 text-uppercase">Encomiendas asignadas a un manifiesto</h4>
+
+                <button type="button"
+                        class="btn btn-green mr-1 btn-selectall-programmings">
+                    <i class="fas fa-check-circle"></i>
+                </button>
+
+                <button type="button" class="btn btn-danger mr-1 btn-undoselect-programmings">
+                    <i class="fas fa-window-close"></i>
+                </button>
+
+                {#                <button type="button" class="btn btn-danger mr-1" onclick="buttonUndoPushedGuide()">#}
+                {#                    <i class="fas fa-window-close"></i>#}
+                {#                </button>#}
+                {#                <button type="button" class="btn btn-outline-success mr-1" onclick="printbutton()"#}
+                {#                        id="btn-asign-manifest">#}
+                {#                    <i class="fas fa-file-alt"></i> Generar Manifiesto#}
+                {#                </button>#}
+
+                <div class="table-responsive pt-1" id="guide_programming_assign_list">
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <a download="info.txt" id="downloadFile" style="display: none">Download</a>
+
+    {#    MODAL DE DETAIL#}
+    <div class="modal fade" id="modal-add-detail" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header text-center">
+                    <h5 class="modal-title" id="exampleModalLabel">INGRESAR DETALLES DE LA ENCOMIENDA</h5>
+                    <button type="button" class="close ml-0" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="add-detail">
+                    ...
+                </div>
+                <div class="modal-footer">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style type="text/css">
+
+        .dollar {
+        {#display: inline-block;#} position: relative;
+        }
+
+        .dollar input {
+            padding-left: 6px;
+        }
+
+        .dollar:before {
+            content: "S/. ";
+            left: 4px;
+            top: 3px;
+        }
+
+        .dollar-table {
+        {#display: inline-block;#} position: relative;
+        }
+
+        .dollar-table input {
+            padding-left: 6px;
+        }
+
+        .dollar-table:before {
+            position: absolute;
+            content: "S/.";
+            left: 12px;
+            top: 10px;
+        }
+    </style>
+
+{% endblock body %}
+
+{% block extrajs %}
+    <script type="text/javascript">
+
+        loader = '<div class="container">' +
+            '<div class="row">' +
+            '<div class="col-md-12">' +
+            '<div class="loader">' +
+            '<p>Cargando...</p>' +
+            '<div class="loader-inner"></div>' +
+            '<div class="loader-inner"></div>' +
+            '<div class="loader-inner"></div>' +
+            '</div>' +
+            '</div>' +
+            '</div>' +
+            '</div>';
+
+        $('#id_search_programming').select2({
+            theme: 'bootstrap4',
+        });
+
+
+        /*$("#selected_company").parent('div').find('div.dropdown-menu a.dropdown-item').removeAttr('selected');
+        $("#selected_company").parent('div').find('div.dropdown-menu a.dropdown-item[pk="3"]').attr('selected', 'selected');
+        let _title = $("#selected_company").parent('div').find('div.dropdown-menu a.dropdown-item[pk="3"]').text();
+        $("#selected_company").html(`<i class="fas fa-user-cog"></i> ${_title}`);*/
+
+        {#console.log({{ user.id }})#}
+
+        $("#id-nro-document-sender").attr('maxlength', 8);
+        $("#id-nro-document-addressee").attr('maxlength', 8);
+
+        sessionStorage.setItem('document', '01');
+        sessionStorage.setItem('document2', '01');
+
+        $(document).on('click', '#id-add-new-addressee', function () {
+            $(".add-addressee.main").after('<div class="form-group row add-addressee">' +
+                '                            <label for="" class="col-sm-1 col-form-label"></label>' +
+                '                            <div class="col-sm-2">' +
+                '                                <select class="form-control document-type-addressee"' +
+                '                                        style="font-size: .9375rem;">' +
+                '                                            <option value="01">DNI</option>' +
+                '                                            <option value="06">RUC</option>' +
+                '                                            <option value="04">CARNET DE EXTRANJERÍA</option>' +
+                '                                            <option value="07">PASAPORTE</option>' +
+                '                                </select>' +
+                '                            </div>' +
+                '                            <div class="col-sm-2">' +
+                '                                <input type="text" class="form-control text-uppercase nro-document-addressee"' +
+                '                                       maxlength="8">' +
+                '                            </div>' +
+                '                            <div class="col-sm-4">' +
+                '                                <input type="text" class="form-control text-uppercase name-addressee">' +
+                '                            </div>' +
+                '                             <div class="col-sm-2 pl-0 pr-0">' +
+                '                                <div class="input-group mb-3">' +
+                '                                   <span class="input-group-text">' +
+                '                                       <i class="fas fa-phone"></i>' +
+                '                                     </span>' +
+                '                                    <input type="text" class="form-control phone-addressee" maxlength="9" aria-label="">' +
+                '                                 </div>' +
+                '                            </div>' +
+                '                            <div class="col-sm-1">' +
+                '                                <button type="button" class="btn btn-outline-danger btn-block delete-row-addressee" >' +
+                '                                    <i class="fas fa-minus"></i>' +
+                '                                </button>' +
+                '                            </div>' +
+                '                        </div>');
+
+        });
+
+
+        $(document).on('click', '.delete-row-addressee', function () {
+
+            $(this).parent('div').parent('div').remove();
+
+        });
+
+        $(document).on('click', '#id_add', function () {
+
+            let id_product = $('#id_product').val();
+            let description = $('#id-description').val();
+            let quantity = parseInt($('#id-quantity').val());
+            let price_unit = parseFloat($('#id-price-unit').val()).toFixed(2);
+            let amount = $('#id-amount').val();
+            {#let weight = $('#id-weight').val();#}
+            let id_unit = $('#id_unit').val();
+            let name_unit = $('#id_unit option:selected').text();
+
+            if (isNaN(quantity)) {
+                toastr.warning("La cantidad debe ser mayor a 0");
+                return false;
+            }
+            if (description === '') {
+                toastr.warning("Favor de ingresar una descripcion");
+                return false;
+            }
+            if (price_unit === '') {
+                toastr.warning("Favor de ingresar una Precio Unitario");
+                return false;
+            }
+
+            $('#id_table_detail').append(
+                '<tr product="' + id_product + '">' + '' +
+                '<td class="align-middle" style="display: none">' + '</td>' +
+                '<td class="align-middle text-right item-quantity">' + quantity + '</td>' +
+                '<td class="align-middle item-description">' + description + '</td>' +
+                '<td class="align-middle item-unit text-center" pu="' + id_unit + '">' + name_unit + '</td>' +
+                {#'<td class="align-middle text-center item-weight">' + weight + '</td>' +#}
+                '<td class="align-middle text-right item-price-unit dollar">' + price_unit + '</td>' +
+                '<td class="align-middle text-right item-amount dollar">' + amount + '</td>' +
+                '<td class="align-middle text-right text-center"> ' + "<button type='button' " +
+                "class='btn btn-danger delete-detail'><i class='fa fa-trash'></i></button>" + "</td>" +
+                '</tr>'
+            );
+            counterStrike();
+            $('#id-quantity').val('1');
+            $('#id-description').val('')
+            $('#id-price-unit').val('');
+            $('#id-amount').val('');
+            $('#id-weight').val('');
+            calculate_sum()
+
+            {#toastr.info('Producto agregado con exito.', '¡Mensaje!');#}
+
+        });
+
+
+        function deleteItem($id) {
+            $('#id_table_detail').find('tr[id="' + $id + '"]').remove();
+            $('.sub_total').text('');
+            $('.igv').text('');
+            $('.total').text('');
+            counterStrike();
+            calculate_sum()
+        }
+
+        function counterStrike() {
+            let l = 1;
+            $('#id_table_detail tr').each(function () {
+                $(this).attr('i', l);
+                $(this).children('td:first').text(l);
+                $(this).attr('onclick', 'deleteItem(' + l + ')');
+                $(this).attr('id', l);
+                l++;
+            });
+        }
+
+        function hasRowDetails() {
+            let _response = false;
+            if ($("#id_table_detail tr").length > 0) {
+                _response = true;
+            }
+            return _response;
+        }
+
+        $('#new-guide-form').submit(function (event) {
+
+            event.preventDefault();
+
+            if (($('#id_subsidiary_origin').val() === '0')) {
+                toastr.warning('¡Favor de seleccionar una Sucursal de Origen!', 'Error de Llenado!');
+                $('#id_subsidiary_origin').focus()
+                return false;
+            }
+            if (($('#id_subsidiary_destiny').val() === '0')) {
+                toastr.warning('¡Favor de seleccionar una Sucursal de Destino!', 'Error de Llenado!');
+                $('#id_subsidiary_destiny').focus()
+                return false;
+            }
+            if (($('#id_user').val() === '0')) {
+                toastr.warning('¡Favor de seleccionar Usuario!', 'Error de Llenado!');
+                $('#id_user').focus()
+                return false;
+            }
+            /*if (($('#id-nro-document-sender').val() === '')) {
+                toastr.warning('¡Favor de ingresar un Remitente!', 'Error de Llenado!');
+                $('#id-nro-document-sender').focus()
+                return false;
+            }*/
+            /*if (($('#id-nro-document-addressee').val() === '')) {
+                toastr.warning('¡Favor de ingresar un Destinatario!', 'Error de Llenado!');
+                $('#id-nro-document-addressee').focus()
+                return false;
+            }*/
+            if (hasRowDetails() === false) {
+                toastr.warning('¡Favor de llenar los detalles de la Encomienda..!', 'Error de LLenado!');
+                return false;
+            }
+
+            let orders = {
+                "Details": [],
+                "Subsidiary_origin": $('#id_subsidiary_origin').val(),
+                "Subsidiary_destiny": $('#id_subsidiary_destiny').val(),
+                'Client_Sender_nro_document': $('#id-nro-document-sender').val(),
+                'Client_Sender': $('#id_sender').val(),
+                'Client_Address_Sender': $('#id_address_sender').val(),
+                'Client_Sender_type': $('#document_type_sender').val(),
+                {#'Client_Addressee': $('#id_addressee').val(),#}
+                {#'Client_Addressee_nro_documen': $('#id-nro-document-addressee').val(),#}
+                {#'Client_Addressee_type': $('.document_type_addressee').val(),#}
+                "Serial": $('#id_serie').val(),
+                "Type": $('#id_type_bill').val(),
+                "Correlative": $('#id_correlative').val(),
+                "Date_traslate": $('#id_traslate_date').val(),
+                "Arrival_Time": $('#id_arrival_time').val(),
+                "Way_to_pay": $('#id_way_to_pay').val(),
+                "Igv": $(this).find('td.igv').text(),
+                "Sub_total": $(this).find('td.sub_total').text(),
+                "Total": $(this).find('td.total').text(),
+                "Demo": ($('#demo').is(':checked')) ? 1 : 0,
+                {#"Cash": $('#id_cash').val(),#}
+                "Code": $('#id_code').val(),
+                "User": $('#id_user').val(),
+                "Type_Guide": $('#id_type_guide').val(),
+                "Address_Delivery": $('#id_address_delivery').val(),
+                "Addressees": []
+            };
+            // Recorre cada detalle de producto (son 2 arrays) each -> recorre
+
+            $("#id_table_detail tr").each(function () {
+                let detailObj = {
+
+                    "Quantity": $(this).find("td.item-quantity").text(),
+                    "Description": $(this).find("td.item-description").text(),
+                    "Price_unit": $(this).find("td.item-price-unit").text(),
+                    "Amount": $(this).find('td.item-amount').text(),
+                    "Weight": $(this).find('td.item-weight').text() !== '' ? $('td.item-weight').text() : 0,
+                    "Unit": $(this).find("td.item-unit").attr('pu')
+                };
+                orders.Details.push(detailObj);
+
+            });
+            let addresseeObj = {};
+            $(".add-addressee").each(function () {
+                addresseeObj = {
+                    "DocumentType": $(this).find("select.document-type-addressee").val(),
+                    "DocumentNumber": $(this).find("input.nro-document-addressee").val(),
+                    "Name": $(this).find("input.name-addressee").val(),
+                    "Phone": $(this).find("input.phone-addressee").val(),
+                }
+                orders.Addressees.push(addresseeObj);
+            });
+
+            {#console.log(JSON.stringify(addresseeObj));#}
+            {#console.log(JSON.stringify(orders));#}
+
+            $('#loading-666').html(loader).show();
+            {#$('#id-btn-save').prop( "disabled", true );#}
+            $("#id-btn-save").slideUp("fast");
+
+            $.ajax({
+                url: '/comercial/create_order/',
+                async: true,
+                dataType: 'json', // for response
+                type: 'GET',
+                data: {'orders': JSON.stringify(orders)},
+                contentType: 'application/json;charset=UTF-8',
+                headers: {"X-CSRFToken": '{{ csrf_token }}'},
+                success: function (response, textStatus, xhr) {
+                    if (xhr.status === 200) {
+                        toastr.success(response.message, '¡ENCOMIENDA REGISTRADA CORRECTAMENTE!');
+                        {#if (response.document_type === 'G') {#}
+                        {#    window.location.href = "/comercial/print_ticket_order_commodity/" + response.order_id + "/";#}
+                        {##}
+                        {# } else if (response.document_type === 'B') {#}
+                        {#    window.location.href = "/comercial/print_bill_order_commodity/" + response.order_id + "/";#}
+                        {# }#}
+                        //let dummyText = 'WARE[' + response.serial + '-' + response.correlative + ']';
+                        let codeText = 'WARE[' + response.serial + '-' + response.correlative + ']' + '|' + response.order_id + '|' + response.document_type;
+                        sendFirebase(codeText, response.userSubsidiary, response.userOffice, response.userPrinter)
+                        {#console.log(`dummyText: ${dummyText}`)#}
+                        {#existTokenCommodity(response.order_id, response.document_type, dummyText);#}
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1000);
+                        $('#loading-666').hide();
+                    }
+                },
+                error: function (jqXhr, textStatus, xhr) { // provide a bit more info about the error to the console
+                    if (jqXhr.status === 500) {
+                        toastr.error(jqXhr.responseJSON.error, '¡Error de consulta!');
+                    }
+                    $('#loading-666').hide();
+                }
+            });
+        });
+
+        function sendFirebase(codeText, userSubsidiary, userOffice, userPrinter) {
+            firebase.database().ref(`printers/Dalit/${userSubsidiary}/${userOffice}/${userPrinter}/commodity`).set(codeText);
+        }
+
+
+        $("#id_subsidiary_origin").change(function () {
+
+
+            if ($("#id_subsidiary_origin").val() !== '') {
+
+                $.ajax({
+                    url: '/comercial/get_address_subsidiary_by_id/',
+                    async: true,
+                    dataType: 'json', // for response
+                    type: 'GET',
+                    data: {'subsidiary_id': $("#id_subsidiary_origin").val()},
+                    contentType: 'application/json;charset=UTF-8',
+                    headers: {"X-CSRFToken": '{{ csrf_token }}'},
+                    success: function (response, textStatus, xhr) {
+                        if (xhr.status === 200) {
+                            {#toastr.success(response.message, '¡Bien hecho!');#}
+                            $("#id_address_subsidiary").val(response.address_subsidiary);
+                        }
+                    },
+
+                    fail: function (response) {
+                        toastr.error("Error. ", '¡Inconcebible!');
+                    }
+                });
+            }
+        });
+
+        $("#id_subsidiary_destiny").change(function () {
+
+            if ($("#id_subsidiary_destiny").val() !== '') {
+                $.ajax({
+                    url: '/comercial/get_address_subsidiary_by_id/',
+                    async: true,
+                    dataType: 'json', // for response
+                    type: 'GET',
+                    data: {'subsidiary_id': $("#id_subsidiary_destiny").val()},
+                    contentType: 'application/json;charset=UTF-8',
+                    headers: {"X-CSRFToken": '{{ csrf_token }}'},
+                    success: function (response, textStatus, xhr) {
+                        if (xhr.status === 200) {
+                            {#toastr.success(response.message, '¡Bien hecho!');#}
+                            $("#id_address_destiny").val(response.address_subsidiary);
+                        }
+                    },
+                    fail: function (response) {
+                        toastr.error("Error. ", '¡Inconcebible!');
+                    }
+                });
+            } else {
+                $("#id_address_destiny").val('');
+            }
+        });
+
+        $(document).on('click', '.btn-add-detail', function () {
+
+            $.ajax({
+                url: '/comercial/get_add_detail/',
+                async: true,
+                dataType: 'json',
+                type: 'GET',
+                data: {},
+                success: function (response) {
+                    $('#add-detail').html(response.grid);
+                },
+                fail: function (response) {
+                    console.log("error");
+                }
+            });
+        });
+
+        $("#id_type_bill").change(function () {
+            let _document_type = $(this).val();
+            calculate_sum();
+            getSerialAndCorrelativeCommodity(_document_type)
+            let type = $('#id_type_bill').val();
+            if (type === 'F') {
+                $('.address').css('display', 'flex');
+                $('#document_type_sender').val('06');
+                $('#document_type_sender').trigger('change');
+
+            } else {
+                $('.address').css('display', 'none');
+                $('#document_type_sender').val('01');
+                $('#document_type_sender').trigger('change');
+            }
+        });
+
+        /*function getSerialAndCorrelative($document_type){
+            $.ajax({
+                url: '/comercial/get_correlative_document/',
+                async: true,
+                dataType: 'json',
+                type: 'GET',
+                data: {
+                    'document_type': $document_type,
+                    'programming_id': programming_id,
+                },
+                success: function (response, textStatus, xhr) {
+                    if (xhr.status === 200) {
+                        $('#id_correlative').val(response['correlative']);
+                        $('#id_serial').val(response['serial']);
+                    }
+                },
+                fail: function (response) {
+                    console.log("error");
+                }
+            });
+        }*/
+
+
+        $(document).on('change', '#document_type_sender', function () {
+            let _val = $(this).val();
+            if (_val === '01') {
+                $("#id-nro-document-sender").attr('maxlength', 8);
+                sessionStorage.setItem('document', '01')
+                $('#id-nro-document-sender').val('');
+                $('#id_sender').val('');
+                $('#id_address_sender').val('');
+            } else if (_val === '06') {
+                $("#id-nro-document-sender").attr('maxlength', 11);
+                sessionStorage.setItem('document', '06')
+                $('#id-nro-document-sender').val('');
+                $('#id_sender').val('');
+            } else if (_val === '04' || _val === '07') {
+                $("#id-nro-document-sender").attr('maxlength', 20);
+                sessionStorage.setItem('document', '')
+            }
+        });
+
+        $(document).on('change', '#document_type_addressee', function () {
+            let _val = $(this).val();
+            if (_val === '01') {
+                $("#id-nro-document-addressee").attr('maxlength', 8);
+                sessionStorage.setItem('document2', '01')
+            } else if (_val === '06') {
+                $("#id-nro-document-addressee").attr('maxlength', 11);
+                sessionStorage.setItem('document2', '06')
+            } else if (_val === '04' || _val === '07') {
+                $("#id-nro-document-addressee").attr('maxlength', 20);
+                sessionStorage.setItem('document2', '')
+            }
+        });
+
+        function calculate_sum() {
+
+            let sub_total;
+            let igv;
+            let amount;
+            let sum_amount = 0;
+            let type = $('#id_type_bill').val()
+            if (type === 'F') {
+                $("#id_table_detail tr").each(function () {
+                    amount = parseFloat($(this).find("td.item-amount").text(),);
+                    sum_amount = sum_amount + amount;
+                    sub_total = sum_amount / 1.18;
+                    igv = sum_amount - sub_total
+                    $(".sub_total").text(sub_total.toFixed(2));
+                    $(".igv").text(igv.toFixed(2));
+                    $(".total").text(sum_amount.toFixed(2));
+                });
+            } else {
+                $("#id_table_detail tr").each(function () {
+                    amount = parseFloat($(this).find("td.item-amount").text(),);
+                    sum_amount = sum_amount + amount;
+                    $(".total").text(sum_amount.toFixed(2));
+                    $(".sub_total").text('');
+                    $(".igv").text('');
+                });
+            }
+        }
+
+        $('#id-nro-document-sender').keypress(function (e) {
+
+            if (e.keyCode === 13) {
+
+                e.preventDefault()
+
+                $(this).trigger("enterKey");
+
+                let _document_number = $('#id-nro-document-sender').val();
+
+                if ((sessionStorage.getItem('document') === '01') && (_document_number.length !== 8)) {
+                    toastr.warning('¡Favor de completar los caracteres requeridos: 8 caracteres para DNI', 'Error de Datos');
+                    return false;
+                } else {
+                    if ((sessionStorage.getItem('document') === '06') && (_document_number.length !== 11)) {
+                        toastr.warning('¡Favor de completar los caracteres requeridos: 11 caracteres para RUC!', 'Error de Datos');
+                        return false;
+                    }
+                }
+                $('#loading-666').html(loader).show()
+
+                $.ajax({
+                    url: '/comercial/get_name_business/',
+                    async: true,
+                    dataType: 'json', // for response
+                    type: 'GET',
+                    data: {
+                        'nro_document': $('#id-nro-document-sender').val(),
+                        'type': $('#document_type_sender').val(),
+                    },
+                    contentType: 'application/json;charset=UTF-8',
+                    headers: {"X-CSRFToken": '{{ csrf_token }}'},
+                    success: function (response, textStatus, xhr) {
+                        if (xhr.status === 200) {
+                            toastr.success(response.message, '¡Bien hecho!');
+                            $("#id_sender").val(response.result);
+                            $("#id_address_sender").val(response.address);
+                            $('#loading-666').hide();
+                        }
+                    },
+                    error: function (jqXhr, textStatus, xhr) {
+                        if (jqXhr.status === 500) {
+                            toastr.error(jqXhr.responseJSON.error, '¡Error de Consulta!');
+                        } else {
+                            if (textStatus === 'timeout') {
+                                toastr.error('Failed from timeout', '¡Error de Consulta!');
+                            } else {
+                                console.log(" STATUS: " + xhr + " " + textStatus);
+                            }
+                        }
+                        $('#loading-666').hide();
+                    }
+                });
+                return false;
+            }
+        });
+
+
+        $(document).on('keypress', '.nro-document-addressee', function (e) {
+
+            if (e.keyCode === 13) {
+
+                e.preventDefault()
+
+                $(this).trigger("enterKey");
+
+                let _input = $(this);
+                let _document_number = $(this).val();
+                let _type = $(this).parent('div.col-sm-2').siblings('div.col-sm-2').before().children('select').val();
+
+                if ((sessionStorage.getItem('document2') === '01') && (_document_number.length !== 8)) {
+                    toastr.warning('¡Favor de completar los caracteres requeridos: 8 caracteres para DNI', 'Error de Datos');
+                    return false;
+                } else {
+                    if ((sessionStorage.getItem('document2') === '06') && (_document_number.length !== 11)) {
+                        toastr.warning('¡Favor de completar los caracteres requeridos: 11 caracteres para RUC!', 'Error de Datos');
+                        return false;
+                    }
+                }
+                $('#loading-666').html(loader).show();
+                $.ajax({
+                    url: '/comercial/get_name_business/',
+                    async: true,
+                    dataType: 'json', // for response
+                    type: 'GET',
+                    data: {
+                        'nro_document': _document_number,
+                        'type': _type
+                    },
+                    contentType: 'application/json;charset=UTF-8',
+                    headers: {"X-CSRFToken": '{{ csrf_token }}'},
+                    success: function (response, textStatus, xhr) {
+                        if (xhr.status === 200) {
+                            {#toastr.success(response.message, '¡Bien hecho!');#}
+                            _input.parent('div.col-sm-2').next('div.col-sm-4').children('input').val(response.result);
+                            _input.parent('div.col-sm-2').next('div.col-sm-4').next('div.col-sm-2').children('div.input-group').children('input').val(response.phone);
+                            {#$("#id_addressee").val(response.result);#}
+                            $('#loading-666').hide();
+                        }
+                    },
+                    error: function (jqXhr, textStatus, xhr) {
+                        if (jqXhr.status === 500) {
+                            toastr.error(jqXhr.responseJSON.error, '¡Error de Consulta!');
+                        } else {
+                            if (textStatus === 'timeout') {
+                                toastr.error('Failed from timeout', '¡Error de Consulta!');
+                            } else {
+                                console.log(" STATUS: " + xhr + " " + textStatus);
+                            }
+                        }
+                        $('#loading-666').hide();
+                    }
+                });
+                return false;
+            }
+        });
+
+        $(document).on('keypress', '.name-addressee', function (e) {
+
+            if (e.keyCode === 13) {
+
+                e.preventDefault()
+
+                $(this).trigger("enterKey");
+                let _input = $(this);
+                let _name_addressee = $(this).val();
+
+                $('#loading-666').html(loader).show();
+                $.ajax({
+                    url: '/comercial/get_phone_number_by_name_addressee/',
+                    async: true,
+                    dataType: 'json',
+                    type: 'GET',
+                    data: {
+                        'name_addressee': _name_addressee,
+                    },
+                    contentType: 'application/json;charset=UTF-8',
+                    headers: {"X-CSRFToken": '{{ csrf_token }}'},
+                    success: function (response, textStatus, xhr) {
+                        if (xhr.status === 200) {
+                            _input.parent('div.col-sm-4').next('div.col-sm-2').children('div.input-group').children('input').val(response.phone);
+                            $('#loading-666').hide();
+                        }
+                    },
+                    error: function (jqXhr, textStatus, xhr) {
+                        if (jqXhr.status === 500) {
+                            toastr.error(jqXhr.responseJSON.error, '¡Error de Consulta!');
+                            _input.parent('div.col-sm-4').next('div.col-sm-2').children('div.input-group').children('input').val('');
+                        } else {
+                            if (textStatus === 'timeout') {
+                                toastr.error('Failed from timeout', '¡Error de Consulta!');
+                            } else {
+                                console.log(" STATUS: " + xhr + " " + textStatus);
+                            }
+                        }
+                        $('#loading-666').hide();
+                    }
+                });
+                return false;
+            }
+        });
+
+
+        $("#id_subsidiary_origin").trigger('change');
+        $("#id_subsidiary_destiny").trigger('change');
+
+
+        /*** detail_guide ***/
+
+        $(document).on("wheel", "input[type=number]", function (e) {
+            console.log("wheel")
+            $(this).blur();
+        });
+
+        $(document).on('click, focus, focusin', 'tbody#header_detail tr td input[type=number]', function (e) {
+            $(this).select();
+        });
+
+        $('#id-price-unit').keyup(function () {
+
+            let quantity = $('#id-quantity').val();
+            let price_unit = $('#id-price-unit').val();
+            let amount = quantity * price_unit
+            $("#id-amount").val(amount.toFixed(2));
+        });
+
+        /*** detail_guide ***/
+
+        $(document).on('change', '#id_search_programming', function () {
+            let _programming_id = $(this).val();
+            let _type_programming = $(this).find('td.type').attr("type");
+            $('#btn-asign-manifest').attr('onclick', 'printbutton(' + _programming_id + ')');
+
+            $('#programmingLabel').attr('programming', _programming_id).addClass('btn-primary').removeClass('btn-secondary');
+            $.ajax({
+                url: '/comercial/get_programming_manifest/',
+                async: true,
+                dataType: 'json',
+                type: 'GET',
+                data: {'programming': _programming_id, 'type_programming': _type_programming},
+                success: function (response) {
+                    $('#id_plate').addClass('text-dark text-center font-weight-bold').val(response.license_plate);
+                    $('#id_driver').addClass('text-dark text-center font-weight-bold').val(response.pilot);
+                    $('#id_origin').addClass('text-dark text-center font-weight-bold').val(response.origin);
+                    $('#id_destiny').addClass('text-dark text-center font-weight-bold').val(response.destiny);
+                    $('#guide_programming_assign_list').html(response.grid);
+                },
+                fail: function (response) {
+                    console.log("error");
+                }
+            });
+        });
+
+
+
+        $(document).on('click', '.btn-selectall', function () {
+            $('input[type="checkbox"][class="order align-middle"]').prop('checked', true);
+        });
+        $(document).on('click', '.btn-undoselect', function () {
+            $('input[type="checkbox"][class="order align-middle"]').prop('checked', false);
+        });
+
+        $(document).on('click', '.btn-selectall-programmings', function () {
+            $('input[type="checkbox"][class="order-programming align-middle"]').prop("checked", true);
+        });
+
+        $(document).on('click', '.btn-undoselect-programmings', function () {
+            $('input[type="checkbox"][class="order-programming align-middle"]').prop("checked", false);
+        });
+
+        function checkGrid() {
+            let fchek = false;
+            $('#manifest-grid-list-body tr td input[type="checkbox"]').each(function () {
+                if ($(this).prop('checked')) {
+                    fchek = true;
+                }
+            });
+            return fchek;
+        }
+
+        function checkGridmanifest() {
+            let fchek = false;
+            $('#order-programming-data tr td input[type="checkbox"]').each(function () {
+                if ($(this).prop('checked')) {
+                    fchek = true;
+                }
+            });
+            return fchek;
+        }
+
+        function buttonPushedGuide() {
+
+            {#let star_date = $('#id_date_initial').val();#}
+            {#let end_date = $('#id_date_final').val();#}
+            let programming_id = $('#id_search_programming').val();
+            let _type_programming = $('#data-grid-programming tbody tr[pk="' + programming_id + '"]').find('td.type').attr("type");
+            console.log('tipo', _type_programming);
+            let orders = $("input.order:checked").map(function () {
+                return $(this).val();
+            }).get(); // you have use get() here
+
+            if (checkGrid() === false) {
+                toastr.warning('¡Favor de seleccionar al menos una encomienda antes de asignar!', 'Error de LLenado!');
+                return false;
+            }
+
+            if (($('#id_plate').val() === '')) {
+                toastr.warning('¡Favor de seleccionar una Programacion primero!');
+                return false;
+            }
+
+            let array = orders.toString().split(",");
+            if (array.length === 0) {
+                toastr.warning('¡Favor de seleccionar una Encomienda al menos!');
+                return false;
+            }
+
+            $.ajax({
+                url: '/comercial/add_order_to_order_programming_guide/',
+                async: true,
+                dataType: 'json',
+                type: 'GET',
+                data: {
+                    'orders': orders.toString(),
+                    'programming_id': programming_id,
+                    {#'start-date': star_date,#}
+                    {#'end-date': end_date,#}
+                    '_type_programming': _type_programming
+                },
+                success: function (response, textStatus, xhr) {
+                    if (xhr.status === 200) {
+                        $('#guide_programming_unassign_list').html(response.grid2);
+                        $('#guide_programming_assign_list').html(response.grid);
+                        {#$('#id_drive_type').val(response.programming_id);#}
+                        toastr.info(response['message'], '¡Bien hecho!');
+                    }
+                },
+                error: function (jqXhr, textStatus, xhr) {
+                    if (jqXhr.status === 500) {
+                        toastr.error(jqXhr.responseJSON.error, '¡Inconcebible!');
+                    }
+                }
+            });
+        }
+
+        function buttonUndoPushedGuide() {
+            let star_date = $('#id_date_initial').val();
+            let end_date = $('#id_date_final').val();
+            let programming_id = $('#id_search_programming').val();
+            {#let programming_id = $('#programmingLabel').attr('programming');#}
+            let order_programmings = $("input.order-programming:checked").map(function () {
+                return $(this).val();
+            }).get(); // you have use get() here
+            {#console.log(order_programmings)#}
+
+            if (checkGridmanifest() === false) {
+                toastr.warning('¡Favor de seleccionar al menos una encomienda antes de asignar!', 'Error de LLenado!');
+                return false;
+            }
+
+            $.ajax({
+                url: '/comercial/remove_order_to_order_programming_guide/',
+                async: true,
+                dataType: 'json',
+                type: 'GET',
+                data: {
+                    'orders': order_programmings.toString(),
+                    'programming_id': programming_id,
+                    'start-date': star_date,
+                    'end-date': end_date
+                },
+                success: function (response, textStatus, xhr) {
+                    if (xhr.status === 200) {
+                        $('#guide_programming_assign_list').html(response.grid);
+                        $('#guide_programming_unassign_list').html(response.grid2);
+                        toastr.info(response['message'], '¡Bien hecho!');
+                    }
+                },
+                error: function (jqXhr, textStatus, xhr) {
+                    if (jqXhr.status === 500) {
+                        toastr.error(jqXhr.responseJSON.error, '¡Inconcebible!');
+                    }
+                }
+            });
+        }
+
+        function generateTxtFile(text) {
+            var textFile = null;
+            var data = new Blob([text], {type: 'text/plain'});
+            if (textFile !== null) {
+                window.URL.revokeObjectURL(textFile);
+            }
+            textFile = window.URL.createObjectURL(data);
+            return textFile;
+        }
+
+        function dummyText($dummyText) {
+
+            $('#downloadFile').attr('href', generateTxtFile($dummyText));
+            $('#downloadFile').attr('download', $dummyText + '.txt')
+            $('#downloadFile').show();
+            $('#downloadFile')[0].click();
+
+        }
+
+        function getCookie(name) {
+            let parts = document.cookie.split(name + "=");
+            if (parts.length === 2) return parts.pop().split(";").shift();
+        }
+
+        function expireCookie(cName) {
+            document.cookie = cName + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+        }
+
+        let downloadTimer_commodity;
+        let attempts_commodity = 10;
+
+        function existTokenCommodity($id, $type_document, $dummyText) {
+
+            dummyText($dummyText);
+
+            console.log(`existTokenCommodity $id: ${$id}`)
+            console.log(`existTokenCommodity $type_document: ${$type_document}`)
+            console.log(`existTokenCommodity $dummyText: ${$dummyText}`)
+
+            downloadTimer_commodity = window.setInterval(function () {
+                let token = getCookie("ware");
+                /** console.log('token: ' + token); */
+                console.log('token: ' + token);
+                if ((token === $id.toString()) || (attempts_commodity === 0)) {
+                    deleteTokenCommodity();
+                    setTimeout(() => {
+                        callPrinterX();
+                        location.reload();
+                    }, 1000);
+                }
+                attempts_commodity--;
+            }, 1000);
+        }
+
+        function deleteTokenCommodity() {
+            window.clearInterval(downloadTimer_commodity);
+            expireCookie("ware");
+            attempts_commodity = 10;
+        }
+
+        function callPrinterX() {
+            console.log('entro al printer')
+            /***NUEVA FLECHA PLUS S.R.L - 3
+             EMPRESA DE TRANSPORTES E&E S.R.L - 2
+             EMPRESA DE TRANSPORTES SUPER RAPIDO NUEVA FLECHA S.A. - 1*/
+            let _program = 'C:\\Windows\\GTAS\\dist\\printing.exe';
+
+            document.dispatchEvent(new CustomEvent('funcIntraLaunch',
+                {
+                    'detail': {
+                        task: 'run',
+                        program: _program
+                    }
+                }
+            ));
+
+        }
+
+        function getSerialAndCorrelativeCommodity($document_type) {
+            $.ajax({
+                url: '/comercial/get_correlative_document_commodity/',
+                async: true,
+                dataType: 'json',
+                type: 'GET',
+                data: {
+                    'document_type': $document_type,
+                },
+                success: function (response, textStatus, xhr) {
+                    if (xhr.status === 200) {
+                        $('#id_correlative').val(response['correlative']);
+                        $('#id_serie').val(response['serial']);
+                    }
+                },
+                fail: function (response) {
+                    console.log("error");
+                }
+            });
+
+        }
+
+        $("#id_type_guide").change(function () {
+            let _val = $(this).val()
+            if (_val === 'R') {
+                $("#id_address_delivery").removeAttr('readonly')
+            }
+            if (_val === 'O') {
+                $("#id_address_delivery").attr('readonly', true)
+            }
+        });
+
+    </script>
+{% endblock extrajs %}

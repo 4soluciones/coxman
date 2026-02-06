@@ -1,0 +1,50 @@
+{% load app_filters %}
+<table class="table montserrat" id="ticket-data-grid">
+
+    <thead>
+    <tr>
+        <th class="font-weight-light bg-light">#</th>
+        <th class="font-weight-light">Manifiesto</th>
+        <th class="font-weight-light">Boleto</th>
+        <th class="font-weight-light">Registrado</th>
+
+        <th class="font-weight-light">Cliente</th>
+        <th class="font-weight-light">Destino</th>
+        <th class="font-weight-light">Estado</th>
+        <th class="font-weight-light">Sede</th>
+        <th class="font-weight-light">Usuario</th>
+
+        <th class="font-weight-light">Total</th>
+        <th><i class="fas fa-cogs fa-2x"></i></th>
+    </tr>
+    </thead>
+
+    <tbody>
+
+    {% for order in order_set %}
+
+        <tr class="small">
+            <td>{{ order.id }}</td>
+            <td>{{ order.programming_serial }}-{{ order.programming_correlative }}</td>
+            <td class="font-weight-bold">{{ order.serial|zfill:4 }}-{{ order.correlative_sale|zfill:6 }}</td>
+            <td>{{ order.create_at|date:"d/m/Y" }}</td>
+            <td>{{ order.client_type__document_number }} - {{ order.client__names }}</td>
+            <td>{{ order.destiny__name }}</td>
+            <td>{{ order.get_status_display|upper }}</td>
+            <td>{{ order.subsidiary__name }}</td>
+
+            <td>{{ order.user__full_name|upper }}</td>
+
+            <td class="text-right">{{ order.total|floatformat:2 }}</td>
+            <td>
+                <a class="btn btn-pink text-white"
+                   href="{% url 'comercial:print_ticket_order_passenger' order.id %}"
+                   target="print"
+                   pk="{{ order.id }}"><i class="fas fa-suitcase-rolling"></i></a>
+
+            </td>
+        </tr>
+
+    {% endfor %}
+    </tbody>
+</table>

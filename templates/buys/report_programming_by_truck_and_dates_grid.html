@@ -1,0 +1,44 @@
+<table class="table table-bordered">
+       <thead class="bg-primary text-white">
+         <tr>
+             <th class="text-center">Nuemero</th>
+             <th class="text-center">Fecha</th>
+             <th class="text-center">Placa</th>
+             <th class="text-center">Scop</th>
+             <th class="text-center">Guia</th>
+             <th class="text-center">Cantidad</th>
+             <th class="text-center">Destino</th>
+         </tr>
+       </thead>
+       <tbody>
+        {% for p in programmings %}
+         <tr>
+             <td class="item text-center"></td>
+             <td class="text-center">{{ p.programminginvoice_set.first.date_arrive }}</td>
+             <td class="text-center">{{ p.truck.license_plate }}</td>
+             <td class="text-center">{{ p.number_scop }}</td>
+             <td class="text-center">{{ p.programminginvoice_set.first.guide }}
+             </td>
+             <td class="decimal text-right">{{ p.programminginvoice_set.last.calculate_total_programming_quantity|floatformat:2 }}
+{#                 {% for i in p.programminginvoice_set.all %}#}
+{#                    {{ i.quantity }} <br>#}
+{#                 {% endfor %}#}
+             </td>
+             <td class="text-center">{{ p.programminginvoice_set.first.subsidiary_store.subsidiary.name }}</td>
+         </tr>
+        {% endfor %}
+       </tbody>
+ </table>
+
+<script>
+    $index=1;
+    $('table tr td.item').each(function () {
+        $(this).text($index);
+        $index++;
+     });
+    $('table tr td.decimal').each(function () {
+        let _str = $(this).text();
+        _str = _str.replace(',', '.');
+        $(this).text(_str);
+     });
+</script>

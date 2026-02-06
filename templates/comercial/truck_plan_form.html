@@ -1,0 +1,410 @@
+<div class="card bg-light" {% if order_obj %}style="color: #b9b9ba;"{% endif %} id="register-passenger">
+    <div class="card-body">
+
+        <h5 class="card-title montserrat">Registro de pasajeros</h5>
+        <input type="hidden" id="id_programming_seat_id"
+               name="programming_seat_id"
+               value="{{ programming_seat_obj.id }}">
+
+        <form class="needs-validation" id="passenger-form">
+
+            <div class="row">
+                <div class="col-sm-12 col-md-2 col-lg-2 p-1">
+                    <label for="id_seat" class="montserrat small font-weight-bold">Asiento</label>
+                    <input type="text" readonly
+                           class="form-control form-control-sm font-weight-bold text-primary"
+                           id="id_seat"
+                           name="seat"
+                           value="{{ seat|default_if_none:"" }}"
+                           {% if seat is None %}disabled{% endif %}
+                           placeholder="" required>
+                </div>
+
+                <div class="col-sm-12 col-md-3 col-lg-3 p-1">
+                    <label for="id_type_bill" class="montserrat small">Comprobante</label>
+                    <select id="id_type_bill"
+                            name="type_bill"
+                            onchange="changeDocument()"
+                            class="form-control form-control-sm">
+
+                        <option value="B" {% if order_obj.orderbill.type == '2' %}selected{% endif %}>BOLETA
+                        </option>
+                        <option value="F" {% if order_obj.orderbill.type == '1' %}selected{% endif %}>FACTURA
+                        </option>
+                        <option value="T" {% if order_obj.orderbill.type == '3' %}selected{% endif %}>TICKET
+                        </option>
+
+                    </select>
+                    
+                </div>
+
+                <div class="col-sm-12 col-md-3 col-lg-3 p-1">
+                    <label for="id_serial" class="montserrat small">Serie</label>
+                    <input type="text" class="form-control form-control-sm" id="id_serial"
+                           placeholder=""
+                           value="{% if order_obj %}{{ order_obj.serial }}{% else %}{{ serial }}{% endif %}"
+                           readonly>
+                </div>
+
+                <div class="col-sm-12 col-md-4 col-lg-4 p-1">
+                    <label for="id_correlative" class="montserrat small">Número</label>
+                    <input type="text"
+                           class="form-control form-control-sm"
+                           id="id_correlative" placeholder=""
+                           value="{% if order_obj %}{{ order_obj.correlative_sale }}{% else %}{{ correlative }}{% endif %}"
+                           required=""
+                           {% if not seat.status or seat.status == '1' %}readonly{% endif %}
+                    >
+                </div>
+            </div>
+
+            <hr class="mb-2">
+
+            {% if seat.status == '2' or seat.status == '4' or seat.status == '7' or seat.status == '8' or seat.status == '10' %}
+
+                <div class="row">
+
+                    <div class="col-sm-12 col-md-6 col-lg-2 p-1">
+                        <label for="id_document_type" class="montserrat small">Documento</label>
+                        <select id="id_document_type"
+                                name="document_type"
+                                readonly=""
+                                class="form-control form-control-sm">
+                            <option value="01" {% if passenger_type_obj.document_type.id == '01' %}selected{% endif %}>
+                                DNI
+                            </option>
+                            <option value="04" {% if passenger_type_obj.document_type.id == '04' %}selected{% endif %}>
+                                CARNET EXTRANJERÍA
+                            </option>
+                            <option value="07" {% if passenger_type_obj.document_type.id == '07' %}selected{% endif %}>
+                                PASAPORTE
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="col-sm-12 col-md-6 col-lg-3 p-1">
+                        <label for="id_nro_document" class="montserrat small">Numero</label>
+                        <div class="input-group input-group-sm mb-3">
+                            <input type="text"
+                                   class="form-control"
+                                   id="id_nro_document"
+                                   name="nro_document"
+                                   maxlength="8"
+                                   aria-describedby="btn_search_nro_document"
+                                   value="{{ passenger_type_obj.document_number }}"
+                                   {% if seat is None %}disabled{% endif %}
+                                   required>
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="button" id="btn_search_nro_document"><i
+                                        class="fas fa-search"></i></button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col-sm-12 col-md-10 col-lg-7 p-1">
+                        <label for="id_client_name" class="montserrat small">Nombre</label>
+                        <input type="text"
+                               class="form-control form-control-sm text-uppercase"
+                               id="id_client_name"
+                               name="client_name"
+                               value="{{ passenger_obj.names }}"
+                               {% if seat is None %}disabled{% endif %}
+                               required="">
+
+                    </div>
+
+                    <div class="col-sm-12 col-md-8 col-lg-5 p-1">
+                        <label for="id_nationality" class="montserrat small">Nacionalidad</label>
+                        <select class="form-control form-control-sm"
+                                id="id_nationality"
+                                name="nationality"
+                                required=""
+                                disabled>
+                            <option value="9589" {% if passenger_obj.nationality.id == '9589' %}selected{% endif %}>
+                                Peruana
+                            </option>
+                            <option value="9850" {% if passenger_obj.nationality.id == '9850' %}selected{% endif %}>
+                                Venezolana
+                            </option>
+                            <option value="9105" {% if passenger_obj.nationality.id == '9105' %}selected{% endif %}>
+                                Brasileña
+                            </option>
+                            <option value="9211" {% if passenger_obj.nationality.id == '9211' %}selected{% endif %}>
+                                Chilena
+                            </option>
+                            <option value="9063" {% if passenger_obj.nationality.id == '9063' %}selected{% endif %}>
+                                Argentina
+                            </option>
+                            <option value="9097" {% if passenger_obj.nationality.id == '9097' %}selected{% endif %}>
+                                Boliviana
+                            </option>
+                            <option value="9169" {% if passenger_obj.nationality.id == '9169' %}selected{% endif %}>
+                                Colombiana
+                            </option>
+                            <option value="9493" {% if passenger_obj.nationality.id == '9493' %}selected{% endif %}>
+                                Mexicana
+                            </option>
+                            <option value="9249" {% if passenger_obj.nationality.id == '9249' %}selected{% endif %}>
+                                Estados Unidos
+                            </option>
+                            <option value="9245" {% if passenger_obj.nationality.id == '9245' %}selected{% endif %}>
+                                Española
+                            </option>
+                            <option value="9239" {% if passenger_obj.nationality.id == '9239' %}selected{% endif %}>
+                                Ecuatoriano
+                            </option>
+                            <option value="9011" {% if passenger_obj.nationality.id == '9011' %}selected{% endif %}>
+                                OTROS PAISES O LUGARES
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="col-sm-12 col-md-6 col-lg-7 p-1">
+                        <label for="id_phone" class="montserrat small">Teléfono de contacto</label>
+                        <input type="text"
+                               class="form-control form-control-sm"
+                               id="id_phone"
+                               name="phone"
+                               {% if seat is None %}disabled{% endif %}
+                               value="{{ passenger_obj.phone }}"
+                               required="">
+                    </div>
+
+
+                    <div class="col-sm-12 col-md-6 col-lg-2 p-1 invoice_document d-none">
+                        <label for="id_document_type_2" class="montserrat small">Documento</label>
+                        <select id="id_document_type_2"
+                                name="document_type_2"
+                                readonly=""
+                                class="form-control form-control-sm">
+                            <option value="06" selected>RUC</option>
+                        </select>
+                    </div>
+
+                    <div class="col-sm-12 col-md-6 col-lg-3 p-1 invoice_document d-none">
+                        <label for="id_nro_document_2" class="montserrat small">Numero</label>
+                        <div class="input-group input-group-sm mb-3">
+                            <input type="text"
+                                   class="form-control form-control-sm"
+                                   id="id_nro_document_2"
+                                   name="nro_document_2"
+                                   value="{% if entity_type_obj.document_type.id == '06' %}{{ entity_type_obj.document_number }}{% endif %}"
+                                   {% if seat is None %}disabled{% endif %}
+                                   maxlength="11">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="button" id="btn-search-ruc"><i
+                                        class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12 col-md-12 col-lg-7 p-1 invoice_document d-none">
+                        <label for="id_client_name_2" class="montserrat small">Razón social</label>
+                        <input type="text"
+                               class="form-control form-control-sm text-uppercase"
+                               id="id_client_name_2"
+                               name="client_name_2"
+                               value="{% if entity_type_obj.document_type.id == '06' %}{{ entity_obj.names }}{% endif %}"
+                               {% if seat is None %}disabled{% endif %}
+                               readonly>
+
+                    </div>
+
+                    <div class="col-sm-12 col-md-12 col-lg-12 p-1 invoice_document d-none">
+                        <label for="id_client_address_2" class="montserrat small">Dirección</label>
+                        <input type="text"
+                               class="form-control form-control-sm text-uppercase"
+                               id="id_client_address_2"
+                               name="client_address_2"
+                               value="{% if entity_type_obj.document_type.id == '06' %}{{ entity_address_obj.address }}{% endif %}"
+                               {% if seat is None %}disabled{% endif %}
+                               readonly>
+                    </div>
+
+
+                </div>
+
+                <hr class="mb-2">
+
+                <div class="row">
+
+                    <div class="col-sm-12 col-md-6 col-lg-6 p-1">
+
+                        <label for="id_origin" class="montserrat small">Origen</label>
+                        <select id="id_origin"
+                                name="origin"
+                                {% if order_obj %}disabled{% endif %}
+                                {% if seat is None %}disabled{% endif %}
+                                class="form-control form-control-sm" required>
+                            <option value="">Seleccione</option>
+                            {% for origin in origins %}
+                                <option value="{{ origin.id }}"
+                                        {% if order_obj.origin.id == origin.id %}selected{% endif %}
+                                        {% if origin.name == subsidiary_obj.name %}selected{% endif %}>{{ origin.name }}</option>
+                            {% endfor %}
+                        </select>
+
+                    </div>
+
+                    <div class="col-sm-12 col-md-6 col-lg-6 p-1">
+
+                        <label for="id_destiny" class="montserrat small">Destino</label>
+                        <select id="id_destiny"
+                                name="destiny"
+                                {% if seat is None %}disabled{% endif %}
+                                class="form-control form-control-sm" required>
+                            <option value="01">Seleccione</option>
+                            {% for destiny in destinies %}
+                                <option value="{{ destiny.id }}"{% if order_obj.destiny.id == destiny.id %}selected{% endif %}>{{ destiny.name }}</option>
+                            {% endfor %}
+                        </select>
+
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 col-md-4 col-lg-6 p-1">
+                        <label for="id_cost" class="montserrat small">Costo</label>
+                        <input type="text"
+                               class="form-control form-control-sm"
+                               id="id_cost"
+                               name="cost"
+                               {% if seat is None %}disabled{% endif %}
+                               value="{{ order_obj.total|floatformat:2 }}"
+                               required="">
+                    </div>
+                </div>
+
+                <div class="row d-none" id="row-paid">
+                    <div class="col p-1">
+                        <label for="id_paid" class="montserrat small text-black-50">Monto Pagado (Opcional)</label>
+                        <input type="text"
+                               class="form-control form-control-sm"
+                               id="id_paid"
+                               name="paid"
+                               {% if seat is None %}disabled{% endif %}
+                               value="{{ order_obj.paid|floatformat:2|default:'0' }}"
+                               >
+                    </div>
+                    <div class="col p-1">
+                        <label for="id_paid" class="montserrat small text-black-50">Vuelto</label>
+                        <input type="text"
+                               class="form-control form-control-sm"
+                               id="id_turned"
+                               name="turned"
+                               {% if seat is None %}disabled{% endif %}
+                               value="{{ order_obj.turned|floatformat:2|default:'0' }}"
+                               readonly>
+                    </div>
+                </div>
+                <hr class="mb-2">
+{#                <div class="row">#}
+{#                    <div class="col-sm-12 col-md-12 p-1">#}
+{#                        <div class="custom-control custom-switch">#}
+{#                            <input type="checkbox"#}
+{#                                   value="1"#}
+{#                                   class="custom-control-input" id="showOriginalNameSwitch">#}
+{#                            <label class="custom-control-label montserrat"#}
+{#                                   style="font-size: 80%;"#}
+{#                                   for="showOriginalNameSwitch">Generar C.E. con nombre real de la sede</label>#}
+{#                        </div>#}
+{##}
+{#                        <!--<div class="form-group m-0 form-check">#}
+{#                            <input type="checkbox" class="form-check-input" id="exampleCheck1">#}
+{#                            <label class="form-check-label montserrat"#}
+{#                                   style="font-size: 80%;"#}
+{#                                   for="exampleCheck1">Generar comprobante electronico con nombre real de la sede</label>#}
+{#                        </div>-->#}
+{#                    </div>#}
+{#                </div>#}
+                <hr class="my-2">
+
+                <div class="row">
+
+                    <div class="col-sm-12 col-md-12 p-1">
+                        <button class="btn btn-info text-white"
+                                id="btn-save-data"
+                                {% if seat is None %}disabled{% endif %}
+                                style="/*background: #031e44;*/font-size: 1rem;"
+                                {% if order_obj %}disabled{% endif %}
+                                type="submit">Continuar para guardar
+                        </button>
+
+                        {% if order_obj is not None %}
+                            <a class="btn btn-danger text-white" id="gta6_link"
+                               order-id="{{ order_obj.id }}"
+                               type-document="{{order_obj.type_document}}"
+                               serial="{{ order_obj.serial }}"
+                               correlative-sale="{{ order_obj.correlative_sale }}"
+                               target="print">Imprimir boleto</a>
+
+                            <a class="btn btn-warning text-white"
+                               href="{% url 'comercial:print_ticket_old' order_obj.id %}"
+                               target="print">Descargar boleto</a>
+                               
+                            <a class="btn btn-blue text-white"
+                            href="{% url 'comercial:print_ticket_order_passenger' order_obj.id %}"
+                            target="print">Descargar CE</a>
+
+                        {% endif %}
+
+
+
+                    </div>
+{#                    <div class="col-sm-12 col-md-12 p-1">#}
+{#                        <div class="form-group m-0 form-check">#}
+{#                        <input type="checkbox" id="demo" name="demo" value="0" class="form-check-input">#}
+{#                        </div>#}
+{#                    </div>#}
+                </div>
+
+
+            {% else %}
+
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 p-1">
+
+                        <ul id="progressbar" class="text-center">
+
+                            {% for pathdetail in path_obj.pathdetail_set.all %}
+
+                                <li class="{% if forloop.first %}active{% endif %}" id="step{{ forloop.counter }}">
+                                    <div class="d-none d-md-block small">{{ pathdetail.get_origin.short_name }}</div>
+                                </li>
+
+                                {% if forloop.last %}
+                                    <li class="active" id="step{{ circles }}">
+                                        <div class="d-none d-md-block small">{{ pathdetail.get_destiny.short_name }}</div>
+                                    </li>
+                                {% endif %}
+
+                            {% endfor %}
+
+                        </ul>
+                    </div>
+                </div>
+
+            {% endif %}
+
+
+        </form>
+
+    </div>
+
+    <div class="card-body" style="
+        display: none;
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        background: #e9ecef;
+        opacity: 0.5;
+        width: 100%;
+        height: 37em;
+        padding-top: 7em;" id="loading-666">
+    </div>
+
+</div>
+
+

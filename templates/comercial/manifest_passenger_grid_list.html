@@ -1,0 +1,68 @@
+<table class="table montserrat table-bordered" id="ticket-data-grid">
+
+    <thead>
+    <tr>
+        <th class="font-weight-light bg-light">#</th>
+        <th><i class="fas fa-cogs fa-2x"></i></th>
+        <th class="font-weight-light">Fecha Salida</th>
+        <th class="font-weight-light">Placa</th>
+        <th class="font-weight-light">Serie</th>
+        <th class="font-weight-light">Numero</th>
+        <th class="font-weight-light">Estado</th>
+        <th class="font-weight-light">Total</th>
+
+        <th class="font-weight-light">ASIENTO</th>
+        <th class="font-weight-light">SERIE</th>
+        <th class="font-weight-light">CORRELATIVO</th>
+        <th class="font-weight-light">CLIENTE</th>
+        <th class="font-weight-light">FECHA</th>
+        <th class="font-weight-light">TOTAL</th>
+
+
+    </tr>
+    </thead>
+
+    <tbody>
+
+    {% for programming in programming_dict %}
+
+        <tr class="small">
+
+            <td rowspan="{{ programming.seats_sold }}">{{ programming.id }}</td>
+            <td rowspan="{{ programming.seats_sold }}">
+                <a class="btn btn-pink text-white"
+                   href="{% url 'comercial:print_manifest_passengers_old' programming.id %}"
+                   target="print"
+                   pk="{{ programming.id }}"><i class="fas fa-suitcase-rolling"></i></a>
+            </td>
+            <td rowspan="{{ programming.seats_sold }}">{{ programming.departure_date|date:"d/m/Y" }}</td>
+            <td rowspan="{{ programming.seats_sold }}">{{ programming.license_plate }}</td>
+            <td rowspan="{{ programming.seats_sold }}">{{ programming.serial }}</td>
+            <td rowspan="{{ programming.seats_sold }}">{{ programming.correlative }}</td>
+            <td rowspan="{{ programming.seats_sold }}">{{ programming.status }}</td>
+            <td rowspan="{{ programming.seats_sold }}" class="text-right">{{ programming.total }}</td>
+
+            {% for ps in programming.passengers %}
+
+                {% if not forloop.first %}
+                    <tr class="small">
+                {% endif %}
+
+            <td>{{ ps.name }}</td>
+            <td>{{ ps.serial }}</td>
+            <td>{{ ps.correlative }}</td>
+            <td>{{ ps.client }}</td>
+            <td>{{ ps.create_at|date:"d/m/Y" }}</td>
+            <td>{{ ps.total }}</td>
+
+
+            </tr>
+
+            {% endfor %}
+
+
+
+
+    {% endfor %}
+    </tbody>
+</table>

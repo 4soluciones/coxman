@@ -1,0 +1,228 @@
+{% if orders_set %}
+    <h4 class="montserrat text-center pb-3 font-weight-bold"> RECEPCIÓN DE ENCOMIENDAS</h4>
+
+    <div class="row m-0">
+        <div class="col-sm-6 pl-0">
+            <input id="myInput2" type="text" placeholder="Buscar registro..." class="form-control form-control-lg my-1">
+        </div>
+        {% if subsidiary.name == 'SEDE MOLLENDO' %}
+            <div class="col-sm-6 montserrat">
+                <div class="row m-0">
+                    <div class="col-sm-6 montserrat">
+                        <div class="alert alert-primary text-center text-uppercase" role="alert">
+                            Matarani
+                        </div>
+                    </div>
+                    <div class="col-sm-6 montserrat">
+                        <div class="alert alert-success text-center text-uppercase" role="alert">
+                            Mejia
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <table class="table roboto-condensed-light small table-sm table-striped table-bordered" id="table-manifest">
+        <thead class="thead-dark">
+        <tr class="text-dark text-center text-uppercase">
+            <th class="align-middle">
+                Fecha de emisión
+            </th>
+            <th class="align-middle">
+                Origen
+            </th>
+            {#            <th class="align-middle">#}
+            {#                Destino#}
+            {#            </th>#}
+            {#            <th class="align-middle">#}
+            {#                Placa#}
+            {#            </th>#}
+            {#            <th class="align-middle">#}
+            {#                Tipo#}
+            {#            </th>#}
+            <th class="align-middle">
+                Hora. Salida
+            </th>
+            <th class="align-middle">
+                Tipo de Pago
+            </th>
+            <th class="align-middle">
+                Conductor
+            </th>
+            <th class="align-middle">
+                Serie
+            </th>
+            <th class="align-middle">
+                Nro.
+            </th>
+            {#            <th class="align-middle">#}
+            {#                Descripción#}
+            {#            </th>#}
+            <th class="align-middle">
+                Remitente
+            </th>
+            <th class="align-middle">
+                Destinatario
+            </th>
+            <th class="align-middle">
+                Total venta
+            </th>
+            <th class="align-middle">
+                Estado
+            </th>
+            <th class="align-middle">
+                Caja
+            </th>
+            <th class="align-middle">
+                Acción
+            </th>
+
+        </tr>
+        </thead>
+        <tbody id="{{ orders_set.count }}">
+        {% for o in orders_set %}
+            <tr pk="{{ o.id }}" {% if o.item_route_destiny.0.subsidiary == 'SEDE MATARANI' %}
+                style="background:#cce5ff" {% elif o.item_route_destiny.0.subsidiary == 'SEDE MEJIA' %}
+                style="background:#d4edda" {% endif %} >
+                <td class="align-middle text-center" style="width: 4%">{{ o.traslate_date|date:"d-m-y" }}</td>
+                <td class="align-middle text-center" style="width: 4%">{{ o.item_route_origin.0.subsidiary }}</td>
+                {#                <td class="align-middle text-center" style="width: 4%">{{ o.item_route_destiny.0.subsidiary }}</td>#}
+                <td class="align-middle text-center"
+                    style="width: 4%">{{ o.item_order_programming.0.hour_exit|date:"P"|default:'-' }}</td>
+                <td class="align-middle text-center way-to-pay" style="width: 4%">{{ o.get_way_to_pay_display }}</td>
+                <td class="align-middle text-center" style="width: 15%">{{ o.item_set_employee.0.names }}</td>
+                <td class="align-middle text-center" style="width: 3%">{{ o.serial }}</td>
+                <td class="align-middle text-center" style="width: 3%">{{ o.correlative_sale }}</td>
+                <td class="align-middle text-left" style="width: 15%">
+                    <strong> NOMBRE: </strong>{{ o.item_action_sender.0.client_names|upper }} </td>
+                <td class="align-middle text-center" style="width: 15%">
+                    {% for r in o.item_action_addressee %}
+                        <strong>DESTINATARIO: </strong> {{ r.client_names|upper }}<br>
+                    {% endfor %}
+                </td>
+                <td class="align-middle text-center font-weight-bold total-sale" style="width: 5%">
+                    S/. {{ o.total|safe }}</td>
+                <td class="align-middle text-center font-weight-bold" style="width: 10%">
+                    {% if user.worker_set.last.establishment_set.last.subsidiary.name == o.item_route_destiny.0.subsidiary %}
+
+
+                        <select class="form-control form-control-sm font-weight-bold text-uppercase"
+                                id="id_type_commodity"
+                                name="type_commodity"
+                                {% if o.type_commodity != 'S' %}disabled{% endif %}>
+                            {% for item in type_commodity %}
+{#                                {% if item.0 == 'E' %}#}
+{#                                     <option value="{{ item.0 }}">#}
+{#                                         <a type="button"#}
+{#                                           class="btn-sm btn-outline-warning btn-destiny"#}
+{#                                           data-toggle="modal"#}
+{#                                           data-target="#modal-changedestiny" pk="{{ o.id }}">{{ item.1 }}#}
+{#                                         </a>#}
+{#                                     </option>#}
+{#                                {% endif %}#}
+                                <option value="{{ item.0 }}"
+                                        {% if item.0 == o.type_commodity %}selected{% endif %}>{{ item.1 }}</option>
+                            {% endfor %}
+                        </select>
+                    {% endif %}
+                </td>
+                <td class="align-middle text-center font-weight-bold" style="width: 15%">
+                    {% if user.worker_set.last.establishment_set.last.subsidiary.name == o.item_route_destiny.0.subsidiary %}
+                        <select class="form-control form-control-sm font-weight-bold text-uppercase select-cash"
+                                id="id_cash"
+                                name="cash"{% if o.type_commodity != 'S' or o.way_to_pay == 'C' or o.way_to_pay == 'S' %}disabled{% endif %}>
+                                  {% for c in cash_set %}
+{#                                      {% if user.worker_set.last.establishment_set.last.subsidiary.id == c.subsidiary.id %}#}
+                                          <option value="{{ c.id }}">{{ c.name }}</option>
+{#                                      {% endif %}%#}
+                                  {% endfor %}
+
+{#                            {% if user.worker_set.last.establishment_set.last.subsidiary.id != 3 %}#}
+{#                                <option value="3">CAJA ENCOMIENDAS AQP</option>#}
+{#                            {% endif %}%#}
+{#                            {% if user.worker_set.last.establishment_set.last.subsidiary.id != 1 %}#}
+{#                                <option value="5">CAJA ENCOMIENDAS MOLL.</option>#}
+{#                            {% endif %}%#}
+                        </select>
+                    {% endif %}
+                </td>
+                <td class="align-middle font-weight-bold text-center"
+                    style="width: 3%">
+                    {% if o.order.orderbill %}
+                        <a class="btn btn-green ml-1 my-1 montserrat"
+                           href="{% url 'comercial:print_bill_order_commodity'  o.id %}"
+                           target="print">
+                            <span class="fa fa-print"></span></a>
+                    {% else %}
+                        <a class="btn btn-blue ml-1 my-1 montserrat"
+                           href="{% url 'comercial:print_ticket_order_commodity' o.id %}"
+                           target="print">
+                            <span class="fa fa-print"></span></a>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+    <div class="text-center mt-3">
+        <a href="{% url 'comercial:print_report_receive_commodity' f1 f2 %}" class="btn btn-blue">
+            <i class="fas fa-file-pdf"></i> Descargar Reporte
+        </a>
+    </div>
+
+
+{% else %}
+    <div class="alert alert-info alert-dismissible fade show mt-3" role="alert">
+        <strong>Atencion!</strong> No existen encomiendas por recoger en el rango de fechas elegido, favor de elegir
+        otras fechas.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+{% endif %}
+<style>
+    .fancy-theme-gray .fancy-grid-body .fancy-drop-cell-first-mask {
+        border-top-color: #626262 !important;
+    }
+
+    .fancy-theme-gray .fancy-grid-body .fancy-drop-cell-mask {
+        border-bottom-color: #626262 !important;
+    }
+
+</style>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $("#myInput2").on("keyup", function () {
+            $("#table-manifest tbody tr td").closest("tr").hide()
+            var value = $(this).val().toUpperCase();
+            if (value) {
+                $("#table-manifest tbody tr td:contains('" + value + "')").each(function (index) {
+                    {#console.log(index)#}
+                    const parent = $(this).closest("tr")
+                    const rowspan = $(this).attr("rowspan")
+                    {#console.log(rowspan)#}
+                    if (rowspan !== undefined) {
+                        var current = parent
+                        for (var i = 0; i < rowspan; i++) {
+                            {#console.log(current.text())#}
+                            current.show()
+                            current = current.next()
+                        }
+                    } else {
+                        parent.show()
+                    }
+                })
+            } else {
+                $("#table-manifest tbody tr td").closest("tr").show()
+            }
+        });
+
+    });
+
+</script>
+
+
+

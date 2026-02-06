@@ -1,0 +1,110 @@
+{% load static %}
+{% load app_filters %}
+
+{% if seat %}
+    <img
+            {% if programming_seat|get:"status" == '1' %}src="{% static 'assets/avatar/seat_green.svg' %}"
+            {% elif programming_seat|get:"status" == '2' %}src="{% static 'assets/avatar/seat_yellow.svg' %}"
+            {% elif programming_seat|get:"status" == '3' %}src="{% static 'assets/avatar/seat_info.svg' %}"
+            {% elif programming_seat|get:"status" == '4' %}src="{% static 'assets/avatar/seat_red.svg' %}"
+            {% elif programming_seat|get:"status" == '5' %}src="{% static 'assets/avatar/seat_sky.svg' %}"
+            {% elif programming_seat|get:"status" == '6' %}src="{% static 'assets/avatar/seat_blue.svg' %}"
+            {% elif programming_seat|get:"status" == '7' %}src="{% static 'assets/avatar/seat_gray.svg' %}"
+            {% elif programming_seat|get:"status" == '8' %}src="{% static 'assets/avatar/seat_light_purple.svg' %}"
+            {% elif programming_seat|get:"status" == '9' %}src="{% static 'assets/avatar/seat_olive.svg' %}"
+            {% elif programming_seat|get:"status" == '10' %}src="{% static 'assets/avatar/seat_ocher.svg' %}"
+            {% else %}src="{% static 'assets/avatar/seat_pink.svg' %}"{% endif %}
+            width="100"
+            height="100"
+            class="seat">
+
+    <div {% if programming_seat|get:"status" != '1' %}class="dropdown"{% endif %} style="position: static;">
+            <span class="number-id"
+                  {% if programming_seat|get:"status" != '1' %}data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                  {% endif %}
+                  {% if programming_seat|get:"status" != '4' %}
+                  ondblclick="reserveSeatWithoutName('5', {{ programming_seat|get:"id" }});"
+                  {% endif %}
+                  onclick="renderForm({{ programming_seat|get:"id" }});">{{ seat|get:"name" }}</span>
+
+{% if programming_seat|get:"status" != '1' %}
+
+        <div class="dropdown-menu mt-n5">
+            {% if programming_seat|get:"status" == '4' %} <!-- SOLD -->
+                <a class="dropdown-item cancellation-of-sale"
+                   pk="{{ programming_seat|get:"id" }}"
+                   op="1"><i class="fas fa-users fa-sm"></i> Anular</a>
+
+                <a class="dropdown-item reassign-seat"
+                   pk="{{ programming_seat|get:"id" }}"
+                   data-toggle="modal"
+                   data-target="#modal-reassign"
+                   op="1"><i class="fab fa-atlassian fa-sm"></i> Reasignar</a>
+
+
+            {% elif programming_seat|get:"status" == '5' or programming_seat|get:"status" == '6' %} <!-- RESERVED -->
+
+                {% if programming_seat|get:"subsidiary_than_reserve_id" == subsidiary_origin.id %}
+                    <a class="dropdown-item release-seat"
+                       origin="{{ subsidiary_origin.id }}"
+                       current="{{ subsidiary_current.id }}"
+                       reserve="{{ programming_seat|get:"subsidiary_than_reserve_id" }}"
+                       pk="{{ programming_seat|get:"id" }}"
+                       op="1">
+                        <i class="fas fa-users fa-sm"></i> Liberar
+                        | {{ programming_seat|get:"description"|default_if_none:'' }} |
+                        Sede: {{ programming_seat|get:"subsidiary_than_reserve__short_name" }}
+
+                    </a>
+                {% else %}
+                    <a class="dropdown-item" pk="{{ programming_seat|get:"id" }}"
+                       op="1"
+                       origin="{{ subsidiary_origin.id }}"
+                       current="{{ subsidiary_current.id }}"
+                       reserve="{{ programming_seat|get:"subsidiary_than_reserve_id" }}">
+                        <i class="fas fa-users fa-sm"></i>
+                        {{ programming_seat|get:"description"|default_if_none:'' }} |
+                        Sede: {{ programming_seat|get:"subsidiary_than_reserve__short_name" }}
+                    </a>
+                {% endif %}
+
+            {% elif programming_seat|get:"status" == '2' %} <!-- BUSY -->
+                <a class="dropdown-item release-seat"
+                   pk="{{ programming_seat|get:"id" }}"
+                   op="1"><i class="fas fa-users fa-sm"></i> Liberar</a>
+
+            {% elif programming_seat|get:"status" == '9' %} <!-- LIMITED -->
+                <a class="dropdown-item selling-with-destination-limit"
+                   pk="{{ programming_seat|get:"id" }}"
+                   op="10"><i class="fas fa-user-tie fa-sm"></i> Vender Pasaje
+                    <span class="badge badge-light">{{ seat_obj }}</span></a>
+
+                 <a class="dropdown-item reserve-seat-without-name"
+                   pk="{{ programming_seat|get:"id" }}"
+                   op="5"><i class="fas fa-business-time fa-sm"></i> Reservar sin nombre</a>
+
+                <a class="dropdown-item reserve-seat-with-name"
+                   pk="{{ programming_seat|get:"id" }}"
+                   op="6"><i class="fas fa-archive fa-sm"></i> Reservado con nombre </a>
+
+            {% elif programming_seat|get:"status" == '10' %} <!-- BUSY LIMITED -->
+                <a class="dropdown-item release-seat-with-destination-limit"
+                   pk="{{ programming_seat|get:"id" }}"
+                   op="9"><i class="fas fa-users fa-sm"></i> Liberar</a>
+            {% endif %}
+
+        </div>
+
+
+{% endif %}
+
+    </div>
+
+
+
+
+{% else %}
+    <img src="{% static 'assets/avatar/void.svg' %}" alt="" width="100" height="100" class="void-seat">
+{% endif %}

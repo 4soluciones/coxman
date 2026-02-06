@@ -1,0 +1,119 @@
+
+
+{% if requiriments_buys %}
+
+    <!-- <h2 class='mb-3'>Basic example</h2> -->
+
+    <div class="card">
+
+        <div class="card-header text-center">
+            <h5 class="card-title text-success">LISTA DE REQUERIMIENTOS PARA LA COMPRA DE GLP</h5>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="table-responsive dataTables_wrapper ">
+
+                <table id="requirement-data-grid" class="table table-success  table-bordered" cellspacing="0" width="100%">
+                    <thead>
+                    <tr class="text-center">
+                        <th class="p-2" style="width: 3%">#</th>
+                        <th class="th-sm align-middle p-2" style="width: 55%">Numero Requerimiento (TD)</th>
+                        <th class="th-sm p-2" style="width: 9%">Fecha</th>
+                        <th class="th-sm p-2" style="width: 7%">Scop</th>
+                        <th class="th-sm p-2" style="width: 7%">Estado</th>
+                        <th class="th-sm p-2" style="width: 11%">Trabajador</th>
+                        <th class="th-sm p-2" style="width: 8%">Accion</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for requirement in requiriments_buys %}
+                        <tr class="text-center">
+                            <td class="align-middle">{{ requirement.id }}</td>
+                            <td class="p-0">
+                                {% for dr in requirement.requirements_buys.all %}
+                                    <table  class="table table-primary table-striped align-content-center table-bordered small m-0">
+                                        <thead>
+                                        <tr>
+                                            <td class="p-0" style="width: 5%">#</td>
+                                            <td class="p-0" style="width: 25%">Producto</td>
+                                            <td class="p-0" style="width: 15%">Cantidad</td>
+                                            <td class="p-0" style="width: 15%">Unidad</td>
+                                            <td class="p-0" style="width: 15%">Precio</td>
+                                            <td class="p-0" style="width: 25%">Importe</td>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td class="p-2">{{ dr.id }}</td>
+                                            <td class="p-2">{{ dr.product.name }}</td>
+                                            <td class="p-2">{{ dr.quantity }}</td>
+                                            <td class="p-2">{{ dr.unit.name }}</td>
+                                            <td class="p-2">{{ dr.price|floatformat:4 }}</td>
+                                            <td class="p-2">{{ dr.multiplicate|floatformat:4 }}</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                {% endfor %}
+
+                            </td>
+                            <td class="align-middle">{{ requirement.creation_date|date:"Y-m-d" }}</td>
+                            <td class="align-middle">{{ requirement.number_scop }}</td>
+                            <td class="
+                                {% if requirement.status == '1' %}
+                                    bg-danger
+                                {% elif requirement.status == '2' %}
+                                    bg-success
+                                {% else %}
+                                    bg-primary
+                                {% endif %}
+                                text-white align-middle">{{ requirement.get_status_display }}</td>
+                            <td class="align-middle">{{ requirement.user.worker_set.last.employee.names }}</td>
+
+                            <td>
+
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"
+                                            aria-haspopup="true" aria-expanded="false">
+                                        Action
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item valid-requirement" pk="{{ requirement.id }}"><i
+                                                class="fas fa-sync-alt"></i> Aprobar Compra </a>
+                                        <a class="dropdown-item btn-cancel" pk="{{ requirement.id }}"><i
+                                                class="fas fa-sync-alt"></i> Anular Compra </a>
+                                    </div>
+                                </div>
+
+
+                            </td>
+
+                        </tr>
+                    {% endfor %}
+
+                    </tbody>
+                    <tfoot>
+                    <tr class="text-center">
+                        <th class="th-sm p-2">#</th>
+                        <th class="th-sm align-middle p-2">Nnumero de requerimiento (TD)</th>
+                        <th class="th-sm p-2">Fecha</th>
+                        <th class="th-sm p-2">Scop</th>
+                        <th class="th-sm p-2">Estado</th>
+                        <th class="th-sm p-2">Trabajador</th>
+                        <th class="th-sm p-2">Accion</th>
+                    </tr>
+                    </tfoot>
+                </table>
+
+            </div>
+
+        </div>
+
+        <!-- Card -->
+    </div>
+
+
+{% else %}
+    <h1>No existen requerimientos pendientes GLP</h1>
+{% endif %}

@@ -1,0 +1,123 @@
+<div class="modal-dialog">
+    <div class="modal-content">
+
+        <div class="modal-header text-center  bg-light">
+            <h6 class="modal-title roboto-condensed-regular  text-uppercase font-weight-bold">Asociar Sede</h6>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+
+        <form id="new-associate-subsidary-form" autocomplete="off">
+
+            {% csrf_token %}
+
+            <div class="modal-body ">
+                <input type="hidden" id="id-associate-detail" name="associate-detail" value="{{ associate_detail_obj.id }}">
+
+
+                    <div class="form-group">
+                        <label for="id-associate"
+                               class="roboto-condensed-regular text-uppercase text-dark font-weight-bold">Sede a
+                            asociar:
+                        </label>
+
+                        <select class="form-control roboto-condensed-light"
+                                id="id-associate"
+                                name="associate"
+                                {% if associate_detail_obj %}disabled{% endif %}
+                                required>
+                            {% for associate in subsidiary_set %}
+                                <option value="{{ associate.id }}" {% if associate_detail_obj.subsidiary.id == associate.id %}selected{% endif %}>{{ associate.name }}</option>
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary roboto-condensed-light" data-dismiss="modal">Salir
+                </button>
+                {% if associate_detail_obj %}
+                    <button type="submit" id="btn-delete" class="btn btn-dark roboto-condensed-light">Desligar
+                    </button>
+                {% else %}
+                    <button type="submit" id="btn-save" class="btn btn-dark roboto-condensed-light">Asociar</button>
+                {% endif %}
+
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+
+<script type="text/javascript">
+
+    $("#new-associate-subsidary-form").submit(function (event) {
+
+        event.preventDefault();
+
+        let data = new FormData($('#new-associate-subsidary-form').get(0));
+
+
+        $("#btn-save").attr("disabled");
+
+        $.ajax({
+            url: '/comercial/new_associate_subsidiary/',
+            type: "POST",
+            data: data,
+            cache: false,
+            processData: false,
+            contentType: false,
+            success: function (response, textStatus, xhr) {
+                if (response.success) {
+                    toastr.success(response.message, '¡Bien hecho!');
+                    $('#path-grid-list').html(response.grid);
+                    $('#modalPath').modal('hide');
+                }
+            },
+            error: function (jqXhr, textStatus, xhr) {
+                toastr.error(jqXhr.responseJSON.error, '¡Ocurrio un error!');
+            }
+
+        });//end ajax
+        $("#btn-save").removeAttr("disabled");
+        $('#modalPath').modal('hide');
+
+    });
+
+
+    $('#btn-delete').on('click', function (event) {
+        event.preventDefault();
+        let _data = new FormData($('#new-associate-subsidary-form').get(0));
+
+        $.ajax({
+            url: '/comercial/delete_associate_subsidiary/',
+            type: "POST",
+            data: _data,
+            cache: false,
+            processData: false,
+            contentType: false,
+            success: function (response, textStatus, xhr) {
+                if (xhr.status === 200) {
+                    $('#path-grid-list').html(response.grid);
+                    $('#modalPath').modal('hide');
+                    toastr.success(response['message'], '¡Bien hecho!');
+                }
+            },
+            error: function (jqXhr, textStatus, xhr) {
+                if (jqXhr.status === 500) {
+                    toastr.error(jqXhr.responseJSON.error, '¡Inconcebible!');
+                }
+            }
+        });
+    });
+
+</script>
+
+

@@ -1,0 +1,67 @@
+{% extends 'home.html' %}
+
+{% block title %}
+    coronasoft.dev |  LISTADO DE REQUERIMIENTOS
+{% endblock title %}
+
+{% block body %}
+
+    <div class="container-fluid mb-2 mt-2">
+        <!-- Provides extra visual weight and identifies the primary action in a set of buttons -->
+        <button type="button" onclick="showModalView('get_requirement_programming')" class="btn btn-outline-success"><i class="fas fa-database"></i> &nbsp; REGISTRAR PROGRAMACION
+        </button>
+        <button type="button" onclick="showModalView('get_programming_invoice')" class="btn btn-outline-success"><i class="fas fa-database"></i> &nbsp; ASIGNAR ALMACEN</button>
+        <button type="button" onclick="showModalView('get_expense_programming')"
+                class="btn btn-outline-success"><i class="fas fa-database"></i> &nbsp; REGISTRAR FACTURAS DE VIAJES
+        </button>
+    </div>
+    <!-- Content -->
+    <div class="container-fluid">
+        <!-- Provides extra visual weight and identifies the primary action in a set of buttons -->
+        <div id="requirement-grid-list">{% include "buys/requirement_buy_grid_list.html" %}</div>
+    </div>
+
+    <div class="modal fade bd-example-modal-lg" id="add-modal" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalLabel" aria-hidden="true"></div>
+{% endblock body %}
+{% block extrajs %}
+    <script type="text/javascript">
+        function showModalView(ruta) {
+            $.ajax({
+                url: '/buys/' + ruta + '/',
+                dataType: 'json',
+                type: 'GET',
+                data: {'pk': 1},
+                success: function (response) {
+                    $('#add-modal').html(response.form);
+                    $('#add-modal').modal('show');
+                },
+                fail: function (response) {
+                    console.log(response);
+                }
+            });
+
+        };
+        $('#requirement-data-grid').dataTable();
+
+        $(document).on('click', '.valid-requirement', function () {
+            let search = $(this).attr('pk');
+            $.ajax({
+                url: '/buys/get_approve_detail_requirement/',
+                dataType: 'json',
+                type: 'GET',
+                data: {'pk': search},
+                success: function (response) {
+                    console.log(response);
+                    if (response.success) {
+                        $('#add-modal').html(response.form);
+                        $('#add-modal').modal('show');
+                    }
+                },
+                fail: function (response) {
+                    console.log(response);
+                }
+            });
+        });
+    </script>
+{% endblock extrajs %}

@@ -1,0 +1,118 @@
+<div class="modal-dialog">
+    <div class="modal-content">
+
+        <div class="modal-header text-center  bg-light">
+            <h6 class="modal-title roboto-condensed-regular  text-uppercase font-weight-bold">Destinos</h6>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+
+        <form id="new-destiny-form" autocomplete="off">
+
+            {% csrf_token %}
+
+            <div class="modal-body ">
+                <input type="hidden" id="id-path-detail" name="path-detail" value="{{ path_detail_obj.id }}">
+                <input type="hidden" id="id-destiny" name="destiny" value="{{ destiny_obj.id }}">
+
+                <div class="form-group">
+                    <label for="id-name"
+                           class="roboto-condensed-regular text-uppercase text-dark font-weight-bold">Nombre
+                    </label>
+                    <input type="text"
+                           class="form-control roboto-condensed-light"
+                           id="id-name"
+                           value="{{ destiny_obj.name }}"
+                           name="name">
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary roboto-condensed-light" data-dismiss="modal">Salir
+                </button>
+
+                {% if destiny_obj %}
+                    <button type="submit" id="btn-destiny-update" class="btn btn-success roboto-condensed-light">Guardar
+                        Cambios
+                    </button>
+                {% else %}
+                    <button type="submit" id="btn-destiny-save" class="btn btn-dark roboto-condensed-light">Guardar
+                    </button>
+                {% endif %}
+
+
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+
+<script type="text/javascript">
+
+    $("#new-destiny-form").submit(function (event) {
+
+        event.preventDefault();
+
+        let data = new FormData($('#new-destiny-form').get(0));
+
+
+        $("#btn-destiny-save").attr("disabled");
+
+        $.ajax({
+            url: '/comercial/new_destiny/',
+            type: "POST",
+            data: data,
+            cache: false,
+            processData: false,
+            contentType: false,
+            success: function (response, textStatus, xhr) {
+                if (response.success) {
+                    toastr.success(response.message, '¡Bien hecho!');
+                    $('#path-grid-list').html(response.grid);
+                    $('#modalPath').modal('hide');
+                }
+            },
+            error: function (jqXhr, textStatus, xhr) {
+                toastr.error(jqXhr.responseJSON.error, '¡Ocurrio un error!');
+            }
+
+        });//end ajax
+        $("#btn-destiny-save").removeAttr("disabled");
+        $('#modalPath').modal('hide');
+
+    });
+
+
+    $('#btn-destiny-update').on('click', function (event) {
+        event.preventDefault();
+        let _data = new FormData($('#new-destiny-form').get(0));
+
+        $.ajax({
+            url: '/comercial/update_destiny/',
+            type: "POST",
+            data: _data,
+            cache: false,
+            processData: false,
+            contentType: false,
+            success: function (response, textStatus, xhr) {
+                if (xhr.status === 200) {
+                    $('#path-grid-list').html(response.grid);
+                    $('#modalPath').modal('hide');
+                    toastr.success(response['message'], '¡Bien hecho!');
+                }
+            },
+            error: function (jqXhr, textStatus, xhr) {
+                if (jqXhr.status === 500) {
+                    toastr.error(jqXhr.responseJSON.error, '¡Inconcebible!');
+                }
+            }
+        });
+    });
+
+</script>
+

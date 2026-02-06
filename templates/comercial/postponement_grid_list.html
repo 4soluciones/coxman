@@ -1,0 +1,85 @@
+{% load app_filters %}
+<table class="table table-bordered montserrat" id="postponement-data-grid">
+
+    <thead>
+    <tr>
+        <th class="font-weight-light">#</th>
+        <th class="font-weight-light">Proceso</th>
+        <th class="font-weight-light">Estado</th>
+        <th class="font-weight-light">Motivo</th>
+        <th class="font-weight-light">Sede</th>
+        <th class="font-weight-light">Usuario</th>
+        <th class="font-weight-light">Orden cancelada</th>
+        <th class="font-weight-light">Orden reagendada</th>
+        <th class="font-weight-light"><i class="fas fa-cogs fa-2x"></i></th>
+    </tr>
+    </thead>
+
+    <tbody>
+
+    {% for postponement in postponement_set %}
+
+        <tr class="small">
+            <td>{{ postponement.id }}</td>
+            <td>{{ postponement.get_process_display }}</td>
+            <td>
+            <select class="form-control" {% if postponement.status == 'A' or postponement.status == 'C' %}disabled{% endif %}>
+                {% for item in status %}
+                <option {% if postponement.status == item.0 %}selected{% endif %} value="{{ item.0 }}">{{ item.1 }}</option>
+                {% endfor %}
+            </select>
+            </td>
+            <td>{{ postponement.reason }}</td>
+            <td>{{ postponement.subsidiary.name }}</td>
+            <td>{{ postponement.user.worker_set.last.employee.full_name }}</td>
+            <td class="text-secondary">
+                {% if postponement.get_detail_aborted %}
+                <address>
+                    <strong>{{ postponement.get_detail_aborted.order.orderbill.serial|zfill:4 }}-{{ postponement.get_detail_aborted.order.orderbill.n_receipt|zfill:6 }} | </strong>
+                    <span class="text-primary font-weight-bold">{{ postponement.get_detail_aborted.order.total|floatformat:2 }}</span>
+                    <br>
+                    {{ postponement.get_detail_aborted.order.client.names }}, {{ postponement.get_detail_aborted.order.client.clienttype_set.first.document_number }}<br>
+                    {{ postponement.get_detail_aborted.order.programming_seat.programming.subsidiary.short_name }}, {{ postponement.get_detail_aborted.order.destiny.name }}<br>
+                    <span>Programacion:</span>
+                    ({{ postponement.get_detail_aborted.order.programming_seat.programming.departure_date }}) {{ postponement.get_detail_aborted.order.programming_seat.programming.truck.license_plate }}
+                </address>
+
+                <address>
+                    <strong>Asiento: {{ postponement.get_detail_aborted.order.programming_seat.plan_detail.name }}</strong><br>
+                    <a href="{% url 'comercial:print_ticket_order_passenger' postponement.get_detail_aborted.order.id %}"
+                       target="print">ver comprobante</a>
+                </address>
+                {% endif %}
+            </td>
+            <td class="text-dark">
+                {% if postponement.get_detail_rescheduled %}
+                <address>
+                    <strong>{{ postponement.get_detail_rescheduled.order.orderbill.serial|zfill:4 }}-{{ postponement.get_detail_rescheduled.order.orderbill.n_receipt|zfill:6 }} | </strong>
+                    <span class="text-primary font-weight-bold">{{ postponement.get_detail_rescheduled.order.total|floatformat:2 }}</span>
+                    <br>
+                    {{ postponement.get_detail_rescheduled.order.client.names }}, {{ postponement.get_detail_rescheduled.order.client.clienttype_set.first.document_number }}<br>
+                    {{ postponement.get_detail_rescheduled.order.programming_seat.programming.subsidiary.short_name }}, {{ postponement.get_detail_rescheduled.order.destiny.name }}<br>
+                    <span>Programacion:</span>
+                    ({{ postponement.get_detail_rescheduled.order.programming_seat.programming.departure_date }}) {{ postponement.get_detail_rescheduled.order.programming_seat.programming.truck.license_plate }}
+                </address>
+
+                <address>
+                    <strong>Asiento: {{ postponement.get_detail_rescheduled.order.programming_seat.plan_detail.name }}</strong><br>
+                    <a href="{% url 'comercial:print_ticket_order_passenger' postponement.get_detail_rescheduled.order.id %}"
+                       target="print">ver comprobante</a>
+                </address>
+                {% endif %}
+            </td>
+            <td>
+                {% if postponement.status == 'P' and postponement.process == 'P' %}
+                <a class="btn btn-pink text-white reschedule-order"
+                   data-toggle="modal"
+                   data-target="#modal-reschedule"
+                   pk="{{ postponement.id }}"><i class="fas fa-suitcase-rolling"></i></a>
+                {% endif %}
+            </td>
+        </tr>
+
+    {% endfor %}
+    </tbody>
+</table>

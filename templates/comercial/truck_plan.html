@@ -1,0 +1,1615 @@
+{% extends 'home.html' %}
+{% load static %}
+
+{% block title %}
+    coronasoft.dev | Plano de la unidad
+{% endblock title %}
+
+{% block body %}
+
+    <div class="row m-0" style="background: #dee2e6;">
+        <div class="col-sm-12 montserrat">
+
+            <a class="btn btn-green-light my-1"
+               id="gta5_link"
+               target="print">
+                <span class="fa fa-print"></span> Imprimir Manifiesto</a>
+
+            <a class="btn btn-pink my-1"
+               href="{% url 'comercial:print_manifest_passengers_old' programming_obj.id %}"
+               target="print">
+                <span class="fa fa-print"></span> Descarga Manifiesto</a>
+
+            {#            <button class="btn btn-blue my-1"#}
+            {#                    data-toggle="modal"#}
+            {#                    data-target="#modal-gallery"#}
+            {#                    type="button">Ver Galería#}
+            {#                <span class="badge badge-pill badge-light">{{ programming_obj.truck.truckgallery_set.count }}</span>#}
+            {#            </button>#}
+
+            {#            <a class="btn btn-green my-1"#}
+            {#               href="{% url 'comercial:print_mock_up_passengers' programming_obj.id %}"#}
+            {#               target="print">#}
+            {#                <span class="fa fa-print"></span> Ver Croquis</a>#}
+
+            {#            <button type="button" class="btn btn-dark my-1" data-toggle="modal"#}
+            {#                    id="btn-cash-programming"#}
+            {#                    data-target="#modal-disbursement">#}
+            {#                <i class="fas fa-closed-captioning"></i> Ingresos / Salidas#}
+            {#            </button>#}
+            <a class="btn btn-light">
+                {{ programming_obj.get_pilot.full_name|upper }} ({{ programming_obj.truck }})</a>
+
+
+            {#                <a download="info.txt" id="downloadFile" style="display: none">Download</a>#}
+
+        </div>
+
+
+    </div>
+
+
+    <div class="container-fluid" style="background: #dee2e6;">
+        <div class="row">
+
+            <div class="col-sm-12 col-md-5 col-lg-6 col-xl-4 {% if plan_obj.rows < 7 %}bus{% else %}bus2{% endif %}"
+                 id="render-bus">
+                {% include "comercial/truck_plan_grid_list.html" with dictionary=dictionary subsidiary_origin=subsidiary_origin %}
+            </div>
+
+            <div class="col-sm-12 col-md-7 col-lg-6 col-xl-8">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-7 col-xl-7 py-3">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12" id="render-form">
+                                {% include "comercial/truck_plan_form.html" %}
+                            </div>
+                            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12" id="render-voucher"
+                                 pk="{{ programming_obj.id }}">
+                                {% include "comercial/truck_plan_voucher.html" with voucher_set=voucher_set %}
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-lg-5 col-xl-5 py-3">
+                        <div class="row">
+                            {#                            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 py-3 legend montserrat"#}
+                            {#                                 style="background: #f5f5f5;">#}
+                            {#                                <h4 class="montserrat small font-weight-bold">Leyenda</h4>#}
+                            {##}
+                            {#                                <div class="toast-header">#}
+                            {#                                    <img src="{% static 'assets/avatar/seat_yellow.svg' %}" width="20" height="20"#}
+                            {#                                         class="rounded mr-2"#}
+                            {#                                         alt="...">#}
+                            {#                                    <small class="mr-auto"> - Vendiendo (Ocupado)</small>#}
+                            {#                                </div>#}
+                            {##}
+                            {#                                <div class="toast-header">#}
+                            {#                                    <img src="{% static 'assets/avatar/seat_red.svg' %}" width="20" height="20"#}
+                            {#                                         class="rounded mr-2"#}
+                            {#                                         alt="...">#}
+                            {#                                    <small class="mr-auto"> - Vendido y registrado</small>#}
+                            {#                                </div>#}
+                            {##}
+                            {#                                <div class="toast-header">#}
+                            {#                                    <img src="{% static 'assets/avatar/seat_green.svg' %}" width="20" height="20"#}
+                            {#                                         class="rounded mr-2" alt="...">#}
+                            {#                                    <small class="mr-auto"> - Disponible</small>#}
+                            {#                                </div>#}
+                            {#                                <div class="toast-header">#}
+                            {#                                    <img src="{% static 'assets/avatar/seat_sky.svg' %}" width="20" height="20"#}
+                            {#                                         class="rounded mr-2"#}
+                            {#                                         alt="...">#}
+                            {#                                    <small class="mr-auto"> - Reservado sin nombre</small>#}
+                            {#                                </div>#}
+                            {##}
+                            {#                                <div class="toast-header">#}
+                            {#                                    <img src="{% static 'assets/avatar/seat_blue.svg' %}" width="20" height="20"#}
+                            {#                                         class="rounded mr-2" alt="...">#}
+                            {#                                    <small class="mr-auto"> - Reservado con nombre</small>#}
+                            {#                                </div>#}
+                            {##}
+                            {#                                <div class="toast-header">#}
+                            {#                                    <img src="{% static 'assets/avatar/seat_gray.svg' %}" width="20" height="20"#}
+                            {#                                         class="rounded mr-2" alt="...">#}
+                            {#                                    <small class="mr-auto"> - Vendido por otra sede</small>#}
+                            {#                                </div>#}
+                            {##}
+                            {#                                <div class="toast-header">#}
+                            {#                                    <img src="{% static 'assets/avatar/seat_light_purple.svg' %}" width="20" height="20"#}
+                            {#                                         class="rounded mr-2" alt="...">#}
+                            {#                                    <small class="mr-auto"> - Asientos proximos a liberarse</small>#}
+                            {#                                </div>#}
+                            {##}
+                            {#                                <div class="toast-header">#}
+                            {#                                    <img src="{% static 'assets/avatar/seat_olive.svg' %}" width="20" height="20"#}
+                            {#                                         class="rounded mr-2" alt="...">#}
+                            {#                                    <small class="mr-auto"> - Venta con limite de destino</small>#}
+                            {#                                </div>#}
+                            {##}
+                            {#                                <div class="toast-header">#}
+                            {#                                    <img src="{% static 'assets/avatar/seat_ocher.svg' %}" width="20" height="20"#}
+                            {#                                         class="rounded mr-2" alt="...">#}
+                            {#                                    <small class="mr-auto"> - Vendiendo con limite de destino</small>#}
+                            {#                                </div>#}
+                            {##}
+                            {#                            </div>#}
+                            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 py-3" id="render-score"
+                                 pk="{{ programming_obj.id }}">
+                                {% include "comercial/truck_plan_score.html" with programming_obj=programming_obj %}
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade montserrat" id="modal-gallery" tabindex="-1" aria-labelledby="galleryModal"
+         aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="galleryModal">Galería de imagenes</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+                        <div class="carousel-inner">
+
+                            {% for gallery in programming_obj.truck.truckgallery_set.all %}
+                                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                    <img src="{{ gallery.photo.url }}" class="d-block w-100"
+                                         alt="{{ gallery.description }}">
+                                </div>
+                            {% endfor %}
+
+                        </div>
+                        <a class="carousel-control-prev" href="#carouselExampleControls" role="button"
+                           data-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                        <a class="carousel-control-next" href="#carouselExampleControls" role="button"
+                           data-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal -->
+    <div class="modal fade montserrat" id="modal-reassign" tabindex="-1" aria-labelledby="ticketModal"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ticketModal">Reasignar asiento</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                f
+                <div class="modal-body"></div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal movimientos de Caja -->
+    <div class="modal montserrat" id="modal-disbursement" tabindex="-1" role="dialog">
+
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header pb-2 pt-2">
+                    <h4 class="modal-title mb-3 mt-3">Movimientos caja</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {% include "accounting/new_cash_disbursements.html" with formatdate=formatdate only_cash_set=choices_account %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock body %}
+
+{% block extrajs %}
+    <script type="text/javascript">
+
+        const programmingID = {{ programming_obj.id }};
+        const subsidiaryID = {{ subsidiary_current.id }};
+
+        //const productRef = firebase.database().ref('products');
+        //const printerRef = firebase.database().ref('printers');
+        //const ticketRef = firebase.database().ref(`tickets/Dalit/${subsidiaryID}/${programmingID}`);
+        const programmingRef = firebase.database().ref(`coxman/${subsidiaryID}/programmings/${programmingID}`);
+
+        /*productRef.on("value", function (snapshot) {
+
+            snapshot.forEach(function (childSnapshot) {
+                var data = childSnapshot.val();
+                console.log(data.Uid)
+
+            });
+        });*/
+        programmingRef.child('seats').on('child_added', (snapshot) => {
+
+            if (snapshot.val().status === '2') {
+                //console.log('user was added !!', snapshot.val());
+                getRenderedSeat(snapshot.val().pk, snapshot.val().status)
+            }
+
+        });
+
+        programmingRef.child('seats').on('child_removed', (snapshot) => {
+            if (snapshot.val().status === '1') {
+                //console.log('user was removed !!', snapshot.val());
+                getRenderedSeat(snapshot.val().pk, snapshot.val().status)
+            }
+        });
+
+
+        programmingRef.child('seats').on('child_changed', (snapshot) => {
+
+            if (snapshot.val().status === '4' || snapshot.val().status === '6') {
+                //console.log('user was changed !!', snapshot.val());
+                getRenderedSeat(snapshot.val().pk, snapshot.val().status)
+            }
+        });
+
+
+        loader = '<div class="container">' +
+            '<div class="row">' +
+            '<div class="col-md-12">' +
+            '<div class="loader">' +
+            '<p class="text-dark">Cargando...</p>' +
+            '<div class="loader-inner"></div>' +
+            '<div class="loader-inner"></div>' +
+            '<div class="loader-inner"></div>' +
+            '</div>' +
+            '</div>' +
+            '</div>' +
+            '</div>';
+
+        sessionStorage.setItem('document', '01');
+        sessionStorage.setItem('document2', '06');
+
+
+        function renderForm($id) {
+            let _val = sessionStorage.getItem('type_bill');
+            //console.log('type_bill: ' + _val)
+            $.ajax({
+                url: '/comercial/fill_form_programming_seat/',
+                async: true,
+                dataType: 'json',
+                type: 'GET',
+                data: {'programming_seat': $id, 'type': _val},
+                success: function (response, textStatus, xhr) {
+                    if (xhr.status === 200) {
+
+                        let _src = $('li.btn[key="' + $id + '"]').find('img').attr('src');
+
+                        if (_src === '/static/assets/avatar/seat_green.svg') {
+                            processingSale('2', $id);
+                            // console.log('processingSale... ')
+                            programmingRef.child('seats').child($id).set({
+                                pk: $id,
+                                status: '2'
+                            });
+                            //$('#render-form').html(response['form']);
+
+                        } else {
+                            if (_src === '/static/assets/avatar/seat_yellow.svg') {
+                                //releaseSeat('1', $id);
+                                $('#render-form').html(response['form']);
+                                changeDocument();
+                                selectOriginBySubsidiaryName();
+                            } else if (_src === '/static/assets/avatar/seat_red.svg' || _src === '/static/assets/avatar/seat_gray.svg' || _src === '/static/assets/avatar/seat_blue.svg') {
+                                $('#render-form').html(response['form']);
+                                selectOriginBySubsidiaryName();
+                            }
+
+                        }
+
+                    }
+                }
+            });
+        }
+
+        /*function getRenderedSeat($pk, $op) {
+
+            let _seat = $('li.btn[key="' + $pk + '"]');
+
+            $.ajax({
+                url: '/comercial/get_rendered_seat/',
+                async: true,
+                dataType: 'json',
+                type: 'GET',
+                data: {'pk': $pk, 'status': $op},
+                success: function (response, textStatus, xhr) {
+                    if (xhr.status === 200) {
+                        getBill();
+                        console.log("rendering...");
+                        _seat.html(response['grid']);
+                        let _programming = response['programming'];
+                        let _score = $('#render-score');
+                        let _voucher = $('#render-voucher');
+                        let _current_programming = parseInt(_score.attr('pk'));
+                        if (_current_programming === _programming) {
+                            console.log("current_programming..." + _current_programming);
+                            console.log("programming..." + _programming);
+                            _score.html(response['score']);
+                            _voucher.html(response['vouchers']);
+                        }
+                    }
+                }
+            });
+        }*/
+
+        function getRenderedSeat($pk, $op) {
+
+            let _seat = $('li.btn[key="' + $pk + '"]');
+
+            $.ajax({
+                url: '/comercial/get_rendered_seat/',
+                async: true,
+                dataType: 'json',
+                type: 'GET',
+                data: {'pk': $pk, 'status': $op},
+                success: function (response, textStatus, xhr) {
+                    if (xhr.status === 200) {
+                        // getBill();
+                        _seat.html(response['grid']);
+                        let _programming = response['programming'];
+                        let _score = $('#render-score');
+                        let _voucher = $('#render-voucher');
+                        let _current_programming = parseInt(_score.attr('pk'));
+                        if (_current_programming === _programming) {
+                            _score.html(response['score']);
+                            _voucher.html(response['vouchers']);
+                        }
+                    }
+                }
+            });
+        }
+
+        $(document).on('click', 'a.release-seat', function () {
+            let _op = $(this).attr('op');
+            let _pk = $(this).attr('pk');
+            releaseSeat(_op, _pk);
+        });
+
+        /*$(document).on('click', 'a.reserve-seat-with-name', function () {
+            let _op = $(this).attr('op');
+            let _pk = $(this).attr('pk');
+            let _person = prompt("por favor, escriba un nombre");
+            if (_person != null) {
+
+                $.ajax({
+                    url: '/comercial/go_reserve_seat_with_name/',
+                    async: true,
+                    dataType: 'json',
+                    type: 'GET',
+                    data: {'pk': _pk, 'status': _op, 'person': _person},
+                    success: function (response, textStatus, xhr) {
+                        if (xhr.status === 200) {
+                            toastr.success(response['message'], '¡Bien hecho!');
+                            let _seats = response['seats'];
+                            let arr = JSON.parse(_seats);
+                            console.log("go_reserve_seat_with_name... " + arr);
+                            sendChanges('6', arr);
+                        }
+                    }
+                });
+            }
+
+        });*/
+
+        $(document).on('click', 'a.cancellation-of-sale', function () {
+            let _op = $(this).attr('op');
+            let _pk = $(this).attr('pk');
+            let _reason = prompt("por favor, escriba un motivo");
+            if (_reason != null) {
+
+                $.ajax({
+                    url: '/transport/go_cancellation_of_sale/',
+                    async: true,
+                    dataType: 'json',
+                    type: 'GET',
+                    data: {'pk': _pk, 'status': _op, 'reason': _reason},
+                    success: function (response, textStatus, xhr) {
+                        if (xhr.status === 200) {
+                            $('#render-form').html(response['form']);
+
+                            toastr.success(response['message'], '¡Bien hecho!');
+
+                            programmingRef.child('seats').child(_pk).child('status').set('1')
+                                .then(() => {
+                                    getRenderedSeat(_pk, '1');
+                                    programmingRef.child('seats').child(_pk).remove();
+                                });
+                            getBill();
+
+                        }
+                    }
+                });
+            }
+        });
+
+        /*$(document).on('click', 'a.postponement-of-sale', function () {
+            let _op = $(this).attr('op');
+            let _pk = $(this).attr('pk');
+            let _reason = prompt("por favor, escriba un motivo");
+            if (_reason != null) {
+
+                $.ajax({
+                    url: '/comercial/go_postponement_of_sale/',
+                    async: true,
+                    dataType: 'json',
+                    type: 'GET',
+                    data: {'pk': _pk, 'status': _op, 'reason': _reason},
+                    success: function (response, textStatus, xhr) {
+                        if (xhr.status === 200) {
+                            $('#render-form').html(response['form']);
+                            toastr.success(response['message'], '¡Bien hecho!');
+                            let _seats = response['seats'];
+                            let arr = JSON.parse(_seats);
+                            console.log("go_postponement_of_sale... " + arr);
+                            sendChanges('1', arr);
+                        }
+                    }
+                });
+            }
+        });*/
+
+        $(document).on('click', 'a.reserve-seat-without-name', function () {
+            let _op = $(this).attr('op');
+            let _pk = $(this).attr('pk');
+            reserveSeatWithoutName(_op, _pk);
+        });
+
+        function reserveSeatWithoutName(_op, _pk) {
+            $.ajax({
+                url: '/transport/go_reserve_seat_without_name/',
+                async: true,
+                dataType: 'json',
+                type: 'GET',
+                data: {'pk': _pk, 'status': _op},
+                success: function (response, textStatus, xhr) {
+                    if (xhr.status === 200) {
+                        toastr.success(response['message'], '¡Bien hecho!');
+                        // let _seats = response['seats'];
+                        // let arr = JSON.parse(_seats);
+                        // console.log("go_reserve_seat_without_name... " + arr);
+                        // sendChanges('5', arr);
+                        getBill();
+
+                        programmingRef.child('seats').child(_pk).child('status').set('5');
+                        getRenderedSeat(_pk, '5');
+                    }
+                }
+            });
+        }
+
+        /*$(document).on('click', 'a.release-seat', function () {
+            let _op = $(this).attr('op');
+            let _pk = $(this).attr('pk');
+            releaseSeat(_op, _pk);
+        });*/
+
+        /*function releaseSeat(_op, _pk) {
+            let _val = sessionStorage.getItem('type_bill');
+            $.ajax({
+                url: '/comercial/go_release_seat/',
+                async: true,
+                dataType: 'json',
+                type: 'GET',
+                data: {'pk': _pk, 'status': _op, 'type': _val},
+                success: function (response, textStatus, xhr) {
+                    if (xhr.status === 200) {
+                        $('#render-form').html(response['form']);
+                        let _seats = response['seats'];
+                        let arr = JSON.parse(_seats);
+                        console.log("go_release_seat... " + arr);
+                        //sendChanges('1', arr);
+                        getBill();
+                    }
+                }
+            });
+        }*/
+        function releaseSeat(_op, _pk) {
+            let _val = sessionStorage.getItem('type_bill');
+            $.ajax({
+                url: '/transport/go_release_seat/',
+                async: true,
+                dataType: 'json',
+                type: 'GET',
+                data: {'pk': _pk, 'status': _op, 'type': _val},
+                success: function (response, textStatus, xhr) {
+                    if (xhr.status === 200) {
+                        $('#render-form').html(response['form']);
+
+                        programmingRef.child('seats').child(_pk).child('status').set('1')
+                            .then(() => {
+                                getRenderedSeat(_pk, '1');
+                                programmingRef.child('seats').child(_pk).remove();
+                            });
+                        getBill();
+
+                    }
+                }
+            });
+        }
+
+        /*$(document).on('click', 'a.release-seat-with-destination-limit', function () {
+            let _op = $(this).attr('op');
+            let _pk = $(this).attr('pk');
+            let _val = sessionStorage.getItem('type_bill');
+
+            $.ajax({
+                url: '/comercial/go_release_seat_with_destination_limit/',
+                async: true,
+                dataType: 'json',
+                type: 'GET',
+                data: {'pk': _pk, 'status': _op, 'type': _val},
+                success: function (response, textStatus, xhr) {
+                    if (xhr.status === 200) {
+                        $('#render-form').html(response['form']);
+                        let _seats = response['seats'];
+                        let arr = JSON.parse(_seats);
+                        console.log("go_release_seat_with_destination_limit... " + arr);
+                        sendChanges('9', arr);
+                    }
+                }
+            });
+
+        });*/
+
+        $(document).on('click', 'a.processing-of-sale', function () {
+            let _op = $(this).attr('op');
+            let _pk = $(this).attr('pk');
+            processingSale(_op, _pk);
+
+        });
+
+        function processingSale(_op, _pk) {
+            let _val = sessionStorage.getItem('type_bill');
+            $.ajax({
+                url: '/transport/go_processing_of_sale/',
+                async: true,
+                dataType: 'json',
+                type: 'GET',
+                data: {'pk': _pk, 'status': _op, 'type': _val},
+                success: function (response, textStatus, xhr) {
+                    if (xhr.status === 200) {
+
+                        $('#render-form').html(response['form']);
+                        let _type_document = response['type_document'];
+
+                        $("#id_type_bill option").filter(function () {
+                            return $(this).val() === _type_document;
+                        }).attr('selected', true);
+
+                        if (_type_document === 'F') {
+                            $(".invoice_document").removeClass('d-none');
+                        }
+
+                        // Seleccionar automáticamente el origen
+                        selectOriginBySubsidiaryName();
+
+                        // let _seats = response['seats'];
+                        // let arr = JSON.parse(_seats);
+                        // console.log("go_processing_of_sale... " + arr);
+                        // sendChanges('2', arr);
+                        getRenderedSeat(_pk, '2');
+                        toggleBill(_type_document);
+                        // $('#id_type_bill').trigger('change');
+                        $('#id_nro_document').focus();
+                        //changeDocument();
+                    }
+                }
+            });
+
+        }
+
+        /*function processingSale(_op, _pk) {
+            let _val = sessionStorage.getItem('type_bill');
+            $.ajax({
+                url: '/comercial/go_processing_of_sale/',
+                async: true,
+                dataType: 'json',
+                type: 'GET',
+                data: {'pk': _pk, 'status': _op, 'type': _val},
+                success: function (response, textStatus, xhr) {
+                    if (xhr.status === 200) {
+                        {#console.log("response" + response);#}
+                        $('#render-form').html(response['form']);
+                        let _type_document = response['type_document'];
+
+                        $("#id_type_bill option").filter(function () {
+                            return $(this).val() === _type_document;
+                        }).attr('selected', true);
+
+                        if (_type_document === 'F') {
+                            $(".invoice_document").removeClass('d-none');
+                        }
+
+                        console.log("go_processing_of_sale... _type_document " + _type_document);
+
+                        let _seats = response['seats'];
+                        let arr = JSON.parse(_seats);
+                        console.log("go_processing_of_sale... " + arr);
+                        sendChanges('2', arr);
+
+                        // $('#id_type_bill').trigger('change');
+                        $('#id_nro_document').focus();
+                        //changeDocument();
+                    }
+                }
+            });
+
+        }*/
+
+        /*$(document).on('click', 'a.selling-with-destination-limit', function () {
+            let _op = $(this).attr('op');
+            let _pk = $(this).attr('pk');
+            let _val = sessionStorage.getItem('type_bill');
+
+            $.ajax({
+                url: '/comercial/go_selling_with_destination_limit/',
+                async: true,
+                dataType: 'json',
+                type: 'GET',
+                data: {'pk': _pk, 'status': _op, 'type': _val},
+                success: function (response, textStatus, xhr) {
+                    if (xhr.status === 200) {
+                        $('#render-form').html(response['form']);
+                        let _seats = response['seats'];
+                        let arr = JSON.parse(_seats);
+                        console.log("go_selling_with_destination_limit... " + arr);
+                        sendChanges('10', arr);
+                    }
+                }
+            });
+        });*/
+
+        $(document).on('click', 'a.reassign-seat', function () {
+            let _op = $(this).attr('op');
+            let _pk = $(this).attr('pk');
+
+            $.ajax({
+                url: '/comercial/get_seat_to_reassign/',
+                async: true,
+                dataType: 'json',
+                type: 'GET',
+                data: {'pk': _pk, 'status': _op},
+                success: function (response, textStatus, xhr) {
+                    if (xhr.status === 200) {
+                        $('#modal-reassign .modal-body').html(response['form']);
+                    }
+                }
+            });
+        });
+
+        /*function sendChanges(_op, _arr) {
+            let msg = {}
+            for (let i = 0; i < _arr.length; i++) {
+                msg = {
+                    'status': _op,
+                    'seat': _arr[i]
+                }
+                //socket.send(JSON.stringify(msg));
+                firebase.database().ref(`tickets/Dalit/${subsidiaryID}/${programmingID}`).set(msg);
+
+            }
+        }*/
+
+        function getNroDocument() {
+            let _document_number = $('#id_nro_document').val();
+            console.log(_document_number)
+
+            if ((sessionStorage.getItem('document') === '01') && (_document_number.length !== 8)) {
+                toastr.warning('¡Favor de completar los caracteres requeridos: Son 8 caracteres para DNI', 'Error de Datos');
+                return false;
+            }
+
+            $('#loading-666').html(loader).show();
+
+            $.ajax({
+                url: '/comercial/get_name_business/',
+                timeout: 5000, //3 second timeout
+                async: true,
+                dataType: 'json', // for response
+                type: 'GET',
+                data: {
+                    'nro_document': $('#id_nro_document').val(),
+                    'type': $('#id_document_type').val(),
+                },
+                contentType: 'application/json;charset=UTF-8',
+                headers: {"X-CSRFToken": '{{ csrf_token }}'},
+                success: function (response, textStatus, xhr) {
+                    if (xhr.status === 200) {
+                        toastr.success(response.message, '¡Bien hecho!');
+                        $("#id_client_name").val(response.result);
+                        $("#id_nationality").val(response.nationality);
+                        $('#loading-666').hide();
+                    }
+                },
+                error: function (jqXhr, textStatus, xhr) { // provide a bit more info about the error to the console
+                    if (jqXhr.status === 500) {
+                        toastr.error(jqXhr.responseJSON.error, '¡Error de consulta!');
+                    } else {
+                        if (textStatus === 'timeout') {
+                            {#console.log(textStatus)#}
+                            {#console.log(jqXhr.responseJSON.error)#}
+                            toastr.error('Error de Tiempo de Espera', '¡Error de consulta!');
+                        } else {
+                            console.log(" STATUS: " + xhr + " " + textStatus);
+                        }
+                    }
+                    $('#loading-666').hide();
+                }
+            });
+        }
+
+        $(document).on('click', '#btn-search-ruc', function (e) {
+            searchRuc();
+        });
+
+        function searchRuc() {
+            let _document_number = $('#id_nro_document_2').val();
+
+            if ((sessionStorage.getItem('document') === '06') && (_document_number.length !== 11)) {
+                toastr.warning('¡Favor de completar los caracteres requeridos: Son 11 caracteres para RUC', 'Error de Datos');
+                return false;
+            }
+
+            $('#loading-666').html(loader).show();
+
+            $.ajax({
+                url: '/comercial/get_name_business/',
+                async: true,
+                dataType: 'json', // for response
+                type: 'GET',
+                data: {
+                    'nro_document': $('#id_nro_document_2').val(),
+                    'type': $('#id_document_type_2').val()
+                },
+                contentType: 'application/json;charset=UTF-8',
+                headers: {"X-CSRFToken": '{{ csrf_token }}'},
+                success: function (response, textStatus, xhr) {
+                    if (xhr.status === 200) {
+                        toastr.success(response.message, '¡Bien hecho!');
+                        $("#id_client_name_2").val(response.result);
+                        $("#id_client_address_2").val(response.address);
+                        $('#loading-666').hide();
+                    }
+                },
+                error: function (jqXhr, textStatus, xhr) { // provide a bit more info about the error to the console
+                    if (jqXhr.status === 500) {
+                        toastr.error(jqXhr.responseJSON.error, '¡Error de Consulta!');
+                    } else {
+                        if (textStatus === 'timeout') {
+                            toastr.error('Failed from timeout', '¡Error de Consulta!');
+                        } else {
+                            console.log(" STATUS: " + xhr + " " + textStatus);
+                        }
+                    }
+                    $('#loading-666').hide();
+                }
+            });
+        }
+
+        $(document).on('click', '#btn_search_nro_document', function (e) {
+            getNroDocument();
+        });
+
+
+        $(document).on('keypress', '#id_nro_document', function (e) {
+
+            if (e.keyCode === 13) {
+
+                e.preventDefault()
+
+                $(this).trigger("enterKey");
+                getNroDocument();
+                return false;
+            }
+        });
+
+        $(document).on('change', '#id_document_type', function () {
+            let _val = $(this).val();
+            if (_val === '01') {
+                $("#id_nro_document").attr('maxlength', 8);
+                sessionStorage.setItem('document', '01')
+                $("#id_nationality").val('9589');
+                $("#id_nationality").attr('disabled', 'disabled');
+
+                console.log(sessionStorage.getItem('document'))
+            } else if (_val === '04') {
+                sessionStorage.setItem('document', '04');
+                $("#id_nro_document").attr('maxlength', 20);
+                $("#id_nationality").val('0');
+                $("#id_nationality").removeAttr('disabled', 'disabled');
+                $("#id_client_name").val('');
+                $("#id_nro_document").val('');
+            } else if (_val === '07') {
+                sessionStorage.setItem('document', '07');
+                $("#id_nro_document").attr('maxlength', 20);
+                $("#id_nationality").val('0');
+                $("#id_nationality").removeAttr('disabled', 'disabled');
+                $("#id_client_name").val('');
+                $("#id_nro_document").val('');
+            } else {
+                $("#id_nro_document").attr('maxlength', 20);
+                sessionStorage.setItem('document', '03');
+                $('#id_nro_document').keypress(function (e) {
+                    e.stopPropagation();
+                });
+                $("#id_nro_document").val('');
+                $("#id_client_name").val('');
+                $("#id_client_age").val('');
+                $("#id_nationality").val('0');
+                $("#id_nationality").removeAttr('disabled', 'disabled');
+                console.log(sessionStorage.getItem('document'))
+            }
+        });
+
+        $(document).on('keypress', '#id_nro_document_2', function (e) {
+
+            if (e.keyCode === 13) {
+
+                e.preventDefault()
+
+                $(this).trigger("enterKey");
+
+                let _document_number = $('#id_nro_document_2').val();
+
+                if ((sessionStorage.getItem('document2') === '06') && (_document_number.length !== 11)) {
+                    toastr.warning('¡Favor de completar los caracteres requeridos: Son 11 caracteres para RUC', 'Error de Datos');
+                    return false;
+                }
+                $('#loading-666').html(loader).show();
+
+                $.ajax({
+                    url: '/comercial/get_name_business/',
+                    async: true,
+                    dataType: 'json', // for response
+                    type: 'GET',
+                    data: {
+                        'nro_document': $('#id_nro_document_2').val(),
+                        'type': $('#id_document_type_2').val()
+                    },
+                    contentType: 'application/json;charset=UTF-8',
+                    headers: {"X-CSRFToken": '{{ csrf_token }}'},
+                    success: function (response, textStatus, xhr) {
+                        if (xhr.status === 200) {
+                            toastr.success(response.message, '¡Bien hecho!');
+                            $("#id_client_name_2").val(response.result);
+                            $("#id_client_address_2").val(response.address);
+                            $('#loading-666').hide();
+                        }
+                    },
+                    error: function (jqXhr, textStatus, xhr) { // provide a bit more info about the error to the console
+                        if (jqXhr.status === 500) {
+                            toastr.error(jqXhr.responseJSON.error, '¡Error de Consulta!');
+                        } else {
+                            if (textStatus === 'timeout') {
+                                toastr.error('Failed from timeout', '¡Error de Consulta!');
+                            } else {
+                                console.log(" STATUS: " + xhr + " " + textStatus);
+                            }
+                        }
+                        $('#loading-666').hide();
+                    }
+                });
+
+                return false;
+            }
+        });
+
+        $(document).on('click', '#btn-save-data', function (event) {
+            let _val = sessionStorage.getItem('type_bill');
+            event.preventDefault();
+
+            if ($('#id_correlative').val() === '') {
+                toastr.warning('¡Favor de ingresar el correlativo!', 'Error de Llenado!');
+                $('#id_correlative').focus()
+                return false;
+            }
+
+            if ($('#id_document_type').val() === '04' || $('#id_document_type').val() === '07') {
+                console.log($('#id_nationality').val());
+                if ($('#id_nationality').val() === null) {
+                    toastr.warning('¡Favor de escoger la nacionalidad!', 'Error de Llenado!');
+                    $('#id_nationality').focus()
+                    return false;
+                }
+            }
+
+            if (($('#id_nro_document').val() === '') && ($('#id_client_name').val() === '')) {
+                toastr.warning('¡Favor de completar el campo de DNI!', 'Error de Llenado!');
+                $('#id_nro_document').focus()
+                return false;
+            }
+
+            if ($('#id_cost').val() === '') {
+                toastr.warning('¡Favor de ingresar el Precio del Boleto de Viaje!', 'Error de Llenado!');
+                $('#id_cost').focus()
+                return false;
+            }
+            if ($('#id_origin').val() === '') {
+                toastr.warning('¡Favor de seleccionar el origen!', 'Error de Llenado!');
+                $('#id_origin').focus()
+                return false;
+            }
+            if ($('#id_destiny').val() === '01') {
+                toastr.warning('¡Favor de seleccionar el destino!', 'Error de Llenado!');
+                $('#id_destiny').focus()
+                return false;
+            }
+            let _pk = $('#id_programming_seat_id').val();
+            let cost = $('#id_cost').val().trim();
+            cost = cost.replace(/\./g, '').replace(',', '.');
+            let data = {
+                "Client": $('#id_client').val(),
+                "Serial": $('#id_serial').val(),
+                "Document_type_client": $('#id_document_type').val(),
+                "Client_Nro_document": $('#id_nro_document').val(),
+                "Client_name": $('#id_client_name').val(),
+                "Type_Client2": $('#id_document_type_2').val(),
+                "Client_Nro_document_2": $('#id_nro_document_2').val(),
+                "Seat": $('#id_seat').val(),
+                "Origin": $('#id_origin').val(),
+                "Destiny": $('#id_destiny').val(),
+                "Programming_seat_id": $('#id_programming_seat_id').val(),
+                "Type_bill": $('#id_type_bill').val(),
+                "Amount": cost,
+                "Paid": $('#id_paid').val(),
+                "Turned": $('#id_turned').val(),
+                "Correlative": $('#id_correlative').val(),
+                "Phone": $('#id_phone').val(),
+                "Age": $('#id_client_age').val(),
+                "Nationality": $('#id_nationality').val(),
+                "Demo": ($('#demo').is(':checked')) ? 1 : 0,
+                "ShowOriginalName": ($('#showOriginalNameSwitch').is(':checked')) ? 1 : 0,
+            };
+
+            $('#loading-666').html(loader).show();
+
+
+            $.ajax({
+                url: '/comercial/create_order_passenger/',
+                async: true,
+                dataType: 'json', // for response
+                type: 'GET',
+                data: {'data': JSON.stringify(data)},
+                contentType: 'application/json;charset=UTF-8',
+                headers: {
+                    "X-CSRFToken": '{{ csrf_token }}'
+                },
+                success: function (response, textStatus, xhr) {
+                    if (xhr.status === 200) {
+
+                        toastr.success(response.message, '¡Bien hecho!');
+                        flagEnter = false
+                        if (response.type_document === 'T') {
+                            window.location.href = "/comercial/print_ticket_old/" + response.order_id + "/";
+                        } else {
+                            if (response.type_document === 'B' || response.type_document === 'F') {
+                                window.location.href = "/comercial/print_ticket_order_passenger/" + response.order_id + "/";
+                            }
+                        }
+
+                        $('#render-form').html(response['form']);
+
+
+                        if (response['userOffice'] === 'V2') {
+                            programmingRef.child('seats').child(_pk).child('status').set('7');
+                            getRenderedSeat(_pk, '7');
+                        } else if (response['userOffice'] === 'V3') {
+                            programmingRef.child('seats').child(_pk).child('status').set('6');
+                            getRenderedSeat(_pk, '6');
+                        } else {
+                            programmingRef.child('seats').child(_pk).child('status').set('4');
+                            getRenderedSeat(_pk, '4');
+                            let codeText = 'CE[' + response.serial + '-' + response.correlative + ']' + '|' + response.order_id + '|' + response.type_document;
+                            {#firebase.database().ref(`arrow/${response.userSubsidiary}/printers/${response.userOffice}/${response.userPrinter}/passenger`).set(codeText);#}
+                            firebase.database().ref(`coxman/${subsidiaryID}/passenger/thermal`).set(codeText);
+                        }
+                        getBill();
+
+                        $('#loading-666').hide();
+
+                    }
+                },
+                error: function (jqXhr, textStatus, xhr) {
+                    toastr.error(jqXhr.responseJSON.error, '¡ERROR DE SUNAT!');
+                }
+            });
+
+        });
+
+        /*function sendFirebase(codeText, userSubsidiary, userOffice, userPrinter) {
+            firebase.database().ref(`printers/Dalit/${userSubsidiary}/${userOffice}/${userPrinter}/passenger`).set(codeText);
+        }*/
+
+        function generateTxtFile(text) {
+            var textFile = null;
+            var data = new Blob([text], {type: 'text/plain'});
+            if (textFile !== null) {
+                window.URL.revokeObjectURL(textFile);
+            }
+            textFile = window.URL.createObjectURL(data);
+            return textFile;
+        }
+
+        function dummyText($dummyText) {
+
+            $('#downloadFile').attr('href', generateTxtFile($dummyText));
+            $('#downloadFile').attr('download', $dummyText + '.txt')
+            $('#downloadFile').show();
+            $('#downloadFile')[0].click();
+
+        };
+
+        /*if (window.location.protocol === 'https:') {
+            wsProtocol = 'wss://'
+        } else {
+            wsProtocol = 'ws://'
+        }*/
+
+        /*let socket = new WebSocket(wsProtocol + window.location.host + '/ws/polData/');
+
+        socket.onopen = function (e) {
+            console.log('Connection established');
+            //console.log('url: ' + window.location.host);
+        };
+        socket.onerror = function (e) {
+            console.log('Connection Error: ' + e);
+        };
+        socket.onmessage = function (e) {
+            let recData = JSON.parse(e.data);
+            getRenderedSeat(recData.seat, recData.status);
+        };*/
+
+
+        function excelVouchers() {
+
+            $("#vouchers").table2excel({
+                // exclude CSS class
+                exclude: ".noExl",
+                name: "Worksheet vouchers",
+                filename: "vouchers",//do not include extension
+                fileext: ".xlsx", // file extension
+                preserveColors: true
+
+            });
+        }
+
+        function excelLiquidations() {
+
+            $("#liquidations").table2excel({
+                // exclude CSS class
+                exclude: ".noExl",
+                name: "Worksheet liquidations",
+                filename: "liquidations",//do not include extension
+                fileext: ".xlsx", // file extension
+                preserveColors: true
+
+            });
+        }
+
+
+        $('#btn-cash-programming').click(function () {
+
+            $('#modal_programming_id').val('{{ programming_obj.id }}');
+
+        });
+
+        $('#id-disbursement-cash').change(function () {
+            $('#id-disbursement-current-balance').val($(this).find('option:selected').attr('current-balance'));
+        });
+
+        $('#new-disbursement-transaction-form').submit(function (event) {
+            event.preventDefault();
+            let data = new FormData($('#new-disbursement-transaction-form').get(0));
+
+            $('#btn-disbursement-operation-save').attr("disabled", "true");
+
+            $.ajax({
+                url: '/accounting/new_cash_disbursement/',
+                type: "POST",
+                data: data,
+                cache: false,
+                processData: false,
+                contentType: false,
+                success: function (response, textStatus, xhr) {
+                    if (xhr.status === 200) {
+
+                        $('#render-score').html(response['score']);
+                        $('#modal-disbursement').modal('hide');
+                        toastr.success(response['message'], '¡Bien hecho!');
+                    }
+                },
+                error: function (jqXhr, textStatus, xhr) {
+                    if (jqXhr.status === 500) {
+                        toastr.error(jqXhr.responseJSON.error, '¡Inconcebible!');
+                    }
+                }
+            });
+            $('#btn-disbursement-operation-save').removeAttr("disabled", "false");
+        });
+
+        $(document).on('click', 'a#gta6_link', function (event) {
+
+
+            let _order = $(this).attr('order-id');
+            let _type_document = $(this).attr('type-document');
+            let _correlative_sale = $(this).attr('correlative-sale');
+            let _serial = $(this).attr('serial');
+
+            let dummyText = 'CE[' + _serial + '-' + _correlative_sale + ']';
+
+
+            event.preventDefault(); // Recommended to stop the link from doing anything else
+
+            if (_type_document === 'B' || _type_document === 'F') {
+                window.location.href = "/comercial/print_ticket_order_passenger/" + _order + "/";
+            } else {
+                window.location.href = "/comercial/print_ticket_old/" + _order + "/";
+            }
+
+            existTokenPassenger(_order, _type_document, dummyText);
+
+            /***setTimeout(() => {
+                printA6();
+            }, 1000);*/
+
+        });
+
+
+        $(document).on('click', 'a#gta5_link', function () {
+
+            window.location.href = "/comercial/print_manifest_passengers_old/{{ programming_obj.id }}/";
+            existTokenManifest({{ programming_obj.id }});
+
+            /***setTimeout(() => {
+                printA5();
+            }, 2500);**/
+        });
+
+        function getCookie(name) {
+            let parts = document.cookie.split(name + "=");
+            if (parts.length === 2) return parts.pop().split(";").shift();
+        }
+
+        function expireCookie(cName) {
+            document.cookie = cName + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+        }
+
+        let downloadTimer_manifest;
+        let attempts_manifest = 10;
+
+        function existTokenManifest($id) {
+
+            downloadTimer_manifest = window.setInterval(function () {
+                let token = getCookie("mpe");
+                /** console.log('token: ' + token); */
+                if ((token === $id.toString()) || (attempts_manifest === 0)) {
+                    console.log('file downloaded, ' + attempts_manifest);
+                    deleteTokenManifest();
+                    console.log('Imprimiendo Manifiesto - A5');
+                    // printA5(); /** AQUI IMPRIME EL MANIFIESTO */
+                    setTimeout(() => {
+                        printA5();
+                    }, 2000);
+                }
+
+                attempts_manifest--;
+            }, 1000);
+        }
+
+        function deleteTokenManifest() {
+            window.clearInterval(downloadTimer_manifest);
+            expireCookie("mpe");
+            attempts_manifest = 10;
+        }
+
+        let downloadTimer_passenger;
+        let attempts_passenger = 10;
+
+        function existTokenPassenger($id, $type_document, $dummyText) {
+
+            dummyText($dummyText);
+
+            downloadTimer_passenger = window.setInterval(function () {
+                let token = getCookie("bp");
+                /** console.log('token: ' + token); */
+                if ((token === $id.toString()) || (attempts_passenger === 0)) {
+                    console.log('file downloaded, ' + attempts_passenger);
+                    deleteTokenPassenger();
+                    console.log('Imprimiendo Boleto de viaje - A6');
+                    setTimeout(() => {
+                        printA6($type_document);
+                    }, 1000);
+                    //printA6(); /** AQUI IMPRIME EL BOLETO DE VIAJE */
+                }
+                attempts_passenger--;
+            }, 1000);
+        }
+
+        function deleteTokenPassenger() {
+            window.clearInterval(downloadTimer_passenger);
+            expireCookie("bp");
+            attempts_passenger = 10;
+        }
+
+
+        function printA6($type_document) {
+            /***NUEVA FLECHA PLUS S.R.L - 3
+             EMPRESA DE TRANSPORTES E&E S.R.L - 2
+             EMPRESA DE TRANSPORTES SUPER RAPIDO NUEVA FLECHA S.A. - 1*/
+            let company_id = '{{ programming_obj.company.id }}';
+            let _program = 'C:\\Windows\\GTAS\\dist\\printing.exe';
+
+            console.log('company_id: ' + company_id);
+
+            if (company_id === '1') {
+
+                if ($type_document === 'B' || $type_document === 'F' || $type_document === 'T') {
+                    document.dispatchEvent(new CustomEvent('funcIntraLaunch',
+                        {
+                            'detail': {
+                                task: 'run',
+                                program: _program
+                            }
+                        }
+                    ));
+                    /******/
+                } else {
+                    document.dispatchEvent(new CustomEvent('funcIntraLaunch',
+                        {
+                            'detail': {
+                                task: 'run',
+                                program: 'C:\\Windows\\GTAS\\GTA6-BP-SUPER\\gta6_bp_super.application'
+                            }
+                        }
+                    ));
+                }
+
+
+            } else {
+                if (company_id === '2') {
+
+                    if ($type_document === 'B' || $type_document === 'F' || $type_document === 'T') {
+                        document.dispatchEvent(new CustomEvent('funcIntraLaunch',
+                            {
+                                'detail': {
+                                    task: 'run',
+                                    program: _program
+                                }
+                            }
+                        ));
+                    } else {
+                        document.dispatchEvent(new CustomEvent('funcIntraLaunch',
+                            {
+                                'detail': {
+                                    task: 'run',
+                                    program: 'C:\\Windows\\GTAS\\GTA6-BP-EYE\\gta6_bp_eye.application'
+                                }
+                            }
+                        ));
+                    }
+
+
+                } else {
+
+
+                    if (company_id === '3') {
+
+
+                        if ($type_document === 'B' || $type_document === 'F' || $type_document === 'T') {
+                            document.dispatchEvent(new CustomEvent('funcIntraLaunch',
+                                {
+                                    'detail': {
+                                        task: 'run',
+                                        program: _program
+                                    }
+                                }
+                            ));
+                        } else {
+
+                            document.dispatchEvent(new CustomEvent('funcIntraLaunch',
+                                {
+                                    'detail': {
+                                        task: 'run',
+                                        program: 'C:\\Windows\\GTAS\\GTA6-BP-PLUS\\gta6_bp_plus.application'
+                                    }
+                                }
+                            ));
+                        }
+
+
+                    }
+                }
+            }
+
+        }
+
+        function printA5() {
+            /***NUEVA FLECHA PLUS S.R.L - 3
+             EMPRESA DE TRANSPORTES E&E S.R.L - 2
+             EMPRESA DE TRANSPORTES SUPER RAPIDO NUEVA FLECHA S.A. - 1*/
+            let company_id = '{{ programming_obj.company.id }}';
+            console.log('company_id: ' + company_id);
+            if (company_id === '1') {
+                document.dispatchEvent(new CustomEvent('funcIntraLaunch',
+                    {
+                        'detail': {
+                            task: 'run',
+                            program: 'C:\\Windows\\GTAS\\GTA5-MPE-SUPER\\gta5_mpe_super.application'
+                        }
+                    }
+                ));
+            } else {
+                if (company_id === '2') {
+                    document.dispatchEvent(new CustomEvent('funcIntraLaunch',
+                        {
+                            'detail': {
+                                task: 'run',
+                                program: 'C:\\Windows\\GTAS\\GTA5-MPE-EYE\\gta5_mpe_eye.application'
+                            }
+                        }
+                    ));
+                } else {
+                    if (company_id === '3') {
+                        document.dispatchEvent(new CustomEvent('funcIntraLaunch',
+                            {
+                                'detail': {
+                                    task: 'run',
+                                    program: 'C:\\Windows\\GTAS\\GTA5-MPE-PLUS\\gta5_mpe_plus.application'
+                                }
+                            }
+                        ));
+                    }
+                }
+            }
+        }
+
+
+        function removeFiles() {
+
+            document.dispatchEvent(new CustomEvent('funcIntraLaunch',
+                {
+                    'detail': {
+                        task: 'run',
+                        program: 'C:\\Windows\\RMFILES\\RemoveFiles.application'
+                    }
+                }
+            ));
+
+
+        }
+
+
+        function getBill() {
+            let _val = sessionStorage.getItem('type_bill')
+
+            if (_val == null) {
+                changeDocument();
+            } else {
+                $("#id_type_bill option").filter(function () {
+                    return $(this).val() === _val;
+                }).attr('selected', true);
+                getSerialAndCorrelative(_val);
+                toggleBill(_val);
+            }
+        }
+        function toggleBill($document_type) {
+
+            $('#id_correlative, #id_serial, #id_type_bill').removeClass('control-ticket').removeClass('control-invoice').removeClass('control-voucher');
+
+            if ($document_type === 'T') {
+
+                $(".invoice_document").addClass('d-none');
+                $('#id_correlative').prop('readonly', false);
+                $('#id_correlative, #id_serial, #id_type_bill').addClass('control-ticket');
+
+            } else if ($document_type === 'F') {
+                $(".invoice_document").removeClass('d-none');
+                $('#id_correlative').prop('readonly', true);
+                $('#id_correlative, #id_serial, #id_type_bill').addClass('control-invoice');
+
+            } else if ($document_type === 'B') {
+                $(".invoice_document").addClass('d-none');
+                $('#id_correlative').prop('readonly', true);
+                $('#id_correlative, #id_serial, #id_type_bill').addClass('control-voucher');
+            }
+        }
+
+        function changeDocument() {
+
+            let _val = $('#id_type_bill').val();
+            //console.log('changeDocument: ' + _val);
+            sessionStorage.setItem('type_bill', _val);
+            getSerialAndCorrelative(_val);
+            toogleBill(_val);
+
+        }
+
+        function toogleBill($document_type) {
+            //console.log('toogleBill....' +$document_type);
+            $('#id_correlative, #id_serial, #id_type_bill').removeClass('control-ticket').removeClass('control-invoice').removeClass('control-voucher');
+
+            if ($document_type === 'T') {
+
+                $(".invoice_document").removeClass('d-none');
+                $('#id_correlative').prop('readonly', false);
+                $('#id_correlative, #id_serial, #id_type_bill').addClass('control-ticket');
+
+            } else if ($document_type === 'F') {
+                $(".invoice_document").removeClass('d-none');
+                $('#id_correlative').prop('readonly', true);
+                $('#id_correlative, #id_serial, #id_type_bill').addClass('control-invoice');
+
+            } else if ($document_type === 'B') {
+                $(".invoice_document").addClass('d-none');
+                $('#id_correlative').prop('readonly', true);
+                $('#id_correlative, #id_serial, #id_type_bill').addClass('control-voucher');
+            }
+        }
+
+
+        function getSerialAndCorrelative($document_type) {
+            let programming_id = $('#render-score').attr('pk');
+            {#console.log("programming", programming_id)#}
+            $.ajax({
+                url: '/comercial/get_correlative_document/',
+                async: true,
+                dataType: 'json',
+                type: 'GET',
+                data: {
+                    'document_type': $document_type,
+                    'programming_id': programming_id,
+                },
+                success: function (response, textStatus, xhr) {
+                    if (xhr.status === 200) {
+                        $('#id_correlative').val(response['correlative']);
+                        $('#id_serial').val(response['serial']);
+                    }
+                },
+                fail: function (response) {
+                    console.log("error");
+                }
+            });
+        }
+
+        /*$(document).on('keyup', '#id_cost', function () {
+            let val = $(this).val();
+
+            if (val.length > 0) {
+                $('#row-paid').removeClass('d-none');
+                $('#id_paid').val(val);
+            } else {
+                $('#row-paid').addClass('d-none');
+            }
+        });*/
+
+        $(document).on('keyup', '#id_paid', function () {
+            let val = $(this).val();
+            if (isNaN(val) || val === '') {
+                $(this).val('');
+                $('#id_turned').val('');
+            } else {
+                let paid = parseFloat($(this).val());
+                let total = parseFloat($('#id_cost').val());
+                let turned = paid - total;
+                let round_turned = round(turned, 1);
+                $('#id_turned').val(round_turned);
+            }
+
+        });
+
+        function round(value, ndec) {
+            let n = 10;
+            for (let i = 1; i < ndec; i++) {
+                n *= 10;
+            }
+
+            if (!ndec || ndec <= 0)
+                return Math.round(value);
+            else
+                return Math.round(value * n) / n;
+        }
+
+        $('#id_cash').trigger('change');
+
+        getBill();
+
+        // Función para seleccionar automáticamente el origen basado en el nombre de la sede
+        function selectOriginBySubsidiaryName() {
+            const subsidiaryName = '{{ subsidiary_current.name }}';
+            const originSelect = $('#id_origin');
+            
+            if (originSelect.length > 0) {
+                originSelect.find('option').each(function() {
+                    if ($(this).text().trim() === subsidiaryName.trim()) {
+                        $(this).prop('selected', true);
+                        return false; // break the loop
+                    }
+                });
+            }
+        }
+
+        // Ejecutar la función cuando se carga el formulario
+        $(document).ready(function() {
+            selectOriginBySubsidiaryName();
+        });
+
+        /*$(document).on('mousedown', '.number-id', function (event) {
+
+
+
+            switch (event.which) {
+                case 1:
+                    alert('Left Mouse button pressed.');
+                    break;
+                case 2:
+                    alert('Middle Mouse button pressed.');
+                    break;
+                case 3:
+                    alert('Right Mouse button pressed.');
+                    break;
+                default:
+                    alert('You have a strange Mouse!');
+            }
+
+
+
+        });*/
+        /*$(document).on("contextmenu", ".number-id", function(e){
+           alert('Context Menu event has fired!');
+           return false;
+        });*/
+
+        /*ticketRef.on("value", function (snapshot) {
+
+            if(snapshot.exists()){
+                console.log('snapshot');
+        console.log(snapshot.val());
+        let snap = snapshot.val();
+        console.log(snap.seat);
+        console.log(snap.status);
+            }*/
+
+
+        /*snapshot.forEach(function (childSnapshot) {
+            var data = childSnapshot.val();
+            console.log('data');
+            console.log(data);
+        });*/
+        /*snapshot.forEach(doc => {
+            if (doc.get('seat') != null) {
+                console.log(doc.id, '=>', doc.data());
+            }
+            ;
+        });*/
+
+    </script>
+{% endblock extrajs %}

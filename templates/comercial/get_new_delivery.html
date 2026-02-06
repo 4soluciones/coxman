@@ -1,0 +1,32 @@
+<form id="change-destiny-form" action="" method="POST">
+    {% csrf_token %}
+
+    <input type="hidden" id="id_order" name="orden" value="{{ order_id }}">
+
+    <table class="table table-sm pay-options">
+
+            <thead>
+            <tr class="text-uppercase font-weight-lighter">
+                <th class="border-right text-center border-left align-middle">INGRESAR EL CODIGO DE LA ENCOMIENDA:</th>
+            </tr>
+            </thead>
+            <tbody class="mb-4">
+            <tr>
+
+                <td class="border-top-0 border-bottom border-right align-middle">
+
+                   <input type="text" class="form-control text-center" id="id_code" placeholder="****" maxlength="4">
+                </td>
+            </tr>
+            </tbody>
+
+        <tfoot>
+        <tr class="border-0">
+            <td colspan="2" class="border-0 pr-2 text-center pt-3 pb-0">
+                <button type="button" id="btn-save-delivery" class="btn btn-primary"> Validar</button>
+            </td>
+        </tr>
+        </tfoot>
+    </table>
+
+</form>

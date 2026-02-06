@@ -1,0 +1,227 @@
+{% extends 'home.html' %}
+
+{% block title %}
+    coronasoft.dev | Lista de Guías
+{% endblock title %}
+
+{% block body %}
+
+
+    <div class="container-fluid">
+
+        <div class="card montserrat" style="background: #f1c8a7;">
+            <div class="card-body pb-0 ">
+                <form id="search-form" method="POST">
+                    {% csrf_token %}
+                    <div class="form-group row">
+                        <label for="id_date_initial"
+                               class="col-sm-1 pl-0 pr-0 align-middle text-center font-weight-bold col-form-label">Fecha
+                            Inicial</label>
+
+                        <div class="col-sm-2">
+                            <input type="date"
+                                   class="form-control"
+                                   name="start-date"
+                                   id="id_date_initial"
+                                   value="{{ date_now }}" required>
+
+                        </div>
+                        <label for="id_date_final"
+                               class="col-sm-1 pl-0 pr-0 align-middle text-center font-weight-bold col-form-label">Fecha
+                            Final</label>
+                        <div class="col-sm-2">
+                            <input type="date"
+                                   class="form-control"
+                                   name="end-date"
+                                   id="id_date_final"
+                                   value="{{ date_now }}" required>
+                        </div>
+                        <div class="col-sm-3">
+                            <button type="submit" id="id_btn_show" class="btn btn-outline-primary">
+                                <i class="fas fa-search"></i>
+                            </button>
+
+
+                            <button onclick="excelComodityReceive();" class="btn  btn-outline-success"><span
+                                    class="fa fa-file-excel"></span> Exportar excel
+                            </button>
+
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card-group mt-3">
+            <div class="card" style="flex-grow: 1">
+                <div class="card-body mt-1">
+
+                    <div class="table-responsive pt-1" id="manifest-receive-grid-list"></div>
+
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+
+    {#MODAL DE ENTREGA#}
+    <div class="modal fade" id="modal-changedelivery" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header text-center">
+                    <h5 class="modal-title" id="exampleModalLabel1">ENTREGA DE ENCOMIENDA:</h5>
+                    <button type="button" class="close ml-0" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="change-delivery">
+                    {% include "comercial/get_new_delivery.html" %}
+                </div>
+                <div class="modal-footer">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+{% endblock body %}
+
+{% block extrajs %}
+
+    <script type="text/javascript">
+
+        $('#search-form').submit(function (event) {
+            event.preventDefault();
+            let _data = new FormData($('#search-form').get(0));
+            $.ajax({
+                url: '/comercial/receive_manifests/',
+                type: "POST",
+                data: _data,
+                cache: false,
+                processData: false,
+                contentType: false,
+                success: function (response, textStatus, xhr) {
+                    if (xhr.status === 200) {
+                        $('#manifest-receive-grid-list').html(response.grid);
+                        toastr.info(response['message'], '¡Bien hecho!');
+                    }
+                },
+                error: function (jqXhr, textStatus, xhr) {
+                    if (jqXhr.status === 500) {
+                        toastr.error(jqXhr.responseJSON.error, '¡Inconcebible!');
+                    }
+                }
+            });
+        });
+
+        $(document).on('click', '#btn-save-delivery', function () {
+
+            let _order_id = $('#id_type_commodity').parent('td').parent('tr').attr("pk")
+            let code_request = $('#id_code').val()
+
+            $.ajax({
+                url: '/comercial/save_delivery_code/',
+                async: true,
+                dataType: 'json',
+                type: 'GET',
+                data: {
+                    'order_id': _order_id,
+                    'code_request': code_request,
+                },
+                success: function (response, textStatus, xhr) {
+                    if (xhr.status === 200) {
+                        $('#id_type_commodity').attr('disabled', 'disabled');
+                        $('#id_type_commodity').parent("td").parent("tr").find('select.select-cash').prop("disabled", true)
+                        toastr.success(response.message, '¡Bien hecho!');
+                        $('#modal-changedelivery').modal('hide')
+                    }
+                },
+                error: function (jqXhr, textStatus, xhr) {
+                    if (jqXhr.status === 500) {
+                        toastr.error(jqXhr.responseJSON.error, '¡Error en codigo ingresado!');
+                        $('#id_code').val('')
+                        $('#id_code').focus()
+                    }
+                }
+            });
+
+        });
+
+
+        function get_modal_delivery($order_id) {
+            {#console.log($order_id)#}
+            $('#modal-changedelivery').modal('show')
+        }
+
+        $(document).on('change', '#id_type_commodity', function () {
+
+            let _val = $(this).val();
+
+            let _order_id = $(this).parent('td').parent('tr').attr("pk");
+            let tr = $(this).parent("td").parent("tr");
+            let _val_this = $(this)
+
+            let _way_to_pay = tr.find('td.way-to-pay').text();
+            let _cash = tr.find('select.select-cash').val();
+            let _cash_id = tr.find('select.select-cash');
+            let _total = tr.find('td.total-sale').text().replace('S/. ', '');
+
+
+            if (_val === 'E') {
+                get_modal_delivery(_order_id)
+            } else {
+                $.ajax({
+                    url: '/comercial/change_type_commodity/',
+                    async: true,
+                    dataType: 'json',
+                    type: 'GET',
+                    data: {
+                        'type_commodity': _val,
+                        'order_id': _order_id,
+                        'way_to_pay': _way_to_pay,
+                        'cash': _cash,
+                        'total': _total
+                    },
+                    success: function (response, textStatus, xhr) {
+                        if (xhr.status === 200) {
+                            toastr.success(response.message, '¡Bien hecho!');
+                            _val_this.attr('disabled', 'disabled');
+                            _cash_id.prop("disabled", true)
+                        }
+                    },
+                    error: function (jqXhr, textStatus, xhr) {
+                        if (jqXhr.status === 500) {
+                            toastr.error(jqXhr.responseJSON.error, '¡Error!');
+                        }
+                    }
+                });
+            }
+
+
+        });
+
+        function excelComodityReceive() {
+
+            $("#table-manifest").table2excel({
+                // exclude CSS class
+                exclude: ".noExl",
+                name: "Worksheet Encomiendas",
+                filename: "Encomiendas",//do not include extension
+                fileext: ".xlsx", // file extension
+                preserveColors: true
+
+            });
+        }
+
+
+    </script>
+
+
+{% endblock extrajs %}

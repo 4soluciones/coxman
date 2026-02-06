@@ -1,0 +1,111 @@
+<div class="modal-dialog">
+    <div class="modal-content">
+
+        <div class="modal-header text-center  bg-light">
+            <h6 class="modal-title roboto-condensed-regular  text-uppercase font-weight-bold">Programacion</h6>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+
+        <form id="new-legacy_programming-form" autocomplete="off">
+
+            {% csrf_token %}
+
+            <div class="modal-body ">
+
+                <input type="hidden" id="id-programming" name="programming" value="{{ programming_obj.id }}">
+
+
+
+                <div class="form-group">
+                    <label for="id-turn"
+                           class="roboto-condensed-regular text-uppercase text-dark font-weight-bold">Turno
+                    </label>
+                    <select class="form-control roboto-condensed-light"
+                            id="id-turn"
+                            name="turn"
+                            required>
+                        {% for item in choices_turn %}
+                            <option value="{{ item.0 }}">{{ item.1 }}</option>
+                        {% endfor %}
+
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="id-subsidiary-destiny"
+                           class="roboto-condensed-regular text-uppercase text-dark font-weight-bold">Destino Final:
+                    </label>
+
+                    <select class="form-control roboto-condensed-light"
+                            id="id-subsidiary-destiny"
+                            name="subsidiary-destiny"
+                            required>
+                        {% for subsidiary_destiny in subsidiary_destinies %}
+                            <option value="{{ subsidiary_destiny.id }}">{{ subsidiary_destiny.name }}</option>
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" id="btn-close" class="btn btn-secondary roboto-condensed-light" data-dismiss="modal">Salir
+                </button>
+
+                <button type="submit" id="btn-save" class="btn btn-dark roboto-condensed-light">Guardar</button>
+
+
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+
+<script type="text/javascript">
+
+    $("#new-legacy_programming-form").submit(function (event) {
+
+        event.preventDefault();
+
+        let data = new FormData($('#new-legacy_programming-form').get(0));
+
+
+        $("#btn-save").attr("disabled");
+
+        $.ajax({
+            url: '/comercial/new_legacy_programming/',
+            type: "POST",
+            data: data,
+            cache: false,
+            processData: false,
+            contentType: false,
+            success: function (response, textStatus, xhr) {
+                if (response.success) {
+                    toastr.success(response.message, '¡Bien hecho!');
+                    $('#modalLegacyProgramming').modal('hide');
+                    window.location.href = "/comercial/truck_plan/"+response.programming_id+"/";
+
+                }
+            },
+            error: function (jqXhr, textStatus, xhr) {
+                toastr.error(jqXhr.responseJSON.error, '¡Ocurrio un error!');
+            }
+
+        });//end ajax
+        $("#btn-save").removeAttr("disabled");
+        $('#modalLegacyProgramming').modal('hide');
+
+    });
+
+
+
+</script>
+
+

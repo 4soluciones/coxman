@@ -1,0 +1,165 @@
+{% if path_set %}
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover montserrat">
+        <thead class="bg-light ">
+        <tr>
+            <th rowspan="2" class="align-middle">
+                <div class="form-check-inline">
+                    <label class="form-check-label">
+                        <input type="checkbox" class="form-check-input" value="">
+                    </label>
+                </div>
+            </th>
+            <th rowspan="2" class="align-middle">Nombre de ruta</th>
+            <th rowspan="2" class="align-middle">Planeacion</th>
+            <th rowspan="2" class="align-middle">Sedes Asociadas</th>
+            <th colspan="6" class="text-center">Puntos de parada</th>
+            <th rowspan="2"><i class="fas fa-cogs fa-2x"></i></th>
+        </tr>
+        <tr class="text-capitalize">
+            <th>id</th>
+            <th>origen</th>
+            <th>destino</th>
+            <th>orden</th>
+            <th>destinos</th>
+            <th><i class="fas fa-cog fa-spin"></i></th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for path in path_set %}
+
+            <tr>
+                <td class="align-middle"
+                    rowspan="{% if path.pathdetail_set.count == 0 %}1{% else %}{{ path.pathdetail_set.count }}{% endif %}">
+                    <div class="form-check-inline">
+                        <label class="form-check-label">
+                            <input type="checkbox" class="form-check-input" value="">
+                        </label>
+                    </div>
+                </td>
+                <td class="align-middle small text-success font-weight-bold"
+                    rowspan="{% if path.pathdetail_set.count == 0 %}1{% else %}{{ path.pathdetail_set.count }}{% endif %}">{{ path.name }}<br><small>{{ path.get_first_point }}</small>&nbsp;<i
+                        class="fas fa-arrow-alt-circle-right"></i>&nbsp;<small>{{ path.get_last_point }}</small></td>
+                <td class="align-middle small text-success font-weight-bold text-uppercase"
+                    rowspan="{% if path.pathdetail_set.count == 0 %}1{% else %}{{ path.pathdetail_set.count }}{% endif %}">{{ path.get_type_display }}</td>
+                <td class="align-middle small text-success font-weight-bold text-uppercase"
+                    rowspan="{% if path.pathdetail_set.count == 0 %}1{% else %}{{ path.pathdetail_set.count }}{% endif %}">
+
+                {% for ad in path.subsidiary.associate.associatedetail_set.all %}
+
+                                <div class="dropdown dropup">
+                                    <button class="btn btn-sm btn-block btn-outline-success dropdown-toggle" type="button"
+                                            id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                                            aria-expanded="false">
+                                        {{ ad.subsidiary.name }}
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <a class="dropdown-item delete-associate" href="#" pk="{{ ad.id }}">Desligar</a>
+                                    </div>
+                                </div>
+                            {% endfor %}
+
+
+                </td>
+                {% for pd in path.pathdetail_set.all %}
+                    {% if forloop.first %}
+                        <td class="align-middle small">{{ pd.id }}</td>
+                        <td class="align-middle small">{{ pd.get_origin.name }}</td>
+                        <td class="align-middle small">{{ pd.get_destiny.name }}</td>
+                        <td class="align-middle small">{{ pd.stopping }}/{{ path.pathdetail_set.count }}</td>
+                        <td class="align-middle">
+                            {% for destiny in pd.destiny_set.all %}
+
+                                <div class="dropdown dropup">
+                                    <button class="btn btn-sm btn-block btn-outline-dark dropdown-toggle" type="button"
+                                            id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                                            aria-expanded="false">
+                                        {{ destiny.name }}
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <a class="dropdown-item edit-destiny" href="#" pk="{{ destiny.id }}">Editar</a>
+                                        <a class="dropdown-item delete-destiny" href="#" pk="{{ destiny.id }}">Eliminar</a>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </td>
+                        <td class="align-middle small">
+                            <a class="btn btn-dark text-white edit-road" pk="{{ pd.id }}"><i
+                                    class="fa fa-pencil-alt"></i></a>
+                            <a class="btn btn-dark text-white add-destiny" pk="{{ pd.id }}"><i
+                                    class="fas fa-traffic-light"></i></a>
+                            <a class="btn btn-pink delete-road text-white" pk="{{ pd.id }}"><i class="fas fa-trash"></i></a>
+                        </td>
+                        <td class="align-middle small"
+                            rowspan="{% if path.pathdetail_set.count == 0 %}1{% else %}{{ path.pathdetail_set.count }}{% endif %}">
+                            <a class="btn btn-green edit-path text-white" pk="{{ path.id }}"><i
+                                    class="fas fa-map-pin"></i></a>
+                            {% if path.type == 'M' %}
+                                <a class="btn btn-green add-road text-white" pk="{{ path.id }}"><i
+                                        class="fas fa-route"></i></a>
+                            {% endif %}
+                            <a class="btn btn-pink delete-path text-white" pk="{{ path.id }}"><i
+                                    class="fas fa-trash"></i></a>
+                        </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td class="align-middle small">{{ pd.id }}</td>
+                            <td class="align-middle small">{{ pd.get_origin.name }}</td>
+                            <td class="align-middle small">{{ pd.get_destiny.name }}</td>
+                            <td class="align-middle small">{{ pd.stopping }}/{{ path.pathdetail_set.count }}</td>
+                            <td class="align-middle small text-primary">
+                                {% for destiny in pd.destiny_set.all %}
+                                    <div class="dropdown dropup">
+                                        <button class="btn btn-sm btn-block btn-outline-dark dropdown-toggle"
+                                                type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                                                aria-haspopup="true" aria-expanded="false">
+                                            {{ destiny.name }}
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <a class="dropdown-item edit-destiny" href="#"
+                                               pk="{{ destiny.id }}">Editar</a>
+                                            <a class="dropdown-item delete-destiny" href="#" pk="{{ destiny.id }}">Eliminar</a>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </td>
+                            <td class="align-middle small">
+                                <a class="btn btn-dark text-white edit-road" pk="{{ pd.id }}"><i
+                                        class="fa fa-pencil-alt"></i></a>
+                                <a class="btn btn-dark text-white add-destiny" pk="{{ pd.id }}"><i
+                                        class="fas fa-traffic-light"></i></a>
+                                <a class="btn btn-pink delete-road text-white" pk="{{ pd.id }}"><i class="fas fa-trash"></i></a>
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% empty %}
+                    <td class="" colspan="6"></td>
+                    <td class="align-middle"
+                        rowspan="{% if path.pathdetail_set.count == 0 %}1{% else %}{{ path.pathdetail_set.count }}{% endif %}">
+                        <a class="btn btn-green edit-path text-white" pk="{{ path.id }}"><i
+                                class="fas fa-map-pin"></i></a>
+                        {% if path.type == 'M' %}
+                            <a class="btn btn-green add-road text-white" pk="{{ path.id }}"><i
+                                    class="fas fa-route"></i></a>
+                        {% endif %}
+                        <a class="btn btn-pink delete-path text-white" pk="{{ path.id }}"><i
+                                class="fas fa-trash"></i></a>
+                    </td>
+                    </tr>
+                {% endfor %}
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+{% else %}
+    <div class="alert alert-warning" role="alert">
+        <h4 class="alert-heading">Atención!</h4>
+        <p>Lo sentimos, no hay presentaciones registradas.</p>
+        <hr>
+        <p class="mb-0">Tal vez, deba registrar al menos uno.</p>
+    </div>
+{% endif %}
+
+<script type="text/javascript"></script>

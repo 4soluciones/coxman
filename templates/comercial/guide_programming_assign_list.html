@@ -1,0 +1,52 @@
+<table class="table table-bordered table-sm table-striped table-info montserrat">
+    <thead>
+    <tr class="text-dark text-center">
+        <th class="align-middle">
+            #
+        </th>
+        <th class="align-middle">
+            Serie
+        </th>
+        <th class="align-middle">
+            Nro.
+        </th>
+        <th class="align-middle">
+            Descripción
+        </th>
+        <th class="align-middle">
+            Usuario
+        </th>
+        <th class="align-middle">
+            Destino
+        </th>
+    </tr>
+    </thead>
+    <tbody id="order-programming-data">
+    {% for op in programming_orders_set %}
+        {% for d in op.order.orderdetail_set.all %}
+            {% if forloop.first %}
+                <tr pk="{{ op.order.id }}">
+                    <td class="align-middle text-center  font-weight-bold"
+                        rowspan="{{ op.order.orderdetail_set.count }}" style=" transform: scale(1.7);">
+                        <input class="order-programming align-middle" type="checkbox" value="{{ op.order.id }}">
+                    </td>
+                    <td class="align-middle  text-center font-weight-bold"
+                        rowspan="{{ op.order.orderdetail_set.count }}">{{ op.order.serial }}</td>
+                    <td class="align-middle  text-center font-weight-bold"
+                        rowspan="{{ op.order.orderdetail_set.count }}">{{ op.order.correlative_sale }}</td>
+
+                    <td class="align-middle  text-left font-weight-bold">{{ d.description|upper }}</td>
+                    <td class="align-middle  text-center font-weight-bold"
+                        rowspan="{{ op.order.orderdetail_set.count }}">{{ op.order.user.worker_set.last.employee.names|upper }}</td>
+                    <td class="align-middle  text-center font-weight-bold"
+                        rowspan="{{ op.order.orderdetail_set.count }}">{{ op.order.orderroute_set.last.subsidiary }}</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td class="align-middle  text-center font-weight-bold">{{ d.description|upper }}</td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+    </tbody>
+</table>

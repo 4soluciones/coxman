@@ -1,0 +1,78 @@
+{% extends 'home.html' %}
+
+{% block title %}
+    coronasoft.dev | SALIDAS DEL MES
+{% endblock title %}
+
+{% block body %}
+
+<div class="container-fluid pt-3">
+
+        <div class="card">
+
+            <div class="card-header">
+                <label class="col-form-label col-form-label-lg">SALIDAS DEL MES</label>
+            </div>
+
+            <div class="card-body">
+
+
+
+
+                <table class="table table-bordered" id="table2excel">
+                    <thead>
+                    <tr class="text-white text-uppercase">
+                        <td class="bg-dark align-middle text-center col-form-label p-1">#</td>
+                        <td class="bg-dark align-middle text-center col-form-label p-1">NOMBRE</td>
+                        <td class="bg-dark align-middle text-center col-form-label p-1">PLACA</td>
+                       {% for day in days_of_month_choices %}
+                           <td class="bg-dark align-middle text-center col-form-label p-1">
+                               <div class="row"><div class="col">{{ day.1 }}</div></div>
+                               <div class="row"><div class="col">{{ day.0 }}</div></div>
+                           </td>
+                       {% endfor %}
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for departure in departure_set %}
+                        <tr>
+                            <td class="align-middle text-center col-form-label p-1">{{ departure.id }}</td>
+                            <td class="align-middle text-center col-form-label p-1">{{ departure.truck.owner.name }}</td>
+                            <td class="align-middle text-center col-form-label p-1">{{ departure.truck.license_plate }}</td>
+
+                            {% for detail in departure.departuredetail_set.all %}
+                                <td class="align-middle text-center col-form-label p-1">{{ detail.id }}</td>
+                            {% endfor %}
+
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+                <button class="btn btn-lg btn-green text-white mt-3 float-right" id="export">Exportar</button>
+
+
+            </div>
+
+        </div>
+</div>
+
+
+{% endblock body %}
+
+
+{% block extrajs %}
+<script type="text/javascript">
+$('#export').click(function (){
+    $("#table2excel").table2excel({
+    // exclude CSS class
+    exclude:".noExl",
+    name:"Worksheet Name",
+    filename:"RP_VENCIMIENTO",//do not include extension
+    fileext:".xls" // file extension
+
+  });
+
+})
+</script>
+{% endblock extrajs %}

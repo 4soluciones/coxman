@@ -1,0 +1,88 @@
+{% extends 'home.html' %}
+
+{% block title %}
+    coronasoft.dev | EXPIRACION DE LICENCIAS DE CONDUCIR
+{% endblock title %}
+
+{% block body %}
+
+    <div class="container-fluid pt-3">
+
+        <div class="card">
+
+            <div class="card-header">
+                <label class="col-form-label col-form-label-lg">EXPIRACION DE LICENCIAS DE CONDUCIR</label>
+            </div>
+
+            <div class="card-body">
+
+                <table class="table table-bordered" id="table2excel">
+                    <thead>
+                    <tr class="text-white text-uppercase">
+                        <td class="bg-dark align-middle text-center col-form-label p-1">#</td>
+                        <td class="bg-dark align-middle text-center col-form-label p-1">CONDUCTOR</td>
+                        <td class="bg-dark align-middle text-center col-form-label p-1">DNI</td>
+                        <td class="bg-dark align-middle text-center col-form-label p-1">NUMERO DE LICENCIA</td>
+                        <td class="bg-dark align-middle text-center col-form-label p-1">TIPO DE LIC.</td>
+                        <td class="bg-dark align-middle text-center col-form-label p-1">EXPIRACION DE LIC.</td>
+                        <td class="bg-dark align-middle text-center col-form-label p-1">VIGENCIA</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for truck_associate in truck_associate_set %}
+                        <tr>
+                            <td class="align-middle text-center col-form-label p-1">{{ truck_associate.id }}</td>
+                            <td class="align-middle text-center col-form-label p-1">
+                                {{ truck_associate.employee__paternal_last_name|upper }} {{ truck_associate.employee__maternal_last_name|default:" "|upper }}, {{ truck_associate.employee__names|upper }}
+                            </td>
+                            <td class="align-middle text-center col-form-label p-1">{{ truck_associate.employee__document_number|default:"-" }}</td>
+                            <td class="align-middle text-center col-form-label p-1">{{ truck_associate.employee__n_license|default:"-" }}</td>
+                            <td class="align-middle text-center col-form-label p-1">
+                                {% if truck_associate.employee__license_type == '1' %}A-I
+                                {% elif truck_associate.employee__license_type == '2' %}A-IIB
+                                {% elif truck_associate.employee__license_type == '3' %}A-IIIC
+                                {% elif truck_associate.employee__license_type == '4' %}A-IIIB
+                                {% elif truck_associate.employee__license_type == '5' %}A-IVA
+                                {% elif truck_associate.employee__license_type == '6' %}A-IIA
+                                {% elif truck_associate.employee__license_type == '7' %}A-IIIA
+                                {% elif truck_associate.employee__license_type == '8' %}B-I
+                                {% elif truck_associate.employee__license_type == '9' %}B-IIA
+                                {% elif truck_associate.employee__license_type == '10' %}B-IIB
+                                {% elif truck_associate.employee__license_type == '11' %}B-IIC
+                                {% elif truck_associate.employee__license_type == '12' %}SIN LICENCIA
+                                {% endif %}
+                            </td>
+                            <td class="align-middle text-center col-form-label p-1">{{ truck_associate.employee__license_expiration_date|date:"d/m/Y"|default:"-" }}</td>
+                            <td class="align-middle text-center col-form-label p-1 {% if truck_associate.difference_date < 0 %}bg-danger font-weight-bold{% endif %}">{{ truck_associate.difference_date|default:"-" }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+                <button class="btn btn-lg btn-green text-white mt-3 float-right" id="export">Exportar</button>
+
+
+            </div>
+
+        </div>
+    </div>
+
+
+{% endblock body %}
+
+
+{% block extrajs %}
+    <script type="text/javascript">
+        $('#export').click(function () {
+            $("#table2excel").table2excel({
+                // exclude CSS class
+                exclude: ".noExl",
+                name: "Worksheet Name",
+                filename: "RP_VENCIMIENTO",//do not include extension
+                fileext: ".xls" // file extension
+
+            });
+
+        })
+    </script>
+{% endblock extrajs %}

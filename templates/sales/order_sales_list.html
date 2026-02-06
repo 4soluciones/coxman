@@ -1,0 +1,57 @@
+{% extends 'home.html' %}
+
+{% block title %}
+    coronasoft.dev | Lista de ventas
+{% endblock title %}
+
+{% block body %}
+    <!-- Content -->
+    <div class="container-fluid">
+        <table id="order-data-grid" class="table table-bordered" cellspacing="0" width="100%">
+            <thead>
+            <tr class="text-center">
+                <th>#</th>
+                <th class="th-sm">Almacen</th>
+                <th class="th-sm">Cliente</th>
+                <th class="th-sm">Usuario</th>
+                <th class="th-sm">Estado</th>
+                <th class="th-sm">Total</th>
+                <th class="th-sm">Creado</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            {% for order in orders %}
+                <tr class="text-center">
+                    <td>{{ order.id }}</td>
+                    <td>{{ order.subsidiary_store.name }}</td>
+                    <td>{{ order.client }}</td>
+                    <td>{{ order.user }}</td>
+                    <td>{{ order.status }}</td>
+                    <td>{{ order.total }}</td>
+                    <td>{{ order.create_at }}</td>
+                </tr>
+            {% endfor %}
+
+
+            </tbody>
+            <tfoot>
+            <tr class="text-center">
+                <th>#</th>
+                <th class="th-sm">Almacen</th>
+                <th class="th-sm">Cliente</th>
+                <th class="th-sm">Usuario</th>
+                <th class="th-sm">Estado</th>
+                <th class="th-sm">Total</th>
+                <th class="th-sm">Creado</th>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+{% endblock body %}
+
+{% block extrajs %}
+    <script type="text/javascript">
+        $('#order-data-grid').dataTable();
+    </script>
+{% endblock extrajs %}

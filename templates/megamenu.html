@@ -1,0 +1,138 @@
+{% load static %}
+<header class="header-desktop3 d-none d-lg-block">
+    <div class="section__content section__content--p35">
+        <div class="header3-wrap">
+            <div class="header__logo w-25">
+                <a href="{% url 'dashboard' %}">
+                    <img src="{% static 'assets/logo_new_coxman.png' %}" class="mr-3" alt="TRANSPORTES" width="120" />
+                </a>
+                <label class="switch switch-default switch-pill mr-3">
+                    <input type="checkbox" class="switch-input"  id="customSwitch1">
+                    <span class="switch-label"></span>
+                    <span class="switch-handle" style="background: #393939;"></span>
+                    </label>
+
+                    
+                    <div class="w-25">
+                        <a class="dropdown-toggle title-9 text-white" href="#" id="selected_company" role="button" data-toggle="dropdown"
+                           aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-user-cog"></i>
+                            {{ user.companyuser.company_rotation.short_name | upper }}
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown-4" style="left: auto; top: 50%;">
+                            {% for e in all_companies %}
+                                <a class="dropdown-item company" pk="{{ e.id }}" {% if user.companyuser.company_rotation.id == e.id %}selected{% endif %} href="#">{{ e.short_name }}</a>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                
+            </div>
+            
+            <div class="header__navbar">
+                <ul class="list-unstyled">
+                    
+                    <li class="pt-2">
+                        <a href="{% url 'hrm:employee_list' %}"><i class="far fa-address-card"></i>
+                            <span class="bot-line"></span>Empleados</a>
+                    </li>
+
+
+                    <li class="has-sub pt-2">
+                        <a href="#">
+                            <i class="fas fa-th-list"></i>
+                            <span class="bot-line"></span> Encomiendas
+                        </a>
+                        <ul class="header3-sub-list list-unstyled">
+                            <li><a href="{% url 'comercial:new_guide' %}"><i class="fas fa-pen-square"></i>Emisión de Encomiendas</a></li>
+                            <li><a href="{% url 'comercial:manifest_comodity_list' %}"><i class="fas fa-bars"></i> Listado de Encomiendas por Asignar</a></li>
+                            <li><a href="{% url 'comercial:report_comodity_grid' %}"><i class="fas fa-list-alt"></i>Reporte de Encomiendas</a></li>
+                            <li><a href="{% url 'comercial:receive_manifests' %}"><i class="fas fa-clipboard-list"></i>Recepción Encomiendas</a></li>
+                            <li><a href="{% url 'comercial:report_manifest_grid' %}"><i class="fas fa-file-alt"></i> Reporte de Manifiestos</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="has-sub pt-2">
+                        <a href="#">
+                            <i class="fas fa-search"></i>
+                            <span class="bot-line"></span> Programaciones
+                        </a>
+                        <ul class="header3-sub-list list-unstyled">
+                            <li><a href="{% url 'comercial:programming_list' %}"><i class="fas fa-bus"></i>Programar Viaje</a></li>
+                            <li><a href="{% url 'comercial:get_programming_query_list' %}"><i class="fas fa-search"></i> Consultar programaciones</a></li>
+                            <li><a href="{% url 'comercial:get_ticket_inquiry_list' %}"><i class="fas fa-search"></i> Consultar boletos de pasajeros</a></li>
+{#                            <li><a href="{% url 'comercial:get_manifest_passenger_inquiry_list' %}"><i class="fas fa-search"></i> Consultar manifiestos de pasajeros</a></li>#}
+                            <li><a href="{% url 'comercial:get_path_list' %}"><i class="fas fa-route"></i>Rutas y destinos</a></li>
+                            <li><a href="{% url 'comercial:get_postponements' %}"><i class="fas fa-random"></i> Postergaciones y Anulaciones</a></li>
+
+                            <li><a href="{% url 'comercial:truck_list' %}"><i class="fas fa-th-list"></i> Listado de Unidades</a></li>
+{#                            <li><a href="{% url 'comercial:towing_list' %}"><i class="fas fa-th-list"></i> Listado de Remolques</a></li>#}
+                        </ul>
+                    </li>
+
+
+                    <li class="has-sub pt-2">
+                        <a href="#">
+                            <i class="fas fa-random"></i>
+                            <span class="bot-line"></span> Finanzas
+                        </a>
+                        <ul class="header3-sub-list list-unstyled">
+
+                            <li><a href="{% url 'accounting:get_cash_control_list' %}"><i class="fas fa-cash-register"></i> Control de caja</a></li>
+{#                            <li><a href="{% url 'accounting:get_bank_control_list' %}"> Control de ctas bancarias</a></li>#}
+
+                            <li><a href="{% url 'accounting:get_account_list' %}"><i class="fas fa-toolbox"></i> Cuadro de cuentas</a></li>
+                            <li><a href="{% url 'sales:client_list' %}"><i class="fas fa-users"></i> Clientes</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="has-sub pt-2">
+                        <a href="#">
+                            <i class="fas fa-list-alt"></i>
+                            <span class="bot-line"></span> Reportes
+                        </a>
+                        <ul class="header3-sub-list list-unstyled">
+
+                            <li><a href="{% url 'hrm:get_expiration_report' %}"><i class="far fa-address-card"></i>Licencias de conducir</a></li>
+                            <li><a href="{% url 'comercial:report_expiration_soat_and_technical' %}"><i class="far fa-file"></i>Soat y Revisión técnica</a></li>
+                            <li><a href="{% url 'comercial:departures_of_month' %}"><i class="fas fa-external-link-square-alt"></i>Salidas del Mes</a></li>
+
+                        </ul>
+                    </li>
+
+                </ul>
+            </div>
+            <div class="header__tool">
+                
+                <div class="account-wrap">
+                    <div class="account-item account-item--style2 clearfix js-item-menu">
+                        <div class="image">
+                            <img src="{% static 'images/icon/default-avatar.jpg' %}" alt="John Doe" />
+                        </div>
+                        <div class="content">
+                            <a class="js-acc-btn" href="#">{{ user.worker_set.last.employee.full_name | upper }}</a>
+                        </div>
+                        <div class="account-dropdown js-dropdown">
+                            <div class="info clearfix">
+                                <div class="image">
+                                    <a href="#">
+                                        <img src="{% static 'images/icon/default-avatar.jpg' %}" alt="John Doe" />
+                                    </a>
+                                </div>
+                                <div class="content">
+                                    <h5 class="name">
+                                        <a href="#">{{ user.worker_set.last.employee.full_name | upper }}</a>
+                                    </h5>
+                                    <span class="email">{{ user.worker_set.last.establishment_set.last.subsidiary.name }}</span>
+                                </div>
+                            </div>
+                            <div class="account-dropdown__footer">
+                                <a href="{% url 'logout' %}"><i class="zmdi zmdi-power"></i>Cerrar Sesion</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>

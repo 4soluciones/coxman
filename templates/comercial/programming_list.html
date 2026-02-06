@@ -1,0 +1,109 @@
+{% load static %}
+{% load app_filters %}
+<div class="table-responsive">
+    <table id="programming-data-grid" class="table table-bordered table-sm montserrat">
+        <thead>
+        <tr class="bg-light text-dark text-center" style="height: 50px;">
+            <th scope="col" class="align-middle">Acción</th>
+            <th scope="col" class="align-middle">Unidad</th>
+            <th scope="col" class="align-middle">Tipo</th>
+            <th scope="col" class="align-middle">Propietario</th>
+            <th scope="col" class="align-middle">Asientos Vendidos</th>
+            {#            <th scope="col" class="align-middle">Asientos Reservados</th>#}
+            <th scope="col" class="align-middle">Conductores</th>
+            <th scope="col" class="align-middle">Fecha</th>
+            <th scope="col" class="align-middle">Origen - Destino</th>
+            <th scope="col" class="align-middle">Hora de salida</th>
+            {#        <th scope="col" class="align-middle">Sede donde se creo la programacion</th>#}
+            <th scope="col" class="align-middle">#</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for p in programmings %}
+            <tr class="{% if p.status == 'C' %}table-danger text-black-50{% elif p.status == 'R' %}table-success text-black-50{% endif %}">
+                  <td class="text-center align-middle">
+                    {% if show_edit %}
+                        <a class="btn btn-green text-white programming-edit" pk="{{ p.id }}" style="cursor: pointer;">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                    {% endif %}
+
+                    {% if show_plan and p.truck.drive_type == 'O' %}
+                        <a class="btn btn-danger text-white programming-plan"
+                           href="{% url 'comercial:truck_plan' p.id %}"
+                           style="cursor: pointer;">
+                            <i class="fab fa-atlassian"></i>
+                        </a>
+                    {% endif %}
+                    {% if show_lp and subsidiary_obj.id != p.subsidiary.id %}
+                        <a class="btn btn-blue text-white add-legacy-programming" pk="{{ p.id }}"
+                           style="cursor: pointer;">
+                            <i class="fab fa-ethereum"></i>
+                        </a>
+                    {% endif %}
+
+                </td>
+                <td class="text-center align-middle"><strong> {{ p.truck.license_plate }} </strong></td>
+                <td class="text-center align-middle">
+                    {% if p.truck.drive_type == 'O' %}
+                        {#                        <i class="fas fa-bus fa-2x"></i>#}
+                        <img src="{% static 'assets/avatar/minibus.png' %}" alt="" width="50" height="50">
+                    {% elif p.truck.drive_type == 'S' or p.truck.drive_type == 'A'%}
+                        {#                    <i class="fas fa-truck-loading fa-2x"></i>#}
+                        <img src="{% static 'assets/avatar/truck.svg' %}" alt="" width="70" height="70">
+                    {% else %}
+                        {#                    <i class="fas fa-truck-moving"></i>#}
+                        <img src="{% static 'assets/avatar/boxcar.svg' %}" alt="" width="50" height="50">
+                    {% endif %}
+                </td>
+                <td class="text-center align-middle small" style="width: 15%">
+                    {{ p.truck.owner.name }}
+                </td>
+                <td class="text-center align-middle text-primary" style="width: 10%">
+                    {{ p.get_count_seats_sold }}/{{ p.get_count_seats }}
+                    <div class="progress">
+                        <div class="progress-bar bg-danger" role="progressbar"
+                             style="width: {{ p.get_count_seats_sold|calculate_percent:p.get_count_seats }}%"
+                             aria-valuenow="{{ p.get_count_seats_sold|calculate_percent:p.get_count_seats }}"
+                             aria-valuemin="0" aria-valuemax="{{ p.get_count_seats }}"></div>
+                    </div>
+
+                </td>
+{#                <td class="text-center align-middle">#}
+{#                    {{ p.get_count_seats_reserved }}/{{ p.get_count_seats }}#}
+{#                    <div class="progress">#}
+{#                        <div class="progress-bar bg-info" role="progressbar"#}
+{#                             style="width: {{ p.get_count_seats_reserved }}%"#}
+{#                             aria-valuenow="{{ p.get_count_seats_reserved }}" aria-valuemin="0"#}
+{#                             aria-valuemax="{{ p.get_count_seats }}"></div>#}
+{#                    </div>#}
+{##}
+{#                </td>#}
+
+                <td class="text-center align-middle small" style="width: 15%">
+                    <strong>Piloto: </strong>{{ p.get_pilot.full_name }}
+                    {% if se.get_copilot %}<br><strong>Copiloto: </strong>{{ se.get_copilot.full_name }}{% endif %}
+                </td>
+                <td class="text-center align-middle small">
+                    {{ p.departure_date|date:"SHORT_DATE_FORMAT" }}
+                </td>
+                <td class="text-center align-middle small" style="width: 10%">
+
+                    <strong> </strong> {{ p.path.get_first_point.name }}&nbsp;<i
+                        class="fas fa-arrow-alt-circle-right"></i>&nbsp;
+                    <strong> </strong> {{ p.path.get_last_point.name }}
+
+                </td>
+                <td class="text-center align-middle small" style="width: 5%"><strong>{{ p.truck_exit|time:"H:i A"|default:"-" }}</strong></td>
+
+            <td class="text-center align-middle small" style="height: 20px;">
+                {{ p.id }}<br>
+                {{ p.serial }}-{{ p.correlative }}
+            </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+

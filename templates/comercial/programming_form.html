@@ -1,0 +1,101 @@
+<input type="hidden" id="id_programming" name="programming" value="{{ programming_obj.id }}">
+
+<div class="form-group">
+    <label for="id_path">Ruta</label> <span class="badge badge-dark">{{ path_set.count }}</span>
+    <select class="form-control form-control-sm font-weight-bold text-uppercase" id="id_path"
+            name="path" required>
+        {% for path in path_set %}
+            <option {% if path.id == programming_obj.path.id %}selected{% endif %}
+                    value="{{ path.id }}">
+                {{ path.name }}
+            </option>
+        {% endfor %}
+    </select>
+</div>
+
+<div class="form-group">
+    <label for="id_truck">Placa Vehiculo</label> <span class="badge badge-dark">{{ trucks.count }}</span>
+    <select class="form-control form-control-sm font-weight-bold text-uppercase" id="id_truck"
+            name="truck" required>
+    {% if programming_obj is not None %}
+        <option value="{{ programming_obj.truck.id }}">
+            {{ programming_obj.truck.license_plate }} | {{ programming_obj.truck.plan.name }} | {{ programming_obj.truck.get_drive_type_display }}
+        </option>
+    {% else %}
+        {% for truck in trucks %}
+            <option value="{{ truck.id }}">
+                {{ truck.license_plate }} | {{ truck.plan.name }} | {{ truck.get_drive_type_display }}
+            </option>
+        {% endfor %}
+    {% endif %}
+
+    </select>
+</div>
+
+<div class="form-group">
+    <label for="id_pilot">Piloto</label>
+    <select class="form-control form-control-sm font-weight-bold text-uppercase" id="id_pilot"
+            name="pilot" required>
+    {% if pilot is None %}
+        <option selected disabled value="">Seleccione</option>
+    {% else %}
+        <option value="{{ pilot.employee.id }}"> {{ pilot.employee.full_name }}</option>
+    {% endif %}
+
+    </select>
+</div>
+
+{#<div class="form-group">#}
+{#    <label for="id_copilot">Copiloto</label>#}
+{#    <select class="form-control form-control-sm font-weight-bold text-uppercase" id="id_copilot"#}
+{#            name="copilot">#}
+{#        <option {% if copilot is None %}selected{% endif %} value="0">Seleccione</option>#}
+{#        {% for employee in employees %}#}
+{#            {% if employee.names %}#}
+{#                <option {% if copilot.employee.id == employee.id %}selected{% endif %}#}
+{#                        value="{{ employee.id }}">#}
+{#                    {{ employee.names }} {{ employee.paternal_last_name }} {{ employee.maternal_last_name }}#}
+{#                </option>#}
+{#            {% endif %}#}
+{#        {% endfor %}#}
+{#    </select>#}
+{#</div>#}
+
+<div class="form-group">
+    <label for="id_departure_date">Fecha de Salida</label>
+    <input type="date" class="form-control form-control-sm font-weight-bold text-uppercase"
+           id="id_departure_date"
+           name="departure_date"
+           value="{% if programming_obj.departure_date %}{{ programming_obj.departure_date|date:'Y-m-d' }}{% else %}{{ current_date }}{% endif %}"
+           required>
+</div>
+
+
+
+<div class="form-group">
+    <label for="id_status">Estado</label>
+    <select class="form-control form-control-sm font-weight-bold text-uppercase" id="id_status" name="status">
+        {% for item in choices_status %}
+            <option {% if programming_obj.status == item.0 %}selected{% endif %} value="{{ item.0 }}">
+                {{ item.1 }}
+            </option>
+        {% endfor %}
+    </select>
+</div>
+
+
+
+<button type="submit" id="btn-save"
+        class="btn btn-green pb-1 programming-save">Guardar
+</button>
+<button type="button"
+        class="btn btn-pink pb-1 mt-0 programming-update"
+        style="display: none;">Guardar Cambios
+</button>
+<button type="button" id="btn-new"
+        class="btn btn-dark pb-1 programming-new">Nuevo
+</button>
+<button type="button" id="btn-exit"
+        class="btn btn-dark pb-1 programming-cancel"
+        style="display: none;">Cancelar
+</button>
