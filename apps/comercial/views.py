@@ -5,7 +5,6 @@ from django.db.models import Prefetch, F, ExpressionWrapper, fields, Value
 from django.shortcuts import render
 from django.views.generic import View, TemplateView, UpdateView, CreateView
 from django.views.decorators.csrf import csrf_exempt
-from reportlab import xrange
 
 from .models import *
 from apps.hrm.models import Subsidiary, Employee, Company
